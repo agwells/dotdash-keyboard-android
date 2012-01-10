@@ -31,11 +31,13 @@
 	>
 		<Key
 			android:keyLabel="."
-			android.keyEdgeFlags="left"
+			android:keyEdgeFlags="left"
+			android:codes="0"
 			/>
 		<Key
 			android:keyLabel="-"
 			android:keyEdgeFlags="right"
+			android:codes="1"
 			/>
 	</Row>
 
@@ -46,14 +48,15 @@
 	>
 		<Key
 			android:keyLabel="Shift"
-			android.keyEdgeFlags="left"
+			android:keyEdgeFlags="left"
 			/>
 		<Key
 			android:keyLabel=" "
+			android:codes="-1"
 			/>
 		<Key
 			android:keyLabel="Del"
-			android.keyEdgeFlags="right"
+			android:keyEdgeFlags="right"
 		/>
 	</Row>
 
