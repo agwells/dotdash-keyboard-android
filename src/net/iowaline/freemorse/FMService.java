@@ -16,6 +16,7 @@ public class FMService extends InputMethodService implements KeyboardView.OnKeyb
 	private Keyboard dotDashKeyboard;
 	private Hashtable<String, String> morseMap;
 	private StringBuilder charInProgress;
+	private Boolean capsLockDown = false;
 	
 	@Override
 	public void onInitializeInterface() {
@@ -91,6 +92,12 @@ public class FMService extends InputMethodService implements KeyboardView.OnKeyb
 		super.onStartInputView(info, restarting);
 		charInProgress = new StringBuilder();
 	}
+	
+	@Override
+	public void onFinishInput() {
+		super.onFinishInput();
+		capsLockDown = false;
+	}
 
 	@Override
 	public void onKey(int primaryCode, int[] keyCodes) {
@@ -120,7 +127,11 @@ public class FMService extends InputMethodService implements KeyboardView.OnKeyb
 				} else {
 					Log.d(TAG, "Pressed space, look for " + charInProgress.toString());
 					String finalChar = morseMap.get(charInProgress.toString());
+					
 					if (finalChar != null) {
+						if (capsLockDown) {
+							finalChar = finalChar.toUpperCase();
+						}
 						Log.d(TAG, "Char identified as " + finalChar);
 						getCurrentInputConnection().commitText(finalChar, finalChar.length());
 					}
@@ -132,6 +143,11 @@ public class FMService extends InputMethodService implements KeyboardView.OnKeyb
 			// TODO Figure out a way to go back one dotdash, rather than one character
 			case KeyEvent.KEYCODE_DEL:
 				sendDownUpKeyEvents(primaryCode);
+				charInProgress.setLength(0);
+				break;
+				
+			case KeyEvent.KEYCODE_SHIFT_LEFT:
+				capsLockDown = !capsLockDown;
 				break;
 		}
 //		sendDownUpKeyEvents(KeyEvent.KEYCODE_STAR);

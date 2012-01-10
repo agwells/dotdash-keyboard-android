@@ -42,21 +42,25 @@
 	</Row>
 
 	<Row
-		android:keyWidth="33%"
+		android:keyWidth="25%"
 		android:rowEdgeFlags="bottom"
-		android:keyHeight="10%"
+		android:keyHeight="20%"
 	>
 		<Key
-			android:keyLabel="Shift"
+			android:keyLabel="Caps"
 			android:keyEdgeFlags="left"
+			android:codes="59"
+			android:isSticky="true"
 			/>
 		<Key
 			android:keyLabel=" "
 			android:codes="62"
+			android:keyWidth="50%"
 			/>
 		<Key
 			android:keyLabel="Del"
 			android:keyEdgeFlags="right"
+			android:isRepeatable="true"
 			android:codes="67"
 		/>
 	</Row>
