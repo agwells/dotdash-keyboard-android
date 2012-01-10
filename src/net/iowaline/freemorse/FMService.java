@@ -75,6 +75,14 @@ public class FMService extends InputMethodService implements KeyboardView.OnKeyb
 		morseMap.put(".-..-.", "\"");
 		morseMap.put(".--.-.", "@");
 		morseMap.put("-...-", "=");
+		morseMap.put("-.-.--", "!");
+		morseMap.put("---.", "!");
+		
+		// Specially handled
+		// The AA prosign, "space down one line" 
+		morseMap.put(".-.-", "\n");
+		// The AR prosign, "end of message"
+		morseMap.put(".-.-.", "END");
 	}
 	
 	@Override
@@ -84,6 +92,7 @@ public class FMService extends InputMethodService implements KeyboardView.OnKeyb
 		);
 		inputView.setOnKeyboardActionListener(this);
 		inputView.setKeyboard(dotDashKeyboard);
+		inputView.setPreviewEnabled(false);
 		return inputView;
 	}
 	
@@ -129,11 +138,20 @@ public class FMService extends InputMethodService implements KeyboardView.OnKeyb
 					String finalChar = morseMap.get(charInProgress.toString());
 					
 					if (finalChar != null) {
-						if (capsLockDown) {
-							finalChar = finalChar.toUpperCase();
+						
+						if (finalChar.contentEquals("\n")) {
+							sendDownUpKeyEvents(KeyEvent.KEYCODE_ENTER);
+						} else if (finalChar.contentEquals("END")) {
+							requestHideSelf(0);
+							inputView.closing();
+						} else {
+							
+							if (capsLockDown) {
+								finalChar = finalChar.toUpperCase();
+							}
+							Log.d(TAG, "Char identified as " + finalChar);
+							getCurrentInputConnection().commitText(finalChar, finalChar.length());
 						}
-						Log.d(TAG, "Char identified as " + finalChar);
-						getCurrentInputConnection().commitText(finalChar, finalChar.length());
 					}
 				}
 				charInProgress.setLength(0);
