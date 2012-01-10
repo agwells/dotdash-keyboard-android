@@ -6,6 +6,7 @@ import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 
@@ -94,26 +95,44 @@ public class FMService extends InputMethodService implements KeyboardView.OnKeyb
 	@Override
 	public void onKey(int primaryCode, int[] keyCodes) {
 		Log.d(TAG, "primaryCode: " + Integer.toString(primaryCode));
-		if (primaryCode == 0 || primaryCode == 1) {
-			charInProgress.append(primaryCode==1 ? "-" : ".");
-			Log.d(TAG, "charInProgress: " + charInProgress);
-			if (charInProgress.length() > 6){
-				charInProgress.setLength(0);
-				Log.d(TAG, "..truncated"+charInProgress);
-			}
-		}
-		if (primaryCode == -1) {
-			if (charInProgress.length()==0) {
-				getCurrentInputConnection().commitText(" ", 1);
-			} else {
-				Log.d(TAG, "Pressed space, look for " + charInProgress.toString());
-				String finalChar = morseMap.get(charInProgress.toString());
-				if (finalChar != null) {
-					Log.d(TAG, "Char identified as " + finalChar);
-					getCurrentInputConnection().commitText(finalChar, finalChar.length());
+		switch(primaryCode) {
+		
+			// 0 represents a dot, 1 represents a dash
+			// TODO The documentation for Keyboard.Key says I should be
+			// able to give a key a string as a keycode, but it
+			// errors out every time I try it.
+			case 0:
+			case 1:
+				
+				charInProgress.append(primaryCode==1 ? "-" : ".");
+				Log.d(TAG, "charInProgress: " + charInProgress);
+				if (charInProgress.length() > 6){
+					charInProgress.setLength(0);
+					Log.d(TAG, "..truncated"+charInProgress);
 				}
-			}
-			charInProgress.setLength(0);
+				break;
+
+			// Space button ends the current dotdash sequence
+			// Space twice in a row sends through a standard space character
+			case KeyEvent.KEYCODE_SPACE:
+				if (charInProgress.length()==0) {
+					getCurrentInputConnection().commitText(" ", 1);
+				} else {
+					Log.d(TAG, "Pressed space, look for " + charInProgress.toString());
+					String finalChar = morseMap.get(charInProgress.toString());
+					if (finalChar != null) {
+						Log.d(TAG, "Char identified as " + finalChar);
+						getCurrentInputConnection().commitText(finalChar, finalChar.length());
+					}
+				}
+				charInProgress.setLength(0);
+				break;
+			
+			// Send backspace through as a normal one-character backspace
+			// TODO Figure out a way to go back one dotdash, rather than one character
+			case KeyEvent.KEYCODE_DEL:
+				sendDownUpKeyEvents(primaryCode);
+				break;
 		}
 //		sendDownUpKeyEvents(KeyEvent.KEYCODE_STAR);
 	}

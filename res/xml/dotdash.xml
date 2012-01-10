@@ -52,11 +52,12 @@
 			/>
 		<Key
 			android:keyLabel=" "
-			android:codes="-1"
+			android:codes="62"
 			/>
 		<Key
 			android:keyLabel="Del"
 			android:keyEdgeFlags="right"
+			android:codes="67"
 		/>
 	</Row>
 
