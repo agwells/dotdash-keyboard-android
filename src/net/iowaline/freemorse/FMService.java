@@ -13,7 +13,8 @@ import android.view.inputmethod.EditorInfo;
 public class FMService extends InputMethodService implements KeyboardView.OnKeyboardActionListener {
 	private String TAG = "FMService";
 	private KeyboardView inputView;
-	private Keyboard dotDashKeyboard;
+	private DotDashKeyboard dotDashKeyboard;
+	private Keyboard.Key spaceKey;
 	private Hashtable<String, String> morseMap;
 	private StringBuilder charInProgress;
 	private Boolean capsLockDown = false;
@@ -22,7 +23,8 @@ public class FMService extends InputMethodService implements KeyboardView.OnKeyb
 	public void onInitializeInterface() {
 		// TODO Auto-generated method stub
 		super.onInitializeInterface();
-		dotDashKeyboard = new Keyboard(this, R.xml.dotdash);
+		dotDashKeyboard = new DotDashKeyboard(this, R.xml.dotdash);
+		spaceKey = dotDashKeyboard.getSpaceKey();
 		charInProgress = new StringBuilder(7);
 		
 		// TODO Replace this with an XML file
@@ -108,9 +110,10 @@ public class FMService extends InputMethodService implements KeyboardView.OnKeyb
 		capsLockDown = false;
 	}
 
-	@Override
 	public void onKey(int primaryCode, int[] keyCodes) {
 		Log.d(TAG, "primaryCode: " + Integer.toString(primaryCode));
+		String curCharMatch = morseMap.get(charInProgress.toString());
+
 		switch(primaryCode) {
 		
 			// 0 represents a dot, 1 represents a dash
@@ -135,39 +138,54 @@ public class FMService extends InputMethodService implements KeyboardView.OnKeyb
 					getCurrentInputConnection().commitText(" ", 1);
 				} else {
 					Log.d(TAG, "Pressed space, look for " + charInProgress.toString());
-					String finalChar = morseMap.get(charInProgress.toString());
 					
-					if (finalChar != null) {
+					if (curCharMatch != null) {
 						
-						if (finalChar.contentEquals("\n")) {
+						if (curCharMatch.contentEquals("\n")) {
 							sendDownUpKeyEvents(KeyEvent.KEYCODE_ENTER);
-						} else if (finalChar.contentEquals("END")) {
+						} else if (curCharMatch.contentEquals("END")) {
 							requestHideSelf(0);
 							inputView.closing();
 						} else {
 							
 							if (capsLockDown) {
-								finalChar = finalChar.toUpperCase();
+								curCharMatch = curCharMatch.toUpperCase();
 							}
-							Log.d(TAG, "Char identified as " + finalChar);
-							getCurrentInputConnection().commitText(finalChar, finalChar.length());
+							Log.d(TAG, "Char identified as " + curCharMatch);
+							getCurrentInputConnection().commitText(curCharMatch, curCharMatch.length());
 						}
 					}
 				}
-				charInProgress.setLength(0);
+				clearCharInProgress();
 				break;
 			
 			// Send backspace through as a normal one-character backspace
 			// TODO Figure out a way to go back one dotdash, rather than one character
+			// If there's a character in progress, clear it
+			// otherwise, send through a backspace keypress
 			case KeyEvent.KEYCODE_DEL:
-				sendDownUpKeyEvents(primaryCode);
-				charInProgress.setLength(0);
+				if (charInProgress.length() > 0 ){
+					clearCharInProgress();
+				} else {
+					sendDownUpKeyEvents(primaryCode);
+					clearCharInProgress();
+				}
 				break;
 				
 			case KeyEvent.KEYCODE_SHIFT_LEFT:
 				capsLockDown = !capsLockDown;
 				break;
 		}
+		
+		// Set the label on the space key
+		if (charInProgress.length() == 0) {
+			spaceKey.label = "";
+		} else if (curCharMatch == null) {
+			spaceKey.label = charInProgress;
+		} else {
+			spaceKey.label = charInProgress + " " + curCharMatch;
+		}
+		
 //		sendDownUpKeyEvents(KeyEvent.KEYCODE_STAR);
 	}
 
