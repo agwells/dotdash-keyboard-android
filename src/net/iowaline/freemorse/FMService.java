@@ -1,9 +1,11 @@
 package net.iowaline.freemorse;
 
 import java.util.Hashtable;
+import java.util.List;
 
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
+import android.inputmethodservice.Keyboard.Key;
 import android.inputmethodservice.KeyboardView;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -15,6 +17,7 @@ public class FMService extends InputMethodService implements KeyboardView.OnKeyb
 	private KeyboardView inputView;
 	private DotDashKeyboard dotDashKeyboard;
 	private Keyboard.Key spaceKey;
+	int spaceKeyIndex;
 	private Hashtable<String, String> morseMap;
 	private StringBuilder charInProgress;
 	private Boolean capsLockDown = false;
@@ -25,6 +28,8 @@ public class FMService extends InputMethodService implements KeyboardView.OnKeyb
 		super.onInitializeInterface();
 		dotDashKeyboard = new DotDashKeyboard(this, R.xml.dotdash);
 		spaceKey = dotDashKeyboard.getSpaceKey();
+		List<Keyboard.Key> keys = dotDashKeyboard.getKeys();
+		spaceKeyIndex = keys.indexOf(spaceKey);
 		charInProgress = new StringBuilder(7);
 		
 		// TODO Replace this with an XML file
@@ -65,26 +70,32 @@ public class FMService extends InputMethodService implements KeyboardView.OnKeyb
 		morseMap.put("---..", "8");
 		morseMap.put("----.", "9");
 		morseMap.put("-----", "0");
-		morseMap.put(".-.-.-", ".");
-		morseMap.put("--..--", ",");
-		morseMap.put("---...", ":");
-		morseMap.put("..--..", "?");
-		morseMap.put(".----.", "\'");
-		morseMap.put("-....-", "-");
-		morseMap.put("-..-.", "/");
-		morseMap.put("-.--.-", "(");
-		morseMap.put("-.--.-", ")");
-		morseMap.put(".-..-.", "\"");
-		morseMap.put(".--.-.", "@");
-		morseMap.put("-...-", "=");
-		morseMap.put("-.-.--", "!");
-		morseMap.put("---.", "!");
-		
+		morseMap.put(".----.",  "\'");
+		morseMap.put(".--.-.",  "@");
+		morseMap.put(".-...",   "&");
+		morseMap.put("---...",  ":");
+		morseMap.put("--..--",  ",");
+		morseMap.put("...-..-", "$");
+		morseMap.put("-...-",   "=");
+		morseMap.put("---.",    "!");
+		morseMap.put("-.-.--",  "!");
+		morseMap.put("-....-",  "-");
+		morseMap.put("-.--.",   "(");
+		morseMap.put("-.--.-",  ")");
+		morseMap.put(".-.-.-",  ".");
+//		morseMap.put(".-.-.",   "+");
+		morseMap.put("..--..",  "?");
+		morseMap.put(".-..-.",  "\"");
+		morseMap.put("-.-.-.",  ";");
+		morseMap.put("-..-.",   "/");
+		morseMap.put("..--.-",  "_");
+
 		// Specially handled
 		// The AA prosign, "space down one line" 
-		morseMap.put(".-.-", "\n");
+		morseMap.put(".-.-",   "\n");
+		morseMap.put(".-.-..", "\n");
 		// The AR prosign, "end of message"
-		morseMap.put(".-.-.", "END");
+		morseMap.put(".-.-.",  "END");
 	}
 	
 	@Override
@@ -178,56 +189,56 @@ public class FMService extends InputMethodService implements KeyboardView.OnKeyb
 		}
 		
 		// Set the label on the space key
-		if (charInProgress.length() == 0) {
-			spaceKey.label = "";
-		} else if (curCharMatch == null) {
-			spaceKey.label = charInProgress;
-		} else {
-			spaceKey.label = charInProgress + " " + curCharMatch;
-		}
+//		if (charInProgress.length() == 0) {
+//			spaceKey.label = "";
+//		} else if (curCharMatch == null) {
+//			spaceKey.label = charInProgress;
+//		} else {
+//			spaceKey.label = charInProgress + " " + curCharMatch;
+//		}
+		spaceKey.label = charInProgress;
+		inputView.invalidateKey(spaceKeyIndex);
 		
 //		sendDownUpKeyEvents(KeyEvent.KEYCODE_STAR);
 	}
 
-	@Override
-	public void onPress(int primaryCode) {
+	private void clearCharInProgress() {
+		charInProgress.setLength(0);
+	}
+
+	public void onPress(int arg0) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
-	public void onRelease(int primaryCode) {
+	public void onRelease(int arg0) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
-	public void onText(CharSequence text) {
+	public void onText(CharSequence arg0) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void swipeDown() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void swipeLeft() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void swipeRight() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void swipeUp() {
 		// TODO Auto-generated method stub
 		
 	}
+
 }
