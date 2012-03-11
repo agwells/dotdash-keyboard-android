@@ -3,24 +3,29 @@ package net.iowaline.freemorse;
 import java.util.Hashtable;
 import java.util.List;
 
+import android.content.Context;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
-import android.inputmethodservice.Keyboard.Key;
 import android.inputmethodservice.KeyboardView;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 
 public class FMService extends InputMethodService implements KeyboardView.OnKeyboardActionListener {
 	private String TAG = "FMService";
-	private KeyboardView inputView;
+	private DotDashKeyboardView inputView;
 	private DotDashKeyboard dotDashKeyboard;
 	private Keyboard.Key spaceKey;
 	int spaceKeyIndex;
+	private Keyboard.Key capsLockKey;
+	int capsLockKeyIndex;
 	private Hashtable<String, String> morseMap;
 	private StringBuilder charInProgress;
-	private Boolean capsLockDown = false;
+	
+	private static final int CAPS_LOCK_OFF = 0;
+	private static final int CAPS_LOCK_NEXT = 1;
+	private static final int CAPS_LOCK_ALL = 2;
+	private Integer capsLockState = CAPS_LOCK_OFF;
 	
 	@Override
 	public void onInitializeInterface() {
@@ -28,8 +33,10 @@ public class FMService extends InputMethodService implements KeyboardView.OnKeyb
 		super.onInitializeInterface();
 		dotDashKeyboard = new DotDashKeyboard(this, R.xml.dotdash);
 		spaceKey = dotDashKeyboard.getSpaceKey();
+		capsLockKey = dotDashKeyboard.getCapsLockKey();
 		List<Keyboard.Key> keys = dotDashKeyboard.getKeys();
 		spaceKeyIndex = keys.indexOf(spaceKey);
+		capsLockKeyIndex = keys.indexOf(capsLockKey);
 		charInProgress = new StringBuilder(7);
 		
 		// TODO Replace this with an XML file
@@ -100,27 +107,16 @@ public class FMService extends InputMethodService implements KeyboardView.OnKeyb
 	
 	@Override
 	public View onCreateInputView() {
-		inputView = (KeyboardView) getLayoutInflater().inflate(
+		inputView = (DotDashKeyboardView) getLayoutInflater().inflate(
 				R.layout.input, null
 		);
 		inputView.setOnKeyboardActionListener(this);
 		inputView.setKeyboard(dotDashKeyboard);
 		inputView.setPreviewEnabled(false);
+		inputView.setService(this);
 		return inputView;
 	}
 	
-	@Override
-	public void onStartInputView(EditorInfo info, boolean restarting) {
-		super.onStartInputView(info, restarting);
-		charInProgress = new StringBuilder();
-	}
-	
-	@Override
-	public void onFinishInput() {
-		super.onFinishInput();
-		capsLockDown = false;
-	}
-
 	public void onKey(int primaryCode, int[] keyCodes) {
 		Log.d(TAG, "primaryCode: " + Integer.toString(primaryCode));
 		String curCharMatch = morseMap.get(charInProgress.toString());
@@ -159,7 +155,15 @@ public class FMService extends InputMethodService implements KeyboardView.OnKeyb
 							inputView.closing();
 						} else {
 							
-							if (capsLockDown) {
+							boolean uppercase = false;
+							if (capsLockState == CAPS_LOCK_NEXT) {
+								uppercase = true;
+								capsLockState = CAPS_LOCK_OFF;
+								updateCapsLockKey();
+							} else if (capsLockState == CAPS_LOCK_ALL) {
+								uppercase = true;
+							}
+							if (uppercase) {
 								curCharMatch = curCharMatch.toUpperCase();
 							}
 							Log.d(TAG, "Char identified as " + curCharMatch);
@@ -170,8 +174,6 @@ public class FMService extends InputMethodService implements KeyboardView.OnKeyb
 				clearCharInProgress();
 				break;
 			
-			// Send backspace through as a normal one-character backspace
-			// TODO Figure out a way to go back one dotdash, rather than one character
 			// If there's a character in progress, clear it
 			// otherwise, send through a backspace keypress
 			case KeyEvent.KEYCODE_DEL:
@@ -179,27 +181,26 @@ public class FMService extends InputMethodService implements KeyboardView.OnKeyb
 					clearCharInProgress();
 				} else {
 					sendDownUpKeyEvents(primaryCode);
-					clearCharInProgress();
+					clearEverything();
 				}
 				break;
 				
 			case KeyEvent.KEYCODE_SHIFT_LEFT:
-				capsLockDown = !capsLockDown;
+				switch( capsLockState ) {
+					case CAPS_LOCK_OFF:
+						capsLockState = CAPS_LOCK_NEXT;
+						break;
+					case CAPS_LOCK_NEXT:
+						capsLockState = CAPS_LOCK_ALL;
+						break;
+					default:
+						capsLockState = CAPS_LOCK_OFF;
+				}
+				updateCapsLockKey();
 				break;
 		}
 		
-		// Set the label on the space key
-//		if (charInProgress.length() == 0) {
-//			spaceKey.label = "";
-//		} else if (curCharMatch == null) {
-//			spaceKey.label = charInProgress;
-//		} else {
-//			spaceKey.label = charInProgress + " " + curCharMatch;
-//		}
-		spaceKey.label = charInProgress;
-		inputView.invalidateKey(spaceKeyIndex);
-		
-//		sendDownUpKeyEvents(KeyEvent.KEYCODE_STAR);
+		updateSpaceKey();
 	}
 
 	private void clearCharInProgress() {
@@ -241,4 +242,43 @@ public class FMService extends InputMethodService implements KeyboardView.OnKeyb
 		
 	}
 
+	public void clearEverything() {
+		clearCharInProgress();
+		capsLockState = CAPS_LOCK_OFF;
+		updateCapsLockKey();
+		updateSpaceKey();
+	}
+
+	public void updateCapsLockKey(){
+
+		CharSequence oldLabel = capsLockKey.label;
+		
+		Context context = this.getApplicationContext();
+		switch (capsLockState) {
+			case CAPS_LOCK_OFF:
+				capsLockKey.on = false;
+				capsLockKey.label = context.getText(R.string.caps_lock_off);
+				break;
+			case CAPS_LOCK_NEXT:
+				capsLockKey.on = false;
+				capsLockKey.label = context.getText(R.string.caps_lock_next);
+				break;
+			case CAPS_LOCK_ALL:
+				capsLockKey.on = true;
+				capsLockKey.label = context.getText(R.string.caps_lock_all);
+				break;
+		}
+		
+		if (!capsLockKey.label.equals(oldLabel)) {
+			inputView.invalidateKey(capsLockKeyIndex);
+		}
+	}
+	
+	public void updateSpaceKey() {
+		if (!spaceKey.label.toString().equals(charInProgress.toString())) {
+			Log.d(TAG, "!spaceKey.label.equals(charInProgress)");
+			spaceKey.label = charInProgress.toString();
+			inputView.invalidateKey(spaceKeyIndex);
+		}
+	}
 }

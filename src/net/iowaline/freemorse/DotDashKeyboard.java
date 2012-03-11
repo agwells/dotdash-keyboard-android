@@ -17,6 +17,7 @@ public class DotDashKeyboard extends Keyboard {
     }
     
     private Keyboard.Key spaceKey;
+    private Keyboard.Key capsLockKey;
     
     @Override
     protected Key createKeyFromXml(Resources res, Row parent, int x, int y,
@@ -25,6 +26,8 @@ public class DotDashKeyboard extends Keyboard {
     	Key k = super.createKeyFromXml(res, parent, x, y, parser);
     	if (k.codes[0] == 62) {
     		spaceKey = k;
+    	} else if (k.codes[0] == 59) {
+    		capsLockKey = k;
     	}
     	return k;
     }
@@ -33,4 +36,7 @@ public class DotDashKeyboard extends Keyboard {
     	return this.spaceKey;
     }
 
+    public Key getCapsLockKey() {
+    	return this.capsLockKey;
+    }
 }

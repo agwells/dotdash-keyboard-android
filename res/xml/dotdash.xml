@@ -47,7 +47,7 @@
 		android:keyHeight="20%"
 	>
 		<Key
-			android:keyLabel="Caps"
+			android:keyLabel="abc"
 			android:keyEdgeFlags="left"
 			android:codes="59"
 			android:isSticky="true"

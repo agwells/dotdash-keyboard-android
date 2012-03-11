@@ -3,5 +3,8 @@
 
     <string name="hello">Hello World!</string>
     <string name="app_name">FreeMorse</string>
+    <string name="caps_lock_off">abc</string>
+    <string name="caps_lock_next">Abc</string>
+    <string name="caps_lock_all">ABC</string>
 
 </resources>
