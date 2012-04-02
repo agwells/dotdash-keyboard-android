@@ -1,18 +1,19 @@
-package net.iowaline.freemorse;
+package net.iowaline.dotdash;
 
 import java.util.Hashtable;
 import java.util.List;
+import net.iowaline.dotdash.R;
 
 import android.content.Context;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
-import android.util.Log;
+//import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
-public class FMService extends InputMethodService implements KeyboardView.OnKeyboardActionListener {
-	private String TAG = "FMService";
+public class DotDashIMEService extends InputMethodService implements KeyboardView.OnKeyboardActionListener {
+//	private String TAG = "DotDashIMEService";
 	private DotDashKeyboardView inputView;
 	private DotDashKeyboard dotDashKeyboard;
 	private Keyboard.Key spaceKey;
@@ -118,7 +119,7 @@ public class FMService extends InputMethodService implements KeyboardView.OnKeyb
 	}
 	
 	public void onKey(int primaryCode, int[] keyCodes) {
-		Log.d(TAG, "primaryCode: " + Integer.toString(primaryCode));
+//		Log.d(TAG, "primaryCode: " + Integer.toString(primaryCode));
 		String curCharMatch = morseMap.get(charInProgress.toString());
 
 		switch(primaryCode) {
@@ -130,12 +131,10 @@ public class FMService extends InputMethodService implements KeyboardView.OnKeyb
 			case 0:
 			case 1:
 				
-				charInProgress.append(primaryCode==1 ? "-" : ".");
-				Log.d(TAG, "charInProgress: " + charInProgress);
-				if (charInProgress.length() > 6){
-					charInProgress.setLength(0);
-					Log.d(TAG, "..truncated"+charInProgress);
+				if (charInProgress.length() < 7) {
+					charInProgress.append(primaryCode==1 ? "-" : ".");
 				}
+//				Log.d(TAG, "charInProgress: " + charInProgress);
 				break;
 
 			// Space button ends the current dotdash sequence
@@ -144,7 +143,7 @@ public class FMService extends InputMethodService implements KeyboardView.OnKeyb
 				if (charInProgress.length()==0) {
 					getCurrentInputConnection().commitText(" ", 1);
 				} else {
-					Log.d(TAG, "Pressed space, look for " + charInProgress.toString());
+//					Log.d(TAG, "Pressed space, look for " + charInProgress.toString());
 					
 					if (curCharMatch != null) {
 						
@@ -166,7 +165,7 @@ public class FMService extends InputMethodService implements KeyboardView.OnKeyb
 							if (uppercase) {
 								curCharMatch = curCharMatch.toUpperCase();
 							}
-							Log.d(TAG, "Char identified as " + curCharMatch);
+//							Log.d(TAG, "Char identified as " + curCharMatch);
 							getCurrentInputConnection().commitText(curCharMatch, curCharMatch.length());
 						}
 					}
@@ -276,7 +275,7 @@ public class FMService extends InputMethodService implements KeyboardView.OnKeyb
 	
 	public void updateSpaceKey() {
 		if (!spaceKey.label.toString().equals(charInProgress.toString())) {
-			Log.d(TAG, "!spaceKey.label.equals(charInProgress)");
+//			Log.d(TAG, "!spaceKey.label.equals(charInProgress)");
 			spaceKey.label = charInProgress.toString();
 			inputView.invalidateKey(spaceKeyIndex);
 		}

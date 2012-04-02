@@ -1,4 +1,4 @@
-package net.iowaline.freemorse;
+package net.iowaline.dotdash;
 
 import android.content.Context;
 import android.inputmethodservice.KeyboardView;
@@ -7,9 +7,9 @@ import android.view.View;
 
 public class DotDashKeyboardView extends KeyboardView {
 
-	private FMService service;
+	private DotDashIMEService service;
 	
-	public void setService( FMService service ) {
+	public void setService( DotDashIMEService service ) {
 		this.service = service;
 	}
 	

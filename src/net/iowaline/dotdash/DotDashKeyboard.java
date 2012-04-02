@@ -1,4 +1,4 @@
-package net.iowaline.freemorse;
+package net.iowaline.dotdash;
 
 import android.content.Context;
 import android.content.res.Resources;

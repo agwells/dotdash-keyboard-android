@@ -44,7 +44,7 @@
 	<Row
 		android:keyWidth="25%"
 		android:rowEdgeFlags="bottom"
-		android:keyHeight="20%"
+		android:keyHeight="10%"
 	>
 		<Key
 			android:keyLabel="abc"
