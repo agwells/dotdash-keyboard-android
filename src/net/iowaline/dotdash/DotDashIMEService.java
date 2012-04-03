@@ -2,15 +2,14 @@ package net.iowaline.dotdash;
 
 import java.util.Hashtable;
 import java.util.List;
-import net.iowaline.dotdash.R;
 
 import android.content.Context;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
-//import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import net.iowaline.dotdash.R;
 
 public class DotDashIMEService extends InputMethodService implements KeyboardView.OnKeyboardActionListener {
 //	private String TAG = "DotDashIMEService";
