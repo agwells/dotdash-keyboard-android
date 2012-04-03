@@ -7,12 +7,16 @@ import android.content.Context;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import net.iowaline.dotdash.R;
 
 public class DotDashIMEService extends InputMethodService implements KeyboardView.OnKeyboardActionListener {
-//	private String TAG = "DotDashIMEService";
+	private String TAG = "DotDashIMEService";
 	private DotDashKeyboardView inputView;
 	private DotDashKeyboard dotDashKeyboard;
 	private Keyboard.Key spaceKey;
@@ -114,6 +118,24 @@ public class DotDashIMEService extends InputMethodService implements KeyboardVie
 		inputView.setKeyboard(dotDashKeyboard);
 		inputView.setPreviewEnabled(false);
 		inputView.setService(this);
+		final GestureDetector gestureDetector = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
+			@Override
+			public boolean onFling(MotionEvent e1, MotionEvent e2,
+					float velocityX, float velocityY) {
+				if (e2.getY() < 0) {
+					inputView.showCheatSheet();
+				}
+				return false;
+			}
+		});
+		View.OnTouchListener gestureListener = new View.OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				return gestureDetector.onTouchEvent(event);
+			}
+		};
+		inputView.setOnTouchListener(gestureListener);
 		return inputView;
 	}
 	
