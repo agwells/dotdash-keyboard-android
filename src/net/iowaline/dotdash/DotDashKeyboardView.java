@@ -3,7 +3,6 @@ package net.iowaline.dotdash;
 import android.content.Context;
 import android.inputmethodservice.KeyboardView;
 import android.util.AttributeSet;
-import android.view.View;
 
 public class DotDashKeyboardView extends KeyboardView {
 
@@ -19,13 +18,5 @@ public class DotDashKeyboardView extends KeyboardView {
 	
 	public DotDashKeyboardView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-	}
-	
-	@Override
-	protected void onVisibilityChanged(View changedView, int visibility) {
-		if (visibility == VISIBLE) {
-			service.clearEverything();
-		}
-		super.onVisibilityChanged(changedView, visibility);
 	}
 }

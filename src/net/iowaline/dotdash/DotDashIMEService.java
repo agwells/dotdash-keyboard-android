@@ -279,4 +279,10 @@ public class DotDashIMEService extends InputMethodService implements KeyboardVie
 			inputView.invalidateKey(spaceKeyIndex);
 		}
 	}
+	
+	@Override
+	public void onFinishInputView(boolean finishingInput) {
+		clearEverything();
+		super.onFinishInputView(finishingInput);
+	}
 }
