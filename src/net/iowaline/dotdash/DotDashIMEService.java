@@ -179,7 +179,12 @@ public class DotDashIMEService extends InputMethodService implements KeyboardVie
 					clearCharInProgress();
 				} else {
 					sendDownUpKeyEvents(primaryCode);
-					clearEverything();
+					clearCharInProgress();
+					updateSpaceKey();
+					if (capsLockState == CAPS_LOCK_NEXT) {
+						capsLockState = CAPS_LOCK_OFF;
+						updateCapsLockKey();
+					}
 				}
 				break;
 				
