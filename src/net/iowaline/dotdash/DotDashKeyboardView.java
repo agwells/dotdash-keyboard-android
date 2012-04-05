@@ -2,6 +2,7 @@ package net.iowaline.dotdash;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.inputmethodservice.KeyboardView;
@@ -17,7 +18,7 @@ import android.widget.Button;
 public class DotDashKeyboardView extends KeyboardView {
 
 	private DotDashIMEService service;
-	private AlertDialog cheatsheetDialog;
+	private Dialog cheatsheetDialog;
 	private View cheatsheet1;
 	private View cheatsheet2;
 	private View currentCheatSheetView;
@@ -42,13 +43,34 @@ public class DotDashKeyboardView extends KeyboardView {
 			this.cheatsheet2 = this.service.getLayoutInflater().inflate(R.layout.cheatsheet2, null);
 		}
 		if (this.cheatsheetDialog == null){
-			AlertDialog.Builder builder = new AlertDialog.Builder(this.service);
-			builder.setCancelable(true);
-			builder.setPositiveButton("Next", null);
-			builder.setNegativeButton("Close", null);
-			builder.setView(this.cheatsheet1);
-			this.currentCheatSheetView = this.cheatsheet1;
-			this.cheatsheetDialog = builder.create();
+			this.cheatsheetDialog = new Dialog(this.service);
+			
+			cheatsheetDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+			
+			cheatsheetDialog.setCancelable(true);
+			cheatsheetDialog.setCanceledOnTouchOutside(true);
+			cheatsheetDialog.setContentView(cheatsheet1);
+			cheatsheet1.setOnTouchListener(new OnTouchListener() {
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					cheatsheetDialog.setContentView(cheatsheet2);
+					return true;
+				}
+			});
+			cheatsheet2.setOnTouchListener(new OnTouchListener() {
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					cheatsheetDialog.setContentView(cheatsheet1);
+					return true;
+				}
+			});
+//			AlertDialog.Builder builder = new AlertDialog.Builder(this.service);
+//			builder.setCancelable(true);
+//			builder.setPositiveButton("Next", null);
+//			builder.setNegativeButton("Close", null);
+//			builder.setView(this.cheatsheet1);
+//			this.currentCheatSheetView = this.cheatsheet1;
+//			this.cheatsheetDialog = builder.create();
 			Window window = this.cheatsheetDialog.getWindow();
 			WindowManager.LayoutParams lp = window.getAttributes();
 			lp.token = this.getWindowToken();
@@ -61,18 +83,5 @@ public class DotDashKeyboardView extends KeyboardView {
 	public void showCheatSheet() {
 		createCheatSheet();
 		this.cheatsheetDialog.show();
-		Button nextButton = cheatsheetDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-		nextButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				if (currentCheatSheetView == cheatsheet1) {
-					currentCheatSheetView = cheatsheet2;
-				} else {
-					currentCheatSheetView = cheatsheet1;
-				}
-				cheatsheetDialog.setView(currentCheatSheetView);
-			}
-		});
 	}
 }
