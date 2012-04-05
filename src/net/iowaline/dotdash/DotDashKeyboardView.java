@@ -3,6 +3,7 @@ package net.iowaline.dotdash;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.inputmethodservice.KeyboardView;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -11,11 +12,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 
 public class DotDashKeyboardView extends KeyboardView {
 
 	private DotDashIMEService service;
-	private AlertDialog cheatsheet;
+	private AlertDialog cheatsheetDialog;
+	private View cheatsheet1;
+	private View cheatsheet2;
+	private View currentCheatSheetView;
 	
 	public void setService( DotDashIMEService service ) {
 		this.service = service;
@@ -29,28 +34,45 @@ public class DotDashKeyboardView extends KeyboardView {
 		super(context, attrs, defStyle);
 	}
 	
-//	@Override
-//	public boolean onTouchEvent(MotionEvent me) {
-//		Log.d("DotDashKeyboardView", "onTouchEvent!!!");
-//		if (me.getAction() == MotionEvent.ACTION_UP && me.getHistoricalY(0)==0) {
-//			Log.d("DotDashKeyboardView", "ACTION_UP");
-////			showCheatSheet();
-//		}
-//		return super.onTouchEvent(me);
-//	}
+	public void createCheatSheet() {
+		if (this.cheatsheet1 == null) {
+			this.cheatsheet1 = this.service.getLayoutInflater().inflate(R.layout.cheatsheet1, null);
+		}
+		if (this.cheatsheet2 == null) {
+			this.cheatsheet2 = this.service.getLayoutInflater().inflate(R.layout.cheatsheet2, null);
+		}
+		if (this.cheatsheetDialog == null){
+			AlertDialog.Builder builder = new AlertDialog.Builder(this.service);
+			builder.setCancelable(true);
+			builder.setPositiveButton("Next", null);
+			builder.setNegativeButton("Close", null);
+			builder.setView(this.cheatsheet1);
+			this.currentCheatSheetView = this.cheatsheet1;
+			this.cheatsheetDialog = builder.create();
+			Window window = this.cheatsheetDialog.getWindow();
+			WindowManager.LayoutParams lp = window.getAttributes();
+			lp.token = this.getWindowToken();
+			lp.type = WindowManager.LayoutParams.TYPE_APPLICATION_ATTACHED_DIALOG;
+			window.setAttributes(lp);
+			window.addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+		}
+	}
 	
 	public void showCheatSheet() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this.service);
-		builder.setCancelable(true);
-		builder.setNegativeButton("OK", null);
-		builder.setTitle("Cheat Sheet");
-		this.cheatsheet = builder.create();
-		Window window = this.cheatsheet.getWindow();
-		WindowManager.LayoutParams lp = window.getAttributes();
-		lp.token = this.getWindowToken();
-		lp.type = WindowManager.LayoutParams.TYPE_APPLICATION_ATTACHED_DIALOG;
-		window.setAttributes(lp);
-		window.addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
-		this.cheatsheet.show();
+		createCheatSheet();
+		this.cheatsheetDialog.show();
+		Button nextButton = cheatsheetDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+		nextButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				if (currentCheatSheetView == cheatsheet1) {
+					currentCheatSheetView = cheatsheet2;
+				} else {
+					currentCheatSheetView = cheatsheet1;
+				}
+				cheatsheetDialog.setView(currentCheatSheetView);
+			}
+		});
 	}
 }

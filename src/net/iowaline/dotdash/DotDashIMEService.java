@@ -94,7 +94,7 @@ public class DotDashIMEService extends InputMethodService implements KeyboardVie
 		morseMap.put("-.--.",   "(");
 		morseMap.put("-.--.-",  ")");
 		morseMap.put(".-.-.-",  ".");
-//		morseMap.put(".-.-.",   "+");
+		morseMap.put(".-.-.",   "+");
 		morseMap.put("..--..",  "?");
 		morseMap.put(".-..-.",  "\"");
 		morseMap.put("-.-.-.",  ";");
@@ -104,9 +104,9 @@ public class DotDashIMEService extends InputMethodService implements KeyboardVie
 		// Specially handled
 		// The AA prosign, "space down one line" 
 		morseMap.put(".-.-",   "\n");
-		morseMap.put(".-.-..", "\n");
+//		morseMap.put(".-.-..", "\n");
 		// The AR prosign, "end of message"
-		morseMap.put(".-.-.",  "END");
+//		morseMap.put(".-.-.",  "END");
 	}
 	
 	@Override
