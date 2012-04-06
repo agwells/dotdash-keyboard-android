@@ -189,7 +189,7 @@
         <TextView
             style="@style/tapinstructions"
             android:layout_span="4"
-            android:text="Tap for letters and numbers" />
+            android:text="@string/tapforlettersandnumbers" />
     </TableRow>
 
 </TableLayout>

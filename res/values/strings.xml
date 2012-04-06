@@ -5,5 +5,7 @@
     <string name="caps_lock_off">abc</string>
     <string name="caps_lock_next">Abc</string>
     <string name="caps_lock_all">ABC</string>
+    <string name="tapforpunctuation">Tap for punctuation</string>
+    <string name="tapforlettersandnumbers">Tap for letters and numbers</string>
 
 </resources>
