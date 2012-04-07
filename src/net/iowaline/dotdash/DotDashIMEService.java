@@ -311,6 +311,7 @@ public class DotDashIMEService extends InputMethodService implements
 	@Override
 	public void onFinishInputView(boolean finishingInput) {
 		clearEverything();
+		this.inputView.closeCheatSheet();
 		super.onFinishInputView(finishingInput);
 	}
 }

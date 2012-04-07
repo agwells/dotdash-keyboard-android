@@ -59,14 +59,6 @@ public class DotDashKeyboardView extends KeyboardView {
 					return true;
 				}
 			});
-			// AlertDialog.Builder builder = new
-			// AlertDialog.Builder(this.service);
-			// builder.setCancelable(true);
-			// builder.setPositiveButton("Next", null);
-			// builder.setNegativeButton("Close", null);
-			// builder.setView(this.cheatsheet1);
-			// this.currentCheatSheetView = this.cheatsheet1;
-			// this.cheatsheetDialog = builder.create();
 			Window window = this.cheatsheetDialog.getWindow();
 			WindowManager.LayoutParams lp = window.getAttributes();
 			lp.token = this.getWindowToken();
@@ -79,5 +71,11 @@ public class DotDashKeyboardView extends KeyboardView {
 	public void showCheatSheet() {
 		createCheatSheet();
 		this.cheatsheetDialog.show();
+	}
+
+	public void closeCheatSheet() {
+		if (cheatsheetDialog != null) {
+			cheatsheetDialog.dismiss();
+		}
 	}
 }
