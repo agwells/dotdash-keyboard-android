@@ -37,6 +37,15 @@ public class DotDashIMEService extends InputMethodService implements
 	private static final int AUTO_CAP_SENTENCE_ENDED = 1;
 	private Integer autoCapState = AUTO_CAP_MIDSENTENCE;
 
+	// Keycodes used in the utility keyboard
+	public static final int KEYCODE_UP = -10;
+	public static final int KEYCODE_DLEFT = -11;
+	public static final int KEYCODE_DRIGHT = -12;
+	public static final int KEYCODE_DDOWN = -13;
+	public static final int KEYCODE_HOME = -20;
+	public static final int KEYCODE_END = -21;
+	public static final int KEYCODE_DEL = -30;
+	
 	private SharedPreferences prefs;
 	public String[] newlineGroups;
 	private int maxCodeLength;

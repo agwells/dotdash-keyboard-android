@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
+	android:horizontalGap="0px" android:verticalGap="0px">
+
+	<Row android:keyWidth="12.5%" android:rowEdgeFlags="top"
+		android:keyHeight="11%">
+		<Key android:keyLabel="~" android:keyEdgeFlags="left"
+			android:codes="126" />
+		<Key android:keyLabel="`" android:codes="96" />
+		<Key android:keyLabel="\#" android:codes="35" />
+		<Key android:keyLabel="£" android:codes="163" />
+		<Key android:keyLabel="€" android:codes="8364" />
+		<Key android:keyLabel="%" android:codes="37" />
+		<Key android:keyLabel="^" android:codes="94" />
+		<Key android:keyLabel="*" android:codes="42" android:keyEdgeFlags="right" />
+	</Row>
+
+	<Row android:keyWidth="12.5%" android:keyHeight="11%">
+		<Key android:keyLabel="h" android:codes="-20"
+			android:keyEdgeFlags="left" />
+		<Key android:keyLabel="i" android:codes="-10" />
+		<Key android:keyLabel="e" android:codes="-21" />
+		<Key android:keyLabel="[" android:codes="91" />
+		<Key android:keyLabel="]" android:codes="93" />
+		<Key android:keyLabel="{" android:codes="123" />
+		<Key android:keyLabel="}" android:codes="125" />
+		<Key android:keyLabel="\\" android:codes="92"
+			android:keyEdgeFlags="right" />
+	</Row>
+	<Row android:keyWidth="12.5%" android:keyHeight="11%">
+		<Key android:keyLabel="j" android:codes="-11"
+			android:keyEdgeFlags="left" />
+		<Key android:keyLabel="k" android:codes="-13" />
+		<Key android:keyLabel="l" android:codes="-12" />
+		<Key android:keyLabel="&lt;" android:codes="60" />
+		<Key android:keyLabel="&gt;" android:codes="62" />
+		<Key android:keyLabel="|" android:codes="124" />
+        <Key android:codes="32" android:keyIcon="@drawable/sym_keyboard_space" android:keyWidth="30%p" 
+                android:isRepeatable="true"/>
+		<Key android:keyIcon="@drawable/sym_keyboard_delete" android:codes="-30"
+			android:keyEdgeFlags="right" android:isRepeatable="true"/>
+	</Row>
+
+</Keyboard>
+    
