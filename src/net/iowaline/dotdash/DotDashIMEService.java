@@ -39,6 +39,7 @@ public class DotDashIMEService extends InputMethodService implements
 
 	private SharedPreferences prefs;
 	public String[] newlineGroups;
+	private int maxCodeLength;
 	
 	@Override
 	public void onCreate() {
@@ -57,7 +58,6 @@ public class DotDashIMEService extends InputMethodService implements
 		List<Keyboard.Key> keys = dotDashKeyboard.getKeys();
 		spaceKeyIndex = keys.indexOf(spaceKey);
 		capsLockKeyIndex = keys.indexOf(capsLockKey);
-		charInProgress = new StringBuilder(7);
 
 		// TODO Replace this with an XML file
 		morseMap = new Hashtable<String, String>();
@@ -118,6 +118,17 @@ public class DotDashIMEService extends InputMethodService implements
 		morseMap.put("..--.-", "_");
 
 		updateNewlinePref();
+		
+		// This variable is used in onKey to determine how many
+		// dots and dashes we need to keep track of (no need recording
+		// more than the total number that make up a valid code group)
+		maxCodeLength = 0;
+		for (String codegroup : morseMap.keySet()) {
+			if (codegroup.length() > maxCodeLength) {
+				maxCodeLength = codegroup.length();
+			}
+		}
+		charInProgress = new StringBuilder(maxCodeLength);
 	}
 
 	@Override
@@ -164,7 +175,7 @@ public class DotDashIMEService extends InputMethodService implements
 		case 0:
 		case 1:
 
-			if (charInProgress.length() < 7) {
+			if (charInProgress.length() < maxCodeLength) {
 				charInProgress.append(primaryCode == 1 ? "-" : ".");
 			}
 			// Log.d(TAG, "charInProgress: " + charInProgress);
