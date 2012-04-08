@@ -27,7 +27,7 @@ public class DotDashKeyboardView extends KeyboardView {
 	public DotDashKeyboardView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
-
+	
 	public void createCheatSheet() {
 		if (this.cheatsheet1 == null) {
 			this.cheatsheet1 = this.service.getLayoutInflater().inflate(
@@ -48,6 +48,9 @@ public class DotDashKeyboardView extends KeyboardView {
 			cheatsheet1.setOnTouchListener(new OnTouchListener() {
 				@Override
 				public boolean onTouch(View v, MotionEvent event) {
+					FixedSizeView fsv = (FixedSizeView) cheatsheet2;
+					fsv.fixedHeight = cheatsheet1.getMeasuredHeight();
+					fsv.fixedWidth = cheatsheet1.getMeasuredWidth();
 					cheatsheetDialog.setContentView(cheatsheet2);
 					return true;
 				}

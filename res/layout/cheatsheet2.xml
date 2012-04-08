@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/cheatsheettable" >
+<net.iowaline.dotdash.FixedSizeView xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/cheatsheettable" android:gravity="center">
 
     <TableRow style="@style/cheatsheettoprow" >
 
@@ -192,4 +192,4 @@
             android:text="@string/tapforlettersandnumbers" />
     </TableRow>
 
-</TableLayout>
+</net.iowaline.dotdash.FixedSizeView>
