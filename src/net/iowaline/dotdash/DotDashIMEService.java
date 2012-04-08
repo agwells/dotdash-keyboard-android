@@ -4,9 +4,11 @@ import java.util.Hashtable;
 import java.util.List;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -36,6 +38,14 @@ public class DotDashIMEService extends InputMethodService implements
 	private static final int AUTO_CAP_SENTENCE_ENDED = 1;
 	private Integer autoCapState = AUTO_CAP_MIDSENTENCE;
 
+	private SharedPreferences prefs;
+	
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
+	}
+	
 	@Override
 	public void onInitializeInterface() {
 		// TODO Auto-generated method stub
@@ -170,7 +180,7 @@ public class DotDashIMEService extends InputMethodService implements
 			if (charInProgress.length() == 0) {
 				getCurrentInputConnection().commitText(" ", 1);
 				
-				if (autoCapState == AUTO_CAP_SENTENCE_ENDED) {
+				if (autoCapState == AUTO_CAP_SENTENCE_ENDED && prefs.getBoolean("autocap", false)) {
 					capsLockState = CAPS_LOCK_NEXT;
 					updateCapsLockKey(true);
 				}

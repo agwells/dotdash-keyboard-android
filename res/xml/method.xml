@@ -28,4 +28,5 @@
 	-->
 <input-method 
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:settingsActivity="net.iowaline.dotdash.SettingsActivity"
 />

@@ -19,6 +19,7 @@
                 android:name="android.view.im"
                 android:resource="@xml/method" />
         </service>
+        <activity android:label="@string/settings_title" android:name="SettingsActivity"></activity>
     </application>
 
 </manifest>
