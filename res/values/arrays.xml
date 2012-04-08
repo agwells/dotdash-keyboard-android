@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="newline_labels">
+        <item>.-.- only</item>
+        <item>.-.-.. only</item>
+        <item>.-.- or .-.-..</item>
+        <item>No newline character</item>
+    </string-array>
+    <string-array name="newline_values">
+        <item>.-.-</item>
+        <item>.-.-..</item>
+        <item>.-.-|.-.-..</item>
+        <item>X</item>
+    </string-array>
+
+</resources>

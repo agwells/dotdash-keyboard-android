@@ -5,12 +5,11 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.preference.PreferenceManager;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -18,7 +17,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 
 public class DotDashIMEService extends InputMethodService implements
-		KeyboardView.OnKeyboardActionListener {
+		KeyboardView.OnKeyboardActionListener, OnSharedPreferenceChangeListener {
 	private String TAG = "DotDashIMEService";
 	private DotDashKeyboardView inputView;
 	private DotDashKeyboard dotDashKeyboard;
@@ -39,11 +38,13 @@ public class DotDashIMEService extends InputMethodService implements
 	private Integer autoCapState = AUTO_CAP_MIDSENTENCE;
 
 	private SharedPreferences prefs;
+	public String[] newlineGroups;
 	
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		this.prefs.registerOnSharedPreferenceChangeListener(this);
 	}
 	
 	@Override
@@ -116,12 +117,7 @@ public class DotDashIMEService extends InputMethodService implements
 		morseMap.put("-..-.", "/");
 		morseMap.put("..--.-", "_");
 
-		// Specially handled
-		// The AA prosign, "space down one line"
-		morseMap.put(".-.-", "\n");
-		// morseMap.put(".-.-..", "\n");
-		// The AR prosign, "end of message"
-		// morseMap.put(".-.-.", "END");
+		updateNewlinePref();
 	}
 
 	@Override
@@ -180,7 +176,7 @@ public class DotDashIMEService extends InputMethodService implements
 			if (charInProgress.length() == 0) {
 				getCurrentInputConnection().commitText(" ", 1);
 				
-				if (autoCapState == AUTO_CAP_SENTENCE_ENDED && prefs.getBoolean("autocap", false)) {
+				if (autoCapState == AUTO_CAP_SENTENCE_ENDED && prefs.getBoolean(DotDashPrefs.AUTOCAP, false)) {
 					capsLockState = CAPS_LOCK_NEXT;
 					updateCapsLockKey(true);
 				}
@@ -351,7 +347,7 @@ public class DotDashIMEService extends InputMethodService implements
 
 	@Override
 	public void onStartInput(EditorInfo attribute, boolean restarting) {
-		if (attribute.initialCapsMode != 0) {
+		if (prefs.getBoolean(DotDashPrefs.AUTOCAP, false) && attribute.initialCapsMode != 0) {
 			capsLockState = CAPS_LOCK_NEXT;
 		}
 		super.onStartInput(attribute, restarting);
@@ -371,5 +367,49 @@ public class DotDashIMEService extends InputMethodService implements
 		this.inputView.closeCheatSheet();
 		super.onFinishInputView(finishingInput);
 		clearEverything();
+	}
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+			String key) {
+//		Log.d(TAG, "prefchange: "+key);
+		if (key.contentEquals(DotDashPrefs.NEWLINECODE)) {
+			updateNewlinePref();
+		}
+	}
+
+	/**
+	 * Updates the newline character stored in morseMap, based on
+	 * the user's current preferences.
+	 * 
+	 * Not sure how I'm going to support this when I switch the codes
+	 * to a selectable XML system...
+	 */
+	private void updateNewlinePref() {
+		// Remove the old ones
+		if (newlineGroups != null) {
+			for (String s : newlineGroups) {
+				morseMap.remove(s);
+			}
+		}
+		
+		// Add the new ones
+		String rawpref = this.prefs.getString(DotDashPrefs.NEWLINECODE, "what?");
+//		Log.d(TAG, "rawpref: "+rawpref);
+		if (rawpref.contentEquals(DotDashPrefs.NEWLINECODE_NONE)) {
+			newlineGroups = null;
+		} else {
+			newlineGroups = rawpref.split("\\|");
+//			Log.d(TAG, "nl: " + newlineGroups[0]);
+		}
+		
+		if (newlineGroups != null) {
+			for (String s : newlineGroups) {
+				morseMap.put(s, "\n");
+			}
+		}
+		if (inputView != null) {
+			inputView.updateNewlineCode();
+		}
 	}
 }

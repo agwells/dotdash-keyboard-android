@@ -6,5 +6,12 @@
         android:key="autocap"
         android:summary="@string/autocap_summary"
         android:title="@string/autocap" />
-
+	<ListPreference
+	    android:defaultValue=".-.-"
+	    android:key="newline"
+	    android:title="@string/newline"
+	    android:summary="@string/newline_summary"
+	    android:entries="@array/newline_labels"
+	    android:entryValues="@array/newline_values"
+	    />
 </PreferenceScreen>

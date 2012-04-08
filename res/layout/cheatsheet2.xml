@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <net.iowaline.dotdash.FixedSizeView xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/cheatsheettable" android:gravity="center">
+    style="@style/cheatsheettable"
+    android:gravity="center" >
 
     <TableRow style="@style/cheatsheettoprow" >
 
@@ -9,6 +10,7 @@
             android:text="Enter" />
 
         <TextView
+            android:id="@+id/newline_code"
             style="@style/code"
             android:text=". - . -" />
 

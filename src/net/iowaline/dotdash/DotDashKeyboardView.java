@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 public class DotDashKeyboardView extends KeyboardView {
 
@@ -36,6 +37,7 @@ public class DotDashKeyboardView extends KeyboardView {
 		if (this.cheatsheet2 == null) {
 			this.cheatsheet2 = this.service.getLayoutInflater().inflate(
 					R.layout.cheatsheet2, null);
+			updateNewlineCode();
 		}
 		if (this.cheatsheetDialog == null) {
 			this.cheatsheetDialog = new Dialog(this.service);
@@ -80,5 +82,22 @@ public class DotDashKeyboardView extends KeyboardView {
 		if (cheatsheetDialog != null) {
 			cheatsheetDialog.dismiss();
 		}
+	}
+	
+	
+	/**
+	 * Updates the newline code printed in the cheat sheet, based
+	 * on the user's current preference.
+	 */
+	public void updateNewlineCode() {
+		if (cheatsheet2 == null) {
+			return;
+		}
+		
+		String newCode = "disabled";
+		if (service.newlineGroups != null && service.newlineGroups.length > 0) {
+			newCode = service.newlineGroups[0].replaceAll("(.)", "$1 ").trim();
+		}
+		((TextView) cheatsheet2.findViewById(R.id.newline_code)).setText(newCode);
 	}
 }

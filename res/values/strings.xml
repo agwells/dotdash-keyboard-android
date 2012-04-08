@@ -11,5 +11,7 @@
     
     <string name="autocap">Auto-capitalize</string>
     <string name="autocap_summary">Automatically capitalize the first word in each sentence.</string>
+    <string name="newline">Carriage return</string>
+    <string name="newline_summary">Morse code group to use for carriage return</string>
 
 </resources>
