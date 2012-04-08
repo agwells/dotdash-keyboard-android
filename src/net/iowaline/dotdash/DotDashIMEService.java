@@ -292,11 +292,8 @@ public class DotDashIMEService extends InputMethodService implements
 				clearCharInProgress();
 				updateSpaceKey(true);
 				
-				CharSequence cs = getCurrentInputConnection().getTextBeforeCursor(1, 0);
-				if (cs != null && cs.length()==0) {
-					capsLockState = CAPS_LOCK_NEXT;
-					updateCapsLockKey(true);
-				} else if (capsLockState == CAPS_LOCK_NEXT) {
+				if (capsLockState == CAPS_LOCK_NEXT) {
+					// If you've hit delete and you were in caps_next state, then caps_off
 					capsLockState = CAPS_LOCK_OFF;
 					updateCapsLockKey(true);
 				}
@@ -393,7 +390,7 @@ public class DotDashIMEService extends InputMethodService implements
 			break;
 		}
 
-		if (refreshScreen && !capsLockKey.label.equals(oldLabel)) {
+		if (refreshScreen) {
 			inputView.invalidateKey(capsLockKeyIndex);
 		}
 	}
