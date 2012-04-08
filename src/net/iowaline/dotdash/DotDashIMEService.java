@@ -7,10 +7,13 @@ import android.content.Context;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 
 public class DotDashIMEService extends InputMethodService implements
 		KeyboardView.OnKeyboardActionListener {
@@ -28,6 +31,10 @@ public class DotDashIMEService extends InputMethodService implements
 	private static final int CAPS_LOCK_NEXT = 1;
 	private static final int CAPS_LOCK_ALL = 2;
 	private Integer capsLockState = CAPS_LOCK_OFF;
+	
+	private static final int AUTO_CAP_MIDSENTENCE = 0;
+	private static final int AUTO_CAP_SENTENCE_ENDED = 1;
+	private Integer autoCapState = AUTO_CAP_MIDSENTENCE;
 
 	@Override
 	public void onInitializeInterface() {
@@ -140,6 +147,7 @@ public class DotDashIMEService extends InputMethodService implements
 	public void onKey(int primaryCode, int[] keyCodes) {
 		// Log.d(TAG, "primaryCode: " + Integer.toString(primaryCode));
 		String curCharMatch = morseMap.get(charInProgress.toString());
+		boolean startAutoCap = false;
 
 		switch (primaryCode) {
 
@@ -161,6 +169,11 @@ public class DotDashIMEService extends InputMethodService implements
 		case KeyEvent.KEYCODE_SPACE:
 			if (charInProgress.length() == 0) {
 				getCurrentInputConnection().commitText(" ", 1);
+				
+				if (autoCapState == AUTO_CAP_SENTENCE_ENDED) {
+					capsLockState = CAPS_LOCK_NEXT;
+					updateCapsLockKey(true);
+				}
 			} else {
 				// Log.d(TAG, "Pressed space, look for " +
 				// charInProgress.toString());
@@ -185,6 +198,12 @@ public class DotDashIMEService extends InputMethodService implements
 						if (uppercase) {
 							curCharMatch = curCharMatch.toUpperCase();
 						}
+						
+						// TODO: When you move the morse code groups to XML, move this to XML too
+						if (curCharMatch == "?" || curCharMatch == "." || curCharMatch == "!") {
+							startAutoCap = true;
+						}
+						
 						// Log.d(TAG, "Char identified as " + curCharMatch);
 						getCurrentInputConnection().commitText(curCharMatch,
 								curCharMatch.length());
@@ -203,7 +222,12 @@ public class DotDashIMEService extends InputMethodService implements
 				sendDownUpKeyEvents(primaryCode);
 				clearCharInProgress();
 				updateSpaceKey(true);
-				if (capsLockState == CAPS_LOCK_NEXT) {
+				
+				CharSequence cs = getCurrentInputConnection().getTextBeforeCursor(1, 0);
+				if (cs != null && cs.length()==0) {
+					capsLockState = CAPS_LOCK_NEXT;
+					updateCapsLockKey(true);
+				} else if (capsLockState == CAPS_LOCK_NEXT) {
 					capsLockState = CAPS_LOCK_OFF;
 					updateCapsLockKey(true);
 				}
@@ -226,6 +250,12 @@ public class DotDashIMEService extends InputMethodService implements
 		}
 
 		updateSpaceKey(true);
+		
+		if (startAutoCap) {
+			autoCapState = AUTO_CAP_SENTENCE_ENDED;
+		} else {
+			autoCapState = AUTO_CAP_MIDSENTENCE;
+		}
 	}
 
 	private void clearCharInProgress() {
@@ -309,12 +339,20 @@ public class DotDashIMEService extends InputMethodService implements
 		}
 	}
 
+	@Override
+	public void onStartInput(EditorInfo attribute, boolean restarting) {
+		if (attribute.initialCapsMode != 0) {
+			capsLockState = CAPS_LOCK_NEXT;
+		}
+		super.onStartInput(attribute, restarting);
+	}
+	
 	public void onStartInputView(android.view.inputmethod.EditorInfo info,
 			boolean restarting) {
 //		Log.d(TAG, "onStartInputView");
 		super.onStartInputView(info, restarting);
 		inputView.invalidateKey(spaceKeyIndex);
-		inputView.invalidateKey(capsLockKeyIndex);
+		updateCapsLockKey(true);
 	};
 
 	@Override
