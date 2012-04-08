@@ -11,11 +11,10 @@ import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import net.iowaline.dotdash.R;
 
 public class DotDashIMEService extends InputMethodService implements
 		KeyboardView.OnKeyboardActionListener {
-	// private String TAG = "DotDashIMEService";
+	private String TAG = "DotDashIMEService";
 	private DotDashKeyboardView inputView;
 	private DotDashKeyboard dotDashKeyboard;
 	private Keyboard.Key spaceKey;
@@ -179,7 +178,7 @@ public class DotDashIMEService extends InputMethodService implements
 						if (capsLockState == CAPS_LOCK_NEXT) {
 							uppercase = true;
 							capsLockState = CAPS_LOCK_OFF;
-							updateCapsLockKey();
+							updateCapsLockKey(true);
 						} else if (capsLockState == CAPS_LOCK_ALL) {
 							uppercase = true;
 						}
@@ -203,10 +202,10 @@ public class DotDashIMEService extends InputMethodService implements
 			} else {
 				sendDownUpKeyEvents(primaryCode);
 				clearCharInProgress();
-				updateSpaceKey();
+				updateSpaceKey(true);
 				if (capsLockState == CAPS_LOCK_NEXT) {
 					capsLockState = CAPS_LOCK_OFF;
-					updateCapsLockKey();
+					updateCapsLockKey(true);
 				}
 			}
 			break;
@@ -222,11 +221,11 @@ public class DotDashIMEService extends InputMethodService implements
 			default:
 				capsLockState = CAPS_LOCK_OFF;
 			}
-			updateCapsLockKey();
+			updateCapsLockKey(true);
 			break;
 		}
 
-		updateSpaceKey();
+		updateSpaceKey(true);
 	}
 
 	private void clearCharInProgress() {
@@ -271,11 +270,11 @@ public class DotDashIMEService extends InputMethodService implements
 	public void clearEverything() {
 		clearCharInProgress();
 		capsLockState = CAPS_LOCK_OFF;
-		updateCapsLockKey();
-		updateSpaceKey();
+		updateCapsLockKey(false);
+		updateSpaceKey(false);
 	}
 
-	public void updateCapsLockKey() {
+	public void updateCapsLockKey(boolean refreshScreen) {
 
 		CharSequence oldLabel = capsLockKey.label;
 
@@ -295,23 +294,34 @@ public class DotDashIMEService extends InputMethodService implements
 			break;
 		}
 
-		if (!capsLockKey.label.equals(oldLabel)) {
+		if (refreshScreen && !capsLockKey.label.equals(oldLabel)) {
 			inputView.invalidateKey(capsLockKeyIndex);
 		}
 	}
 
-	public void updateSpaceKey() {
+	public void updateSpaceKey(boolean refreshScreen) {
 		if (!spaceKey.label.toString().equals(charInProgress.toString())) {
 			// Log.d(TAG, "!spaceKey.label.equals(charInProgress)");
 			spaceKey.label = charInProgress.toString();
-			inputView.invalidateKey(spaceKeyIndex);
+			if (refreshScreen) {
+				inputView.invalidateKey(spaceKeyIndex);
+			}
 		}
 	}
 
+	public void onStartInputView(android.view.inputmethod.EditorInfo info,
+			boolean restarting) {
+//		Log.d(TAG, "onStartInputView");
+		super.onStartInputView(info, restarting);
+		inputView.invalidateKey(spaceKeyIndex);
+		inputView.invalidateKey(capsLockKeyIndex);
+	};
+
 	@Override
 	public void onFinishInputView(boolean finishingInput) {
-		clearEverything();
+//		Log.d(TAG, "onFinishInputView");
 		this.inputView.closeCheatSheet();
 		super.onFinishInputView(finishingInput);
+		clearEverything();
 	}
 }
