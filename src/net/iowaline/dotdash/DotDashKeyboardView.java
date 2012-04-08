@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.inputmethodservice.KeyboardView;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -23,10 +24,37 @@ public class DotDashKeyboardView extends KeyboardView {
 
 	public DotDashKeyboardView(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		setEverythingUp();
 	}
 
 	public DotDashKeyboardView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
+		setEverythingUp();
+	}
+
+	private void setEverythingUp() {
+		setPreviewEnabled(false);
+		final GestureDetector gestureDetector = new GestureDetector(
+				new GestureDetector.SimpleOnGestureListener() {
+					@Override
+					public boolean onFling(MotionEvent e1, MotionEvent e2,
+							float velocityX, float velocityY) {
+
+						if (e2.getY() < 0) {
+			                // If they swipe up off the keyboard, launch the cheat sheet
+							showCheatSheet();
+						}
+	                	return false;
+					}
+				});
+		View.OnTouchListener gestureListener = new View.OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				return gestureDetector.onTouchEvent(event);
+			}
+		};
+		setOnTouchListener(gestureListener);
 	}
 	
 	public void createCheatSheet() {

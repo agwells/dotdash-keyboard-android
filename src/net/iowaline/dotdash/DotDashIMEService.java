@@ -146,27 +146,7 @@ public class DotDashIMEService extends InputMethodService implements
 				R.layout.input, null);
 		inputView.setOnKeyboardActionListener(this);
 		inputView.setKeyboard(dotDashKeyboard);
-		inputView.setPreviewEnabled(false);
 		inputView.setService(this);
-		final GestureDetector gestureDetector = new GestureDetector(
-				new GestureDetector.SimpleOnGestureListener() {
-					@Override
-					public boolean onFling(MotionEvent e1, MotionEvent e2,
-							float velocityX, float velocityY) {
-						if (e2.getY() < 0) {
-							inputView.showCheatSheet();
-						}
-						return false;
-					}
-				});
-		View.OnTouchListener gestureListener = new View.OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				return gestureDetector.onTouchEvent(event);
-			}
-		};
-		inputView.setOnTouchListener(gestureListener);
 		return inputView;
 	}
 
