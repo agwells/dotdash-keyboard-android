@@ -47,7 +47,7 @@
 		android:keyHeight="17%"
 	>
 		<Key
-			android:keyLabel="abc"
+			android:keyLabel="@string/caps_lock_off"
 			android:keyEdgeFlags="left"
 			android:codes="59"
 			android:isSticky="true"
@@ -58,7 +58,7 @@
 			android:keyWidth="50%"
 			/>
 		<Key
-			android:keyLabel="Del"
+			android:keyIcon="@drawable/sym_keyboard_delete"
 			android:keyEdgeFlags="right"
 			android:isRepeatable="true"
 			android:codes="67"
