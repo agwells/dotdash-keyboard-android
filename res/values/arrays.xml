@@ -2,8 +2,8 @@
 <resources>
 
     <string-array name="newline_labels">
-        <item>.-.- only</item>
-        <item>.-.-.. only</item>
+        <item>.-.-</item>
+        <item>.-.-..</item>
         <item>.-.- or .-.-..</item>
         <item>No newline character</item>
     </string-array>

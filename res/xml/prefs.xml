@@ -4,14 +4,16 @@
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="autocap"
+        android:persistent="true"
         android:summary="@string/autocap_summary"
         android:title="@string/autocap" />
-	<ListPreference
-	    android:defaultValue=".-.-"
-	    android:key="newline"
-	    android:title="@string/newline"
-	    android:summary="@string/newline_summary"
-	    android:entries="@array/newline_labels"
-	    android:entryValues="@array/newline_values"
-	    />
+
+    <org.pocketworkstation.pckeyboard.AutoSummaryListPreference
+        android:defaultValue=".-.-"
+        android:entries="@array/newline_labels"
+        android:entryValues="@array/newline_values"
+        android:key="newline"
+        android:persistent="true"
+        android:title="@string/newline" />
+
 </PreferenceScreen>
