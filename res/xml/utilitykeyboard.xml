@@ -16,10 +16,11 @@
 	</Row>
 
 	<Row android:keyWidth="12.5%" android:keyHeight="11%">
-		<Key android:keyLabel="h" android:codes="-20"
+		<Key android:keyLabel="&#x219e;" android:codes="-20"
 			android:keyEdgeFlags="left" />
-		<Key android:keyLabel="i" android:codes="-10" />
-		<Key android:keyLabel="e" android:codes="-21" />
+		<Key android:keyLabel="&#x2191;" android:codes="-10"
+			android:isRepeatable="true" />
+		<Key android:keyLabel="&#x21a0;" android:codes="-21" />
 		<Key android:keyLabel="[" android:codes="91" />
 		<Key android:keyLabel="]" android:codes="93" />
 		<Key android:keyLabel="{" android:codes="123" />
@@ -28,17 +29,21 @@
 			android:keyEdgeFlags="right" />
 	</Row>
 	<Row android:keyWidth="12.5%" android:keyHeight="11%">
-		<Key android:keyLabel="j" android:codes="-11"
-			android:keyEdgeFlags="left" />
-		<Key android:keyLabel="k" android:codes="-13" />
-		<Key android:keyLabel="l" android:codes="-12" />
+		<Key android:keyLabel="&#x2190;" android:codes="-11"
+			android:isRepeatable="true" android:keyEdgeFlags="left" />
+		<Key android:keyLabel="&#x2193;" android:codes="-13"
+			android:isRepeatable="true" />
+		<Key android:keyLabel="&#x2192;" android:codes="-12"
+			android:isRepeatable="true" />
 		<Key android:keyLabel="&lt;" android:codes="60" />
 		<Key android:keyLabel="&gt;" android:codes="62" />
 		<Key android:keyLabel="|" android:codes="124" />
-        <Key android:codes="32" android:keyIcon="@drawable/sym_keyboard_space" android:keyWidth="30%p" 
-                android:isRepeatable="true"/>
-		<Key android:keyIcon="@drawable/sym_keyboard_delete" android:codes="-30"
-			android:keyEdgeFlags="right" android:isRepeatable="true"/>
+		<Key android:codes="32" android:keyIcon="@drawable/sym_keyboard_space"
+			android:iconPreview="@drawable/sym_keyboard_space_invert"
+			android:isRepeatable="true" />
+		<Key android:keyIcon="@drawable/sym_keyboard_delete"
+			android:codes="-30" android:keyEdgeFlags="right"
+			android:isRepeatable="true" android:iconPreview="@drawable/sym_keyboard_delete_invert" />
 	</Row>
 
 </Keyboard>

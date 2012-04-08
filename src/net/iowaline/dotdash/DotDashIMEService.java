@@ -15,12 +15,15 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.ExtractedText;
+import android.view.inputmethod.ExtractedTextRequest;
 
 public class DotDashIMEService extends InputMethodService implements
 		KeyboardView.OnKeyboardActionListener, OnSharedPreferenceChangeListener {
 	private String TAG = "DotDashIMEService";
 	private DotDashKeyboardView inputView;
-	private DotDashKeyboard dotDashKeyboard;
+	public DotDashKeyboard dotDashKeyboard;
+	public Keyboard utilityKeyboard;
 	private Keyboard.Key spaceKey;
 	int spaceKeyIndex;
 	private Keyboard.Key capsLockKey;
@@ -39,9 +42,9 @@ public class DotDashIMEService extends InputMethodService implements
 
 	// Keycodes used in the utility keyboard
 	public static final int KEYCODE_UP = -10;
-	public static final int KEYCODE_DLEFT = -11;
-	public static final int KEYCODE_DRIGHT = -12;
-	public static final int KEYCODE_DDOWN = -13;
+	public static final int KEYCODE_LEFT = -11;
+	public static final int KEYCODE_RIGHT = -12;
+	public static final int KEYCODE_DOWN = -13;
 	public static final int KEYCODE_HOME = -20;
 	public static final int KEYCODE_END = -21;
 	public static final int KEYCODE_DEL = -30;
@@ -61,6 +64,7 @@ public class DotDashIMEService extends InputMethodService implements
 	public void onInitializeInterface() {
 		// TODO Auto-generated method stub
 		super.onInitializeInterface();
+		utilityKeyboard = new Keyboard(this, R.xml.utilitykeyboard);
 		dotDashKeyboard = new DotDashKeyboard(this, R.xml.dotdash);
 		spaceKey = dotDashKeyboard.getSpaceKey();
 		capsLockKey = dotDashKeyboard.getCapsLockKey();
@@ -147,10 +151,69 @@ public class DotDashIMEService extends InputMethodService implements
 		inputView.setOnKeyboardActionListener(this);
 		inputView.setKeyboard(dotDashKeyboard);
 		inputView.setService(this);
+		inputView.mEnableUtilityKeyboard = prefs.getBoolean(DotDashPrefs.ENABLEUTILKBD, false);
 		return inputView;
 	}
 
 	public void onKey(int primaryCode, int[] keyCodes) {
+		int kbd = inputView.whichKeyboard();
+		if (kbd == DotDashKeyboardView.KBD_DOTDASH) {
+			onKeyMorse(primaryCode, keyCodes);
+		} else if (kbd == DotDashKeyboardView.KBD_UTILITY) {
+			onKeyUtility(primaryCode, keyCodes);
+		}
+	}
+	
+	/**
+	 * Handle key input on the utility keyboard. Keys with
+	 * a positive keycode are meant to be passed through String.valueOf(),
+	 * while keys with negative keycodes must be specially processed
+	 * @param primaryCode
+	 * @param keyCodes
+	 */
+	public void onKeyUtility(int primaryCode, int[] keyCodes) {
+		if (primaryCode > 0) {
+            getCurrentInputConnection().commitText(
+                    String.valueOf((char) primaryCode), 1);
+		} else {
+			switch (primaryCode) {
+				case KEYCODE_UP:
+					sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_UP);
+					break;
+				case KEYCODE_LEFT:
+					sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_LEFT);
+					break;
+				case KEYCODE_RIGHT:
+					sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_RIGHT);
+					break;
+				case KEYCODE_DOWN:
+					sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_DOWN);
+					break;
+				case KEYCODE_DEL:
+					sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
+					break;
+				case KEYCODE_HOME:
+					getCurrentInputConnection().setSelection(0, 0);
+					break;
+				case KEYCODE_END:
+					ExtractedText et = getCurrentInputConnection().getExtractedText(new ExtractedTextRequest(), 0);
+					if (et != null) {
+						int length = et.text.length();
+						getCurrentInputConnection().setSelection(length, length);
+					}
+					break;
+			}
+				
+		}
+	}
+	
+	/**
+	 * Handle key input on the Morse Code keyboard. It has 5 keys
+	 * and each of them does something different.
+	 * @param primaryCode
+	 * @param keyCodes
+	 */
+	public void onKeyMorse(int primaryCode, int[] keyCodes) {
 		// Log.d(TAG, "primaryCode: " + Integer.toString(primaryCode));
 		String curCharMatch = morseMap.get(charInProgress.toString());
 		boolean startAutoCap = false;
@@ -375,6 +438,8 @@ public class DotDashIMEService extends InputMethodService implements
 //		Log.d(TAG, "prefchange: "+key);
 		if (key.contentEquals(DotDashPrefs.NEWLINECODE)) {
 			updateNewlinePref();
+		} else if (key.contentEquals(DotDashPrefs.ENABLEUTILKBD)) {
+			inputView.mEnableUtilityKeyboard = prefs.getBoolean(key, false);
 		}
 	}
 

@@ -2,6 +2,7 @@ package net.iowaline.dotdash;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
@@ -17,7 +18,14 @@ public class DotDashKeyboardView extends KeyboardView {
 	private Dialog cheatsheetDialog;
 	private View cheatsheet1;
 	private View cheatsheet2;
+	private int mSwipeThreshold;
+	
+	public static final int KBD_NONE = 0;
+	public static final int KBD_DOTDASH = 1;
+	public static final int KBD_UTILITY = 2;
 
+	public boolean mEnableUtilityKeyboard = false;
+	
 	public void setService(DotDashIMEService service) {
 		this.service = service;
 	}
@@ -33,18 +41,43 @@ public class DotDashKeyboardView extends KeyboardView {
 	}
 
 	private void setEverythingUp() {
+		mSwipeThreshold = (int) (300 * getResources().getDisplayMetrics().density);
 		setPreviewEnabled(false);
 		final GestureDetector gestureDetector = new GestureDetector(
 				new GestureDetector.SimpleOnGestureListener() {
+
+					/**
+					 * This function mostly copied from LatinKeyboardBaseView in
+					 * the Hacker's Keyboard project
+					 * http://code.google.com/p/hackerskeyboard/
+					 */
 					@Override
 					public boolean onFling(MotionEvent e1, MotionEvent e2,
 							float velocityX, float velocityY) {
 
 						if (e2.getY() < 0) {
-			                // If they swipe up off the keyboard, launch the cheat sheet
+							// If they swipe up off the keyboard, launch the
+							// cheat sheet
 							showCheatSheet();
+							return true;
+						} else if (mEnableUtilityKeyboard) {
+							final float absX = Math.abs(velocityX);
+							final float absY = Math.abs(velocityY);
+							float deltaX = e2.getX() - e1.getX();
+							int travelMin = Math.min((getWidth() / 3),
+									(getHeight() / 3));
+							
+							if (velocityX > mSwipeThreshold && absY < absX
+									&& deltaX > travelMin) {
+								toggleKeyboard();
+								return true;
+							} else if (velocityX < -mSwipeThreshold
+									&& absY < absX && deltaX < -travelMin) {
+								toggleKeyboard();
+								return true;
+							}
 						}
-	                	return false;
+						return false;
 					}
 				});
 		View.OnTouchListener gestureListener = new View.OnTouchListener() {
@@ -57,6 +90,16 @@ public class DotDashKeyboardView extends KeyboardView {
 		setOnTouchListener(gestureListener);
 	}
 	
+	private void toggleKeyboard() {
+		if (getKeyboard() == service.dotDashKeyboard) {
+			setKeyboard(service.utilityKeyboard);
+			setPreviewEnabled(true);
+		} else {
+			setKeyboard(service.dotDashKeyboard);
+			setPreviewEnabled(false);
+		}
+	}
+
 	public void createCheatSheet() {
 		if (this.cheatsheet1 == null) {
 			this.cheatsheet1 = this.service.getLayoutInflater().inflate(
@@ -111,21 +154,31 @@ public class DotDashKeyboardView extends KeyboardView {
 			cheatsheetDialog.dismiss();
 		}
 	}
-	
-	
+
 	/**
-	 * Updates the newline code printed in the cheat sheet, based
-	 * on the user's current preference.
+	 * Updates the newline code printed in the cheat sheet, based on the user's
+	 * current preference.
 	 */
 	public void updateNewlineCode() {
 		if (cheatsheet2 == null) {
 			return;
 		}
-		
+
 		String newCode = "disabled";
 		if (service.newlineGroups != null && service.newlineGroups.length > 0) {
 			newCode = service.newlineGroups[0].replaceAll("(.)", "$1 ").trim();
 		}
-		((TextView) cheatsheet2.findViewById(R.id.newline_code)).setText(newCode);
+		((TextView) cheatsheet2.findViewById(R.id.newline_code))
+				.setText(newCode);
+	}
+	
+	public int whichKeyboard() {
+		Keyboard kbd = getKeyboard();
+		if (kbd == service.dotDashKeyboard) {
+			return KBD_DOTDASH;
+		} else if (kbd == service.utilityKeyboard) {
+			return KBD_UTILITY;
+		}
+		else return KBD_NONE;
 	}
 }

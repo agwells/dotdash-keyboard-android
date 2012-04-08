@@ -15,5 +15,13 @@
         android:key="newline"
         android:persistent="true"
         android:title="@string/newline" />
+    
+    <CheckBoxPreference 
+        android:defaultValue="false"
+        android:key="enableutilkbd"
+        android:persistent="true"
+        android:summary="@string/enableutilkbd_summary"
+        android:title="@string/enableutilkbd"
+        />
 
 </PreferenceScreen>
