@@ -456,7 +456,8 @@ public class DotDashIMEService extends InputMethodService implements
 		}
 		
 		// Add the new ones
-		String rawpref = this.prefs.getString(DotDashPrefs.NEWLINECODE, "what?");
+		// TODO: When we make the morse codes into XML, this'll have to be updated
+		String rawpref = this.prefs.getString(DotDashPrefs.NEWLINECODE, ".-.-");
 //		Log.d(TAG, "rawpref: "+rawpref);
 		if (rawpref.contentEquals(DotDashPrefs.NEWLINECODE_NONE)) {
 			newlineGroups = null;
