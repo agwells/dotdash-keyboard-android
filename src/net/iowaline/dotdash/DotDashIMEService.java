@@ -10,9 +10,7 @@ import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.preference.PreferenceManager;
-import android.view.GestureDetector;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
@@ -216,7 +214,6 @@ public class DotDashIMEService extends InputMethodService implements
 	public void onKeyMorse(int primaryCode, int[] keyCodes) {
 		// Log.d(TAG, "primaryCode: " + Integer.toString(primaryCode));
 		String curCharMatch = morseMap.get(charInProgress.toString());
-		boolean startAutoCap = false;
 
 		switch (primaryCode) {
 
@@ -267,12 +264,7 @@ public class DotDashIMEService extends InputMethodService implements
 						if (uppercase) {
 							curCharMatch = curCharMatch.toUpperCase();
 						}
-						
-						// TODO: When you move the morse code groups to XML, move this to XML too
-						if (curCharMatch == "?" || curCharMatch == "." || curCharMatch == "!") {
-							startAutoCap = true;
-						}
-						
+
 						// Log.d(TAG, "Char identified as " + curCharMatch);
 						getCurrentInputConnection().commitText(curCharMatch,
 								curCharMatch.length());
@@ -316,12 +308,6 @@ public class DotDashIMEService extends InputMethodService implements
 		}
 
 		updateSpaceKey(true);
-		
-		if (startAutoCap) {
-			autoCapState = AUTO_CAP_SENTENCE_ENDED;
-		} else {
-			autoCapState = AUTO_CAP_MIDSENTENCE;
-		}
 	}
 
 	private void clearCharInProgress() {
@@ -372,8 +358,6 @@ public class DotDashIMEService extends InputMethodService implements
 
 	public void updateCapsLockKey(boolean refreshScreen) {
 
-		CharSequence oldLabel = capsLockKey.label;
-
 		Context context = this.getApplicationContext();
 		switch (capsLockState) {
 		case CAPS_LOCK_OFF:
@@ -407,23 +391,21 @@ public class DotDashIMEService extends InputMethodService implements
 
 	@Override
 	public void onStartInput(EditorInfo attribute, boolean restarting) {
-		if (prefs.getBoolean(DotDashPrefs.AUTOCAP, false) && attribute.initialCapsMode != 0) {
-			capsLockState = CAPS_LOCK_NEXT;
-		}
 		super.onStartInput(attribute, restarting);
 	}
-	
+
 	public void onStartInputView(android.view.inputmethod.EditorInfo info,
 			boolean restarting) {
-//		Log.d(TAG, "onStartInputView");
+		// Log.d(TAG, "onStartInputView");
 		super.onStartInputView(info, restarting);
 		inputView.invalidateKey(spaceKeyIndex);
+		updateAutoCap();
 		updateCapsLockKey(true);
 	};
 
 	@Override
 	public void onFinishInputView(boolean finishingInput) {
-//		Log.d(TAG, "onFinishInputView");
+		// Log.d(TAG, "onFinishInputView");
 		this.inputView.closeCheatSheet();
 		super.onFinishInputView(finishingInput);
 		clearEverything();
@@ -473,6 +455,49 @@ public class DotDashIMEService extends InputMethodService implements
 		}
 		if (inputView != null) {
 			inputView.updateNewlineCode();
+		}
+	}
+
+	/**
+	 * The cursor position (selection position) has changed
+	 */
+	@Override
+	public void onUpdateSelection(int oldSelStart, int oldSelEnd,
+			int newSelStart, int newSelEnd, int candidatesStart,
+			int candidatesEnd) {
+		super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd,
+				candidatesStart, candidatesEnd);
+		updateAutoCap();
+	}
+
+	/**
+	 * Update the shift state if autocap is turned on, based on current cursor
+	 * position (using InputConnection.getCursorCapsMode())
+	 */
+	public void updateAutoCap() {
+
+		// Autocap has no effect if Caps Lock is on
+		if (capsLockState == CAPS_LOCK_ALL) {
+			return;
+		}
+
+		// Don't bother with any of this is autocap is turned off
+		if (!prefs.getBoolean(DotDashPrefs.AUTOCAP, false)) {
+			return;
+		}
+
+		int origCapsLockState = capsLockState;
+		int newCapsLockState = CAPS_LOCK_OFF;
+
+		EditorInfo ei = getCurrentInputEditorInfo();
+		if (ei != null
+				&& ei.inputType != EditorInfo.TYPE_NULL
+				&& getCurrentInputConnection().getCursorCapsMode(ei.inputType) > 0) {
+			newCapsLockState = CAPS_LOCK_NEXT;
+		}
+		capsLockState = newCapsLockState;
+		if (capsLockState != origCapsLockState) {
+			updateCapsLockKey(true);
 		}
 	}
 }
