@@ -33,7 +33,7 @@ public class DotDashIMEService extends InputMethodService implements
 	private static final int CAPS_LOCK_NEXT = 1;
 	private static final int CAPS_LOCK_ALL = 2;
 	private Integer capsLockState = CAPS_LOCK_OFF;
-	
+
 	private static final int AUTO_CAP_MIDSENTENCE = 0;
 	private static final int AUTO_CAP_SENTENCE_ENDED = 1;
 	private Integer autoCapState = AUTO_CAP_MIDSENTENCE;
@@ -46,18 +46,18 @@ public class DotDashIMEService extends InputMethodService implements
 	public static final int KEYCODE_HOME = -20;
 	public static final int KEYCODE_END = -21;
 	public static final int KEYCODE_DEL = -30;
-	
+
 	private SharedPreferences prefs;
 	public String[] newlineGroups;
 	private int maxCodeLength;
-	
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		this.prefs.registerOnSharedPreferenceChangeListener(this);
 	}
-	
+
 	@Override
 	public void onInitializeInterface() {
 		// TODO Auto-generated method stub
@@ -129,7 +129,7 @@ public class DotDashIMEService extends InputMethodService implements
 		morseMap.put("..--.-", "_");
 
 		updateNewlinePref();
-		
+
 		// This variable is used in onKey to determine how many
 		// dots and dashes we need to keep track of (no need recording
 		// more than the total number that make up a valid code group)
@@ -149,7 +149,8 @@ public class DotDashIMEService extends InputMethodService implements
 		inputView.setOnKeyboardActionListener(this);
 		inputView.setKeyboard(dotDashKeyboard);
 		inputView.setService(this);
-		inputView.mEnableUtilityKeyboard = prefs.getBoolean(DotDashPrefs.ENABLEUTILKBD, false);
+		inputView.mEnableUtilityKeyboard = prefs.getBoolean(
+				DotDashPrefs.ENABLEUTILKBD, false);
 		return inputView;
 	}
 
@@ -161,53 +162,56 @@ public class DotDashIMEService extends InputMethodService implements
 			onKeyUtility(primaryCode, keyCodes);
 		}
 	}
-	
+
 	/**
-	 * Handle key input on the utility keyboard. Keys with
-	 * a positive keycode are meant to be passed through String.valueOf(),
-	 * while keys with negative keycodes must be specially processed
+	 * Handle key input on the utility keyboard. Keys with a positive keycode
+	 * are meant to be passed through String.valueOf(), while keys with negative
+	 * keycodes must be specially processed
+	 * 
 	 * @param primaryCode
 	 * @param keyCodes
 	 */
 	public void onKeyUtility(int primaryCode, int[] keyCodes) {
 		if (primaryCode > 0) {
-            getCurrentInputConnection().commitText(
-                    String.valueOf((char) primaryCode), 1);
+			getCurrentInputConnection().commitText(
+					String.valueOf((char) primaryCode), 1);
 		} else {
 			switch (primaryCode) {
-				case KEYCODE_UP:
-					sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_UP);
-					break;
-				case KEYCODE_LEFT:
-					sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_LEFT);
-					break;
-				case KEYCODE_RIGHT:
-					sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_RIGHT);
-					break;
-				case KEYCODE_DOWN:
-					sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_DOWN);
-					break;
-				case KEYCODE_DEL:
-					sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
-					break;
-				case KEYCODE_HOME:
-					getCurrentInputConnection().setSelection(0, 0);
-					break;
-				case KEYCODE_END:
-					ExtractedText et = getCurrentInputConnection().getExtractedText(new ExtractedTextRequest(), 0);
-					if (et != null) {
-						int length = et.text.length();
-						getCurrentInputConnection().setSelection(length, length);
-					}
-					break;
+			case KEYCODE_UP:
+				sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_UP);
+				break;
+			case KEYCODE_LEFT:
+				sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_LEFT);
+				break;
+			case KEYCODE_RIGHT:
+				sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_RIGHT);
+				break;
+			case KEYCODE_DOWN:
+				sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_DOWN);
+				break;
+			case KEYCODE_DEL:
+				sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
+				break;
+			case KEYCODE_HOME:
+				getCurrentInputConnection().setSelection(0, 0);
+				break;
+			case KEYCODE_END:
+				ExtractedText et = getCurrentInputConnection()
+						.getExtractedText(new ExtractedTextRequest(), 0);
+				if (et != null) {
+					int length = et.text.length();
+					getCurrentInputConnection().setSelection(length, length);
+				}
+				break;
 			}
-				
+
 		}
 	}
-	
+
 	/**
-	 * Handle key input on the Morse Code keyboard. It has 5 keys
-	 * and each of them does something different.
+	 * Handle key input on the Morse Code keyboard. It has 5 keys and each of
+	 * them does something different.
+	 * 
 	 * @param primaryCode
 	 * @param keyCodes
 	 */
@@ -235,8 +239,9 @@ public class DotDashIMEService extends InputMethodService implements
 		case KeyEvent.KEYCODE_SPACE:
 			if (charInProgress.length() == 0) {
 				getCurrentInputConnection().commitText(" ", 1);
-				
-				if (autoCapState == AUTO_CAP_SENTENCE_ENDED && prefs.getBoolean(DotDashPrefs.AUTOCAP, false)) {
+
+				if (autoCapState == AUTO_CAP_SENTENCE_ENDED
+						&& prefs.getBoolean(DotDashPrefs.AUTOCAP, false)) {
 					capsLockState = CAPS_LOCK_NEXT;
 					updateCapsLockKey(true);
 				}
@@ -283,9 +288,10 @@ public class DotDashIMEService extends InputMethodService implements
 				sendDownUpKeyEvents(primaryCode);
 				clearCharInProgress();
 				updateSpaceKey(true);
-				
+
 				if (capsLockState == CAPS_LOCK_NEXT) {
-					// If you've hit delete and you were in caps_next state, then caps_off
+					// If you've hit delete and you were in caps_next state,
+					// then caps_off
 					capsLockState = CAPS_LOCK_OFF;
 					updateCapsLockKey(true);
 				}
@@ -414,7 +420,7 @@ public class DotDashIMEService extends InputMethodService implements
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-//		Log.d(TAG, "prefchange: "+key);
+		// Log.d(TAG, "prefchange: "+key);
 		if (key.contentEquals(DotDashPrefs.NEWLINECODE)) {
 			updateNewlinePref();
 		} else if (key.contentEquals(DotDashPrefs.ENABLEUTILKBD)) {
@@ -423,11 +429,11 @@ public class DotDashIMEService extends InputMethodService implements
 	}
 
 	/**
-	 * Updates the newline character stored in morseMap, based on
-	 * the user's current preferences.
+	 * Updates the newline character stored in morseMap, based on the user's
+	 * current preferences.
 	 * 
-	 * Not sure how I'm going to support this when I switch the codes
-	 * to a selectable XML system...
+	 * Not sure how I'm going to support this when I switch the codes to a
+	 * selectable XML system...
 	 */
 	private void updateNewlinePref() {
 		// Remove the old ones
@@ -436,18 +442,19 @@ public class DotDashIMEService extends InputMethodService implements
 				morseMap.remove(s);
 			}
 		}
-		
+
 		// Add the new ones
-		// TODO: When we make the morse codes into XML, this'll have to be updated
+		// TODO: When we make the morse codes into XML, this'll have to be
+		// updated
 		String rawpref = this.prefs.getString(DotDashPrefs.NEWLINECODE, ".-.-");
-//		Log.d(TAG, "rawpref: "+rawpref);
+		// Log.d(TAG, "rawpref: "+rawpref);
 		if (rawpref.contentEquals(DotDashPrefs.NEWLINECODE_NONE)) {
 			newlineGroups = null;
 		} else {
 			newlineGroups = rawpref.split("\\|");
-//			Log.d(TAG, "nl: " + newlineGroups[0]);
+			// Log.d(TAG, "nl: " + newlineGroups[0]);
 		}
-		
+
 		if (newlineGroups != null) {
 			for (String s : newlineGroups) {
 				morseMap.put(s, "\n");

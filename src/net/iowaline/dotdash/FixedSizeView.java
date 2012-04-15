@@ -8,15 +8,15 @@ public class FixedSizeView extends TableLayout {
 
 	public int fixedWidth = 0;
 	public int fixedHeight = 0;
-	
+
 	public FixedSizeView(Context context) {
 		super(context);
 	}
-	
+
 	public FixedSizeView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
-	
+
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);

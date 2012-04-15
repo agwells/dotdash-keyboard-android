@@ -19,13 +19,13 @@ public class DotDashKeyboardView extends KeyboardView {
 	private View cheatsheet1;
 	private View cheatsheet2;
 	private int mSwipeThreshold;
-	
+
 	public static final int KBD_NONE = 0;
 	public static final int KBD_DOTDASH = 1;
 	public static final int KBD_UTILITY = 2;
 
 	public boolean mEnableUtilityKeyboard = false;
-	
+
 	public void setService(DotDashIMEService service) {
 		this.service = service;
 	}
@@ -66,7 +66,7 @@ public class DotDashKeyboardView extends KeyboardView {
 							float deltaX = e2.getX() - e1.getX();
 							int travelMin = Math.min((getWidth() / 3),
 									(getHeight() / 3));
-							
+
 							if (velocityX > mSwipeThreshold && absY < absX
 									&& deltaX > travelMin) {
 								toggleKeyboard();
@@ -89,7 +89,7 @@ public class DotDashKeyboardView extends KeyboardView {
 		};
 		setOnTouchListener(gestureListener);
 	}
-	
+
 	private void toggleKeyboard() {
 		if (getKeyboard() == service.dotDashKeyboard) {
 			setKeyboard(service.utilityKeyboard);
@@ -171,14 +171,14 @@ public class DotDashKeyboardView extends KeyboardView {
 		((TextView) cheatsheet2.findViewById(R.id.newline_code))
 				.setText(newCode);
 	}
-	
+
 	public int whichKeyboard() {
 		Keyboard kbd = getKeyboard();
 		if (kbd == service.dotDashKeyboard) {
 			return KBD_DOTDASH;
 		} else if (kbd == service.utilityKeyboard) {
 			return KBD_UTILITY;
-		}
-		else return KBD_NONE;
+		} else
+			return KBD_NONE;
 	}
 }
