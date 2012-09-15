@@ -55,7 +55,12 @@ public class DotDashKeyboardView extends KeyboardView {
 					public boolean onFling(MotionEvent e1, MotionEvent e2,
 							float velocityX, float velocityY) {
 
-						if (e2.getY() < 0) {
+						// If they swip up off the keyboard, launch the cheat
+						// sheet. This was originally a check for e2.getY() < 0,
+						// but that didn't work in ICS. Possibly ICS stops
+						// sending you events after you go past the edge of the
+						// window. So I changed it to 10 instead.
+						if (e2.getY() <= 10) {
 							// If they swipe up off the keyboard, launch the
 							// cheat sheet
 							showCheatSheet();
