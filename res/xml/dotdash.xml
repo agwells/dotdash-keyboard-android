@@ -30,12 +30,12 @@
 		android:keyHeight="20%"
 	>
 		<Key
-			android:keyLabel="."
+		    android:keyIcon="@drawable/sym_keyboard_dot"
 			android:keyEdgeFlags="left"
 			android:codes="0"
 			/>
 		<Key
-			android:keyLabel="-"
+			android:keyIcon="@drawable/sym_keyboard_dash"
 			android:keyEdgeFlags="right"
 			android:codes="1"
 			/>
