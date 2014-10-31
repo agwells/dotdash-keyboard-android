@@ -184,6 +184,14 @@
         <TextView
             style="@style/code_nopadding"
             android:text="- . . . . -" />
+
+        <TextView
+            style="@style/symbol"
+            android:text="#" />
+
+        <TextView
+            style="@style/code_nopadding"
+            android:text=". . . . - -" />
     </TableRow>
 
     <TableRow style="@style/cheatsheetbottomrow" >
