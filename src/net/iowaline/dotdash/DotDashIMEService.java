@@ -129,6 +129,7 @@ public class DotDashIMEService extends InputMethodService implements
 		morseMap.put("..--.-", "_");
 		// Aaron Wells' custom additions to Morse code
 		morseMap.put("....--", "#");
+		morseMap.put("-.-.-", "*");
 		morseMap.put("..-..", "[");
 		morseMap.put("..-..-", "]");
 		morseMap.put(".--.-", "{");
