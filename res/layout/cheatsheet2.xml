@@ -16,30 +16,11 @@
 
         <TextView
             style="@style/symbol"
-            android:text="(" />
+            android:text="&quot;" />
 
         <TextView
             style="@style/code_nopadding"
-            android:text="- . - - ." />
-    </TableRow>
-
-    <TableRow style="@style/cheatsheetrow" >
-
-        <TextView
-            style="@style/symbol"
-            android:text="&apos;" />
-
-        <TextView
-            style="@style/code"
-            android:text=". - - - - ." />
-
-        <TextView
-            style="@style/symbol"
-            android:text=")" />
-
-        <TextView
-            style="@style/code_nopadding"
-            android:text="- . - - . -" />
+            android:text=". - . . - ." />
     </TableRow>
 
     <TableRow style="@style/cheatsheetrow" >
@@ -111,11 +92,11 @@
 
         <TextView
             style="@style/symbol"
-            android:text="&quot;" />
+            android:text="&apos;" />
 
         <TextView
-            style="@style/code_nopadding"
-            android:text=". - . . - ." />
+            style="@style/code"
+            android:text=". - - - - ." />
     </TableRow>
 
     <TableRow style="@style/cheatsheetrow" >
@@ -149,11 +130,11 @@
 
         <TextView
             style="@style/symbol"
-            android:text="/" />
+            android:text="^" />
 
         <TextView
             style="@style/code_nopadding"
-            android:text="- . . - ." />
+            android:text=". - - . - - -" />
     </TableRow>
 
     <TableRow style="@style/cheatsheetrow" >
@@ -192,6 +173,131 @@
         <TextView
             style="@style/code_nopadding"
             android:text=". . . . - -" />
+    </TableRow>
+
+    <TableRow style="@style/cheatsheetrow" >
+
+        <TextView
+            style="@style/symbol"
+            android:text="(" />
+
+        <TextView
+            style="@style/code_nopadding"
+            android:text="- . - - ." />
+
+        <TextView
+            style="@style/symbol"
+            android:text=")" />
+
+        <TextView
+            style="@style/code_nopadding"
+            android:text="- . - - . -" />
+    </TableRow>
+
+    <TableRow style="@style/cheatsheetrow" >
+
+        <TextView
+            style="@style/symbol"
+            android:text="[" />
+
+        <TextView
+            style="@style/code_nopadding"
+            android:text=". . - . ." />
+
+        <TextView
+            style="@style/symbol"
+            android:text="]" />
+
+        <TextView
+            style="@style/code_nopadding"
+            android:text=". . - . . -" />
+    </TableRow>
+
+    <TableRow style="@style/cheatsheetrow" >
+
+        <TextView
+            style="@style/symbol"
+            android:text="{" />
+
+        <TextView
+            style="@style/code_nopadding"
+            android:text=". - - . -" />
+
+        <TextView
+            style="@style/symbol"
+            android:text="}" />
+
+        <TextView
+            style="@style/code_nopadding"
+            android:text=". - - . - -" />
+    </TableRow>
+
+    <TableRow style="@style/cheatsheetrow" >
+
+        <TextView
+            style="@style/symbol"
+            android:text="<" />
+
+        <TextView
+            style="@style/code_nopadding"
+            android:text="- - . - -" />
+
+        <TextView
+            style="@style/symbol"
+            android:text=">" />
+
+        <TextView
+            style="@style/code_nopadding"
+            android:text="- - . - - ." />
+    </TableRow>
+
+    <TableRow style="@style/cheatsheetrow" >
+
+        <TextView
+            style="@style/symbol"
+            android:text="~" />
+
+        <TextView
+            style="@style/code_nopadding"
+            android:text=". . . - - . -" />
+
+        <TextView
+            style="@style/symbol"
+            android:text="%" />
+
+        <TextView
+            style="@style/code_nopadding"
+            android:text=". - - . . - ." />
+    </TableRow>
+
+    <TableRow style="@style/cheatsheetrow" >
+
+        <TextView
+            style="@style/symbol"
+            android:text="/" />
+
+        <TextView
+            style="@style/code_nopadding"
+            android:text="- . . - ." />
+
+        <TextView
+            style="@style/symbol"
+            android:text="\" />
+
+        <TextView
+            style="@style/code_nopadding"
+            android:text=". - . . -" />
+    </TableRow>
+
+    <TableRow style="@style/cheatsheetrow" >
+
+        <TextView
+            style="@style/symbol"
+            android:text="|" />
+
+        <TextView
+            style="@style/code_nopadding"
+            android:text=". - - . . ." />
     </TableRow>
 
     <TableRow style="@style/cheatsheetbottomrow" >
