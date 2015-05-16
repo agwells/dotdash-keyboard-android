@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <net.iowaline.dotdash.FixedSizeView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/cheatsheettable"
     android:gravity="center" >
 
@@ -7,305 +8,368 @@
 
         <TextView
             style="@style/symbol"
-            android:text="Enter" />
+            android:text="@string/enter" />
 
         <TextView
             android:id="@+id/newline_code"
             style="@style/code"
-            android:text=". - . -" />
+            android:text=". - . -"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/symbol"
-            android:text="&quot;" />
+            android:text="&quot;"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code_nopadding"
-            android:text=". - . . - ." />
+            android:text=". - . . - ."
+            tools:ignore="HardcodedText" />
     </TableRow>
 
     <TableRow style="@style/cheatsheetrow" >
 
         <TextView
             style="@style/symbol"
-            android:text="\@" />
+            android:text="\@"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code"
-            android:text=". - - . - ." />
+            android:text=". - - . - ."
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/symbol"
-            android:text="." />
+            android:text="."
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code_nopadding"
-            android:text=". - . - . -" />
+            android:text=". - . - . -"
+            tools:ignore="HardcodedText" />
     </TableRow>
 
     <TableRow style="@style/cheatsheetrow" >
 
         <TextView
             style="@style/symbol"
-            android:text="&amp;" />
+            android:text="&amp;"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code"
-            android:text=". - . . ." />
+            android:text=". - . . ."
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/symbol"
-            android:text="+" />
+            android:text="+"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code_nopadding"
-            android:text=". - . - ." />
+            android:text=". - . - ."
+            tools:ignore="HardcodedText" />
     </TableRow>
 
     <TableRow style="@style/cheatsheetrow" >
 
         <TextView
             style="@style/symbol"
-            android:text=":" />
+            android:text=":"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code"
-            android:text="- - - . . ." />
+            android:text="- - - . . ."
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/symbol"
-            android:text="\?" />
+            android:text="\?"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code_nopadding"
-            android:text=". . - - . ." />
+            android:text=". . - - . ."
+            tools:ignore="HardcodedText" />
     </TableRow>
 
     <TableRow style="@style/cheatsheetrow" >
 
         <TextView
             style="@style/symbol"
-            android:text="," />
+            android:text=","
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code"
-            android:text="- - . . - -" />
+            android:text="- - . . - -"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/symbol"
-            android:text="&apos;" />
+            android:text="&apos;"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code"
-            android:text=". - - - - ." />
+            android:text=". - - - - ."
+            tools:ignore="HardcodedText" />
     </TableRow>
 
     <TableRow style="@style/cheatsheetrow" >
 
         <TextView
             style="@style/symbol"
-            android:text="$" />
+            android:text="$"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code"
-            android:text=". . . - . . -" />
+            android:text=". . . - . . -"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/symbol"
-            android:text=";" />
+            android:text=";"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code_nopadding"
-            android:text="- . - . - ." />
+            android:text="- . - . - ."
+            tools:ignore="HardcodedText" />
     </TableRow>
 
     <TableRow style="@style/cheatsheetrow" >
 
         <TextView
             style="@style/symbol"
-            android:text="=" />
+            android:text="="
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code"
-            android:text="- . . . -" />
+            android:text="- . . . -"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/symbol"
-            android:text="^" />
+            android:text="^"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code_nopadding"
-            android:text=". - - . - - -" />
+            android:text=". - - . - - -"
+            tools:ignore="HardcodedText" />
     </TableRow>
 
     <TableRow style="@style/cheatsheetrow" >
 
         <TextView
             style="@style/symbol"
-            android:text="!" />
+            android:text="!"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code"
-            android:text="- - - ." />
+            android:text="- - - ."
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/symbol"
-            android:text="_" />
+            android:text="_"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code_nopadding"
-            android:text=". . - - . -" />
+            android:text=". . - - . -"
+            tools:ignore="HardcodedText" />
     </TableRow>
 
     <TableRow style="@style/cheatsheetrow" >
 
         <TextView
             style="@style/symbol"
-            android:text="-" />
+            android:text="-"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code_nopadding"
-            android:text="- . . . . -" />
+            android:text="- . . . . -"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/symbol"
-            android:text="#" />
+            android:text="#"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code_nopadding"
-            android:text=". . . . - -" />
+            android:text=". . . . - -"
+            tools:ignore="HardcodedText" />
     </TableRow>
 
     <TableRow style="@style/cheatsheetrow" >
 
         <TextView
             style="@style/symbol"
-            android:text="(" />
+            android:text="("
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code_nopadding"
-            android:text="- . - - ." />
+            android:text="- . - - ."
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/symbol"
-            android:text=")" />
+            android:text=")"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code_nopadding"
-            android:text="- . - - . -" />
+            android:text="- . - - . -"
+            tools:ignore="HardcodedText" />
     </TableRow>
 
     <TableRow style="@style/cheatsheetrow" >
 
         <TextView
             style="@style/symbol"
-            android:text="[" />
+            android:text="["
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code_nopadding"
-            android:text=". . - . ." />
+            android:text=". . - . ."
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/symbol"
-            android:text="]" />
+            android:text="]"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code_nopadding"
-            android:text=". . - . . -" />
+            android:text=". . - . . -"
+            tools:ignore="HardcodedText" />
     </TableRow>
 
     <TableRow style="@style/cheatsheetrow" >
 
         <TextView
             style="@style/symbol"
-            android:text="{" />
+            android:text="{"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code_nopadding"
-            android:text=". - - . -" />
+            android:text=". - - . -"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/symbol"
-            android:text="}" />
+            android:text="}"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code_nopadding"
-            android:text=". - - . - -" />
+            android:text=". - - . - -"
+            tools:ignore="HardcodedText" />
     </TableRow>
 
     <TableRow style="@style/cheatsheetrow" >
 
         <TextView
             style="@style/symbol"
-            android:text="&lt;" />
+            android:text="&lt;"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code_nopadding"
-            android:text="- - . - -" />
+            android:text="- - . - -"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/symbol"
-            android:text=">" />
+            android:text=">"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code_nopadding"
-            android:text="- - . - - ." />
+            android:text="- - . - - ."
+            tools:ignore="HardcodedText" />
     </TableRow>
 
     <TableRow style="@style/cheatsheetrow" >
 
         <TextView
             style="@style/symbol"
-            android:text="~" />
+            android:text="~"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code_nopadding"
-            android:text=". . . - - . -" />
+            android:text=". . . - - . -"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/symbol"
-            android:text="%" />
+            android:text="%"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code_nopadding"
-            android:text=". - - . . - ." />
+            android:text=". - - . . - ."
+            tools:ignore="HardcodedText" />
     </TableRow>
 
     <TableRow style="@style/cheatsheetrow" >
 
         <TextView
             style="@style/symbol"
-            android:text="/" />
+            android:text="/"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code_nopadding"
-            android:text="- . . - ." />
+            android:text="- . . - ."
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/symbol"
-            android:text="\\" />
+            android:text="\\"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code_nopadding"
-            android:text=". - . . -" />
+            android:text=". - . . -"
+            tools:ignore="HardcodedText" />
     </TableRow>
 
     <TableRow style="@style/cheatsheetrow" >
 
         <TextView
             style="@style/symbol"
-            android:text="|" />
+            android:text="|"
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/code_nopadding"
-            android:text=". - - . . ." />
+            android:text=". - - . . ."
+            tools:ignore="HardcodedText" />
 
         <TextView
             style="@style/symbol"
-            android:text="*" />
+            android:text="*"
+            tools:ignore="HardcodedText,TooManyViews" />
 
         <TextView
             style="@style/code_nopadding"
-            android:text="- . - . -" />
+            android:text="- . - . -"
+            tools:ignore="HardcodedText" />
     </TableRow>
 
     <TableRow style="@style/cheatsheetbottomrow" >

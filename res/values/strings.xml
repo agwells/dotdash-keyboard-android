@@ -15,4 +15,5 @@
     <string name="newline_summary">Morse code group to use for carriage return</string>
 	<string name="enableutilkbd">Enable utility keyboard (experimental)</string>
 	<string name="enableutilkbd_summary">Enable the utility keyboard. Swipe left or right to access it. It may still be a little buggy.</string>
+	<string name="enter">Enter</string>
 </resources>

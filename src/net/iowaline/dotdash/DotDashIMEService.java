@@ -2,7 +2,8 @@ package net.iowaline.dotdash;
 
 import java.util.Hashtable;
 import java.util.List;
-
+import java.util.Locale;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -17,8 +18,8 @@ import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 
 public class DotDashIMEService extends InputMethodService implements
-		KeyboardView.OnKeyboardActionListener, OnSharedPreferenceChangeListener {
-	private String TAG = "DotDashIMEService";
+	KeyboardView.OnKeyboardActionListener, OnSharedPreferenceChangeListener {
+//	private String TAG = "DotDashIMEService";
 	private DotDashKeyboardView inputView;
 	public DotDashKeyboard dotDashKeyboard;
 	public Keyboard utilityKeyboard;
@@ -156,6 +157,7 @@ public class DotDashIMEService extends InputMethodService implements
 		charInProgress = new StringBuilder(maxCodeLength);
 	}
 
+	@SuppressLint("InflateParams")
 	@Override
 	public View onCreateInputView() {
 		inputView = (DotDashKeyboardView) getLayoutInflater().inflate(
@@ -281,7 +283,8 @@ public class DotDashIMEService extends InputMethodService implements
 							uppercase = true;
 						}
 						if (uppercase) {
-							curCharMatch = curCharMatch.toUpperCase();
+							// Since we only support the Latin alphabet, I may as well use Locale.US
+							curCharMatch = curCharMatch.toUpperCase(Locale.US);
 						}
 
 						// Log.d(TAG, "Char identified as " + curCharMatch);
