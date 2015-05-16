@@ -126,9 +126,6 @@ public class DotDashKeyboardView extends KeyboardView {
 			cheatsheet1.setOnTouchListener(new OnTouchListener() {
 				@Override
 				public boolean onTouch(View v, MotionEvent event) {
-					FixedSizeView fsv = (FixedSizeView) cheatsheet2;
-					fsv.fixedHeight = cheatsheet1.getMeasuredHeight();
-					fsv.fixedWidth = cheatsheet1.getMeasuredWidth();
 					cheatsheetDialog.setContentView(cheatsheet2);
 					return true;
 				}
