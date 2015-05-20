@@ -2,6 +2,10 @@ DotDash Keyboard
 
 The world's most popular open source Morse code keyboard for Android! (probably)
 
+DotDash Keyboard is also available in:
+- Google Play: https://play.google.com/store/apps/details?id=net.iowaline.dotdash&hl=en
+- F-Droid: https://f-droid.org/repository/browse/?fdfilter=dotdash&fdid=net.iowaline.dotdash
+
 Are you looking for an on-screen keyboard that will work with your phone's small screen and slow CPU?
 Do you know or are you willing to learn Morse code? If you answered "yes" to both of these questions,
 then this may be the keyboard for you!
