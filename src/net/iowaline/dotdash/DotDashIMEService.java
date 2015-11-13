@@ -400,10 +400,10 @@ public class DotDashIMEService extends InputMethodService implements
 		if (refreshScreen) {
 
 			// Wrapping this in a try/catch block to avoid crashes in Android
-			// 2.1 and earlier
+			// 2.1 and earlier, and inexplicable NullPointerExceptions
 			try {
 				inputView.invalidateKey(capsLockKeyIndex);
-			} catch (IllegalArgumentException iae) {
+			} catch (Exception e) {
 				// It doesn't matter if the operation failed, so just ignore
 				// this
 			}
