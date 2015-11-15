@@ -98,10 +98,11 @@ public class DotDashKeyboardView extends KeyboardView {
 	private void toggleKeyboard() {
 		if (getKeyboard() == service.dotDashKeyboard) {
 			setKeyboard(service.utilityKeyboard);
-			setPreviewEnabled(true);
+			// TODO: Make this work. I think it's a layout issue...
+//			setPreviewEnabled(true);
 		} else {
 			setKeyboard(service.dotDashKeyboard);
-			setPreviewEnabled(false);
+//			setPreviewEnabled(false);
 		}
 	}
 
