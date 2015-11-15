@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
+import android.view.inputmethod.InputConnection;
 
 public class DotDashIMEService extends InputMethodService implements
 	KeyboardView.OnKeyboardActionListener, OnSharedPreferenceChangeListener {
@@ -288,8 +289,11 @@ public class DotDashIMEService extends InputMethodService implements
 						}
 
 						// Log.d(TAG, "Char identified as " + curCharMatch);
-						getCurrentInputConnection().commitText(curCharMatch,
-								curCharMatch.length());
+						InputConnection ic = getCurrentInputConnection();
+						if (ic != null) {
+							ic.commitText(curCharMatch, curCharMatch.length());
+						}
+								
 					}
 				}
 			}
