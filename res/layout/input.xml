@@ -1,24 +1,9 @@
 <net.iowaline.dotdash.DotDashKeyboardView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/keyboard"
-        android:layout_alignParentBottom="true"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/keyboard_background_holo"
-        android:keyBackground="@drawable/btn_keyboard_key_klp"
-        android:keyTextColor="@color/key_text_color_holo"
-    />
-
-<!--         android:theme="@style/dotdash_ics" -->
-
-<!--         <item name="functionalKeyBackground">@drawable/btn_keyboard_key_functional_ics</item> -->
-<!--         <item name="spacebarBackground">@drawable/btn_keyboard_spacebar_ics</item> -->
-<!--         <item name="keyTextColor">@color/key_text_color_holo</item> -->
-<!--         <item name="keyTextInactivatedColor">@color/key_text_inactivated_color_holo</item> -->
-<!--         <item name="functionalTextColor">@color/key_text_color_holo</item> -->
-<!--         <item name="keyHintLetterColor">@color/key_hint_letter_color_holo</item> -->
-<!--         <item name="keyHintLabelColor">@color/key_hint_label_color_holo</item> -->
-<!--         <item name="keyShiftedLetterHintInactivatedColor">@color/key_shifted_letter_hint_inactivated_color_holo</item> -->
-<!--         <item name="keyShiftedLetterHintActivatedColor">@color/key_shifted_letter_hint_activated_color_holo</item> -->
-<!--         <item name="keyPreviewTextColor">@color/key_text_color_holo</item> -->
-        
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/keyboard"
+    android:layout_alignParentBottom="true"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/keyboard_background_holo"
+    android:keyBackground="@drawable/btn_keyboard_key_klp"
+    android:keyTextColor="@color/key_text_color_holo" />

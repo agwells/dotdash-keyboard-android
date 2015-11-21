@@ -45,21 +45,21 @@
         <item name="android:background">@drawable/keyboard_background_holo</item>
         <item name="android:keyBackground">@drawable/btn_keyboard_key_ics</item>
         <item name="android:keyTextColor">@color/key_text_color_holo</item>
-        <item name="android:keyTextSize">@fraction/config_key_letter_ratio_holo</item>
-        <item name="android:labelTextSize">@fraction/config_key_label_ratio_holo</item>
+<!--         <item name="android:keyTextSize">@fraction/config_key_letter_ratio_holo</item>
+        <item name="android:labelTextSize">@fraction/config_key_label_ratio_holo</item> -->
     </style>
     <style name="dotdash_lxx_light">
         <item name="android:background">@drawable/keyboard_background_lxx_light</item>
         <item name="android:keyBackground">@drawable/btn_keyboard_key_lxx_light</item>
         <item name="android:keyTextColor">@color/key_text_color_lxx_light</item>
-        <item name="android:keyTextSize">@fraction/config_key_letter_ratio_holo</item>
-        <item name="android:labelTextSize">@fraction/config_key_label_ratio_holo</item>
+<!--         <item name="android:keyTextSize">@fraction/config_key_letter_ratio_holo</item>
+        <item name="android:labelTextSize">@fraction/config_key_label_ratio_holo</item> -->
     </style>
     <style name="dotdash_klp">
         <item name="android:background">@drawable/keyboard_background_holo</item>
         <item name="android:keyBackground">@drawable/btn_keyboard_key_klp</item>
         <item name="android:keyTextColor">@color/key_text_color_holo</item>
-        <item name="android:keyTextSize">@fraction/config_key_letter_ratio_holo</item>
-        <item name="android:labelTextSize">@fraction/config_key_label_ratio_holo</item>
+<!--         <item name="android:keyTextSize">@fraction/config_key_letter_ratio_holo</item>
+        <item name="android:labelTextSize">@fraction/config_key_label_ratio_holo</item> -->
     </style>
 </resources>
