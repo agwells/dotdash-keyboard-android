@@ -5,5 +5,5 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/keyboard_background_holo"
-    android:keyBackground="@drawable/btn_keyboard_key_klp"
+    android:keyBackground="@drawable/dotdash_key"
     android:keyTextColor="@color/key_text_color_holo" />
