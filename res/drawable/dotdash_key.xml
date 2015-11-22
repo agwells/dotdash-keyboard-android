@@ -17,7 +17,7 @@
         android:state_checkable="true"
         android:state_checked="false"
         android:state_pressed="true"
-        android:drawable="@drawable/btn_keyboard_key_pressed_off_klp_dark" />
+        android:drawable="@drawable/dotdash_shift_off_pressed" />
     <item
         android:state_checkable="true"
         android:state_checked="true"
@@ -31,6 +31,6 @@
     <!-- Normal keys. -->
     <item
         android:state_pressed="true"
-        android:drawable="@drawable/btn_keyboard_key_pressed_klp_dark" />
+        android:drawable="@drawable/btn_keyboard_key_pressed_klp_light" />
     <item android:drawable="@drawable/btn_keyboard_key_normal_holo_light" />
 </selector>
