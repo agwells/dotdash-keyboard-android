@@ -6,4 +6,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/keyboard_background_holo"
     android:keyBackground="@drawable/dotdash_key"
-    android:keyTextColor="@color/key_text_color_holo" />
+    android:keyTextColor="@color/key_text_color_holo"
+    android:keyTextSize="18sp"
+    android:labelTextSize="22sp"
+/>
