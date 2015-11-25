@@ -174,7 +174,7 @@ public class DotDashIMEService extends InputMethodService implements
 	public void onKey(int primaryCode, int[] keyCodes) {
 		int kbd = inputView.whichKeyboard();
 		if (kbd == DotDashKeyboardView.KBD_DOTDASH) {
-			onKeyMorse(primaryCode, keyCodes);
+//			onKeyMorse(primaryCode, keyCodes);
 		} else if (kbd == DotDashKeyboardView.KBD_UTILITY) {
 			onKeyUtility(primaryCode, keyCodes);
 		}
@@ -330,7 +330,7 @@ public class DotDashIMEService extends InputMethodService implements
 			default:
 				capsLockState = CAPS_LOCK_OFF;
 			}
-			updateCapsLockKey(true);
+			updateCapsLockKey(false);
 			break;
 		}
 
@@ -341,9 +341,11 @@ public class DotDashIMEService extends InputMethodService implements
 		charInProgress.setLength(0);
 	}
 
-	public void onPress(int arg0) {
-		// TODO Auto-generated method stub
-
+	public void onPress(int primaryCode) {
+		int kbd = inputView.whichKeyboard();
+		if (kbd == DotDashKeyboardView.KBD_DOTDASH) {
+			onKeyMorse(primaryCode, new int [0]);
+		}
 	}
 
 	public void onRelease(int arg0) {
@@ -429,6 +431,8 @@ public class DotDashIMEService extends InputMethodService implements
 				}
 			}
 		}
+		
+		dotDashKeyboard.getModifierKeys();
 	}
 
 	@Override

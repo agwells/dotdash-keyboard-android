@@ -1,10 +1,14 @@
 package net.iowaline.dotdash;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,11 +18,15 @@ import android.widget.TextView;
 
 public class DotDashKeyboardView extends KeyboardView {
 
+	private String TAG = this.getClass().getSimpleName();
 	private DotDashIMEService service;
 	private Dialog cheatsheetDialog;
 	private View cheatsheet1;
 	private View cheatsheet2;
 	private int mSwipeThreshold;
+	private GestureDetector gestureDetector;
+	
+	private Set<Keyboard.Key> pressedKeys = new HashSet<Keyboard.Key>();
 
 	public static final int KBD_NONE = 0;
 	public static final int KBD_DOTDASH = 1;
@@ -43,7 +51,7 @@ public class DotDashKeyboardView extends KeyboardView {
 	private void setEverythingUp() {
 		mSwipeThreshold = (int) (300 * getResources().getDisplayMetrics().density);
 		setPreviewEnabled(false);
-		final GestureDetector gestureDetector = new GestureDetector(
+		gestureDetector = new GestureDetector(
 				new GestureDetector.SimpleOnGestureListener() {
 
 					/**
@@ -85,14 +93,14 @@ public class DotDashKeyboardView extends KeyboardView {
 						return false;
 					}
 				});
-		View.OnTouchListener gestureListener = new View.OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				return gestureDetector.onTouchEvent(event);
-			}
-		};
-		setOnTouchListener(gestureListener);
+//		View.OnTouchListener gestureListener = new View.OnTouchListener() {
+//
+//			@Override
+//			public boolean onTouch(View v, MotionEvent event) {
+//				return gestureDetector.onTouchEvent(event);
+//			}
+//		};
+//		setOnTouchListener(gestureListener);
 	}
 
 	private void toggleKeyboard() {
@@ -183,5 +191,103 @@ public class DotDashKeyboardView extends KeyboardView {
 			return KBD_UTILITY;
 		} else
 			return KBD_NONE;
+	}
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent me) {
+		Log.d(TAG, "onTouchEvent");
+
+		// TODO: Unfortunately, since I send the character when you first press
+		// the key, all the keys you press while swiping still count as getting
+		// pressed.
+		//
+		// Not sure what I could do about that... maybe a more sensitive 
+		// swipe detector?
+		if (gestureDetector.onTouchEvent(me)) {
+			for(Keyboard.Key k : pressedKeys) {
+				k.onReleased(false);
+			}
+			invalidateAllKeys();
+			pressedKeys.clear();
+			return true;
+		}
+		
+		int actionmasked = me.getActionMasked();
+		int actionindex = me.getActionIndex();
+
+		Set<Keyboard.Key> curPressedKeys = new HashSet<Keyboard.Key>();
+//		curPressedKeys.addAll(pressedKeys);
+		
+		for (int i=0; i < me.getPointerCount(); i++) {
+			
+			// Find out which key the pointer is on
+			int x = (int) me.getX(i);
+			int y = (int) me.getY(i);
+			if (y < 0) {
+				continue;
+			}
+			int[] keys = service.dotDashKeyboard.getNearestKeys(x, y);
+			Keyboard.Key touchedKey = null;
+			for (int k : keys) {
+				Keyboard.Key key = service.dotDashKeyboard.getKeys().get(k);
+				// TODO: This continues to detect it even after you've moved off the keyboard. :-P
+				if (key.isInside(x, y)) {
+					touchedKey = key;
+				}
+			}
+			
+			if (touchedKey != null) {
+				if (i == actionindex) {
+					switch (actionmasked) {
+						case MotionEvent.ACTION_DOWN:
+						case MotionEvent.ACTION_MOVE:
+							curPressedKeys.add(touchedKey);
+							break;
+						case MotionEvent.ACTION_UP:
+						case MotionEvent.ACTION_CANCEL:
+							curPressedKeys.remove(touchedKey);
+							break;
+					}
+				} else {
+					// Since this pointer isn't the one doing the "action"
+					// we can probably assume it's "down"
+					curPressedKeys.add(touchedKey);
+				}
+			}
+		}
+		
+		// Now that we know which keys have fingers on 'em this time,
+		// let's check to see how that has changed from last time.
+		// TODO: Repeatable keys
+		
+		// Keys that are in curPressedKeys but not in pressedKeys
+		// are newly pressed.
+		Set<Keyboard.Key> newlyPressed = new HashSet<Keyboard.Key>(curPressedKeys);
+		newlyPressed.removeAll(pressedKeys);
+		for (Keyboard.Key k : newlyPressed) {
+			k.onPressed();
+			service.onPress(k.codes[0]);
+			invalidateKey(service.dotDashKeyboard.getKeys().indexOf(k));
+		}
+		
+		// Keys that are in pressedKeys but not curPressedKeys
+		// are newly released.
+		Set<Keyboard.Key> newlyReleased = new HashSet<Keyboard.Key>(pressedKeys);
+		newlyReleased.removeAll(curPressedKeys);
+		for (Keyboard.Key k : newlyReleased) {
+			k.onReleased(false);
+			service.onKey(k.codes[0], k.codes);
+			service.onRelease(k.codes[0]);
+			service.updateCapsLockKey(false);
+			invalidateKey(service.dotDashKeyboard.getKeys().indexOf(k));
+		}
+		
+		pressedKeys = curPressedKeys;
+
+//		for (Keyboard.Key k : service.dotDashKeyboard.getKeys()) {
+//			Log.d(TAG, "Key " + String.valueOf(k.codes[0]) + " " + (k.pressed ? "down" : "up"));
+//		}
+
+		return true;
 	}
 }
