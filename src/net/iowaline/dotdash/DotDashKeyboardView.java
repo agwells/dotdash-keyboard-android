@@ -10,6 +10,7 @@ import android.inputmethodservice.KeyboardView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -211,21 +212,21 @@ public class DotDashKeyboardView extends KeyboardView {
 			pressedKeys.clear();
 			return true;
 		}
-		
+
+		// Let KeyboardView handle the utility keyboard. 
+		if (whichKeyboard() == DotDashKeyboardView.KBD_UTILITY) {
+			return super.onTouchEvent(me);
+		}
+
 		int actionmasked = me.getActionMasked();
 		int actionindex = me.getActionIndex();
-
 		Set<Keyboard.Key> curPressedKeys = new HashSet<Keyboard.Key>();
-//		curPressedKeys.addAll(pressedKeys);
 		
 		for (int i=0; i < me.getPointerCount(); i++) {
 			
 			// Find out which key the pointer is on
 			int x = (int) me.getX(i);
 			int y = (int) me.getY(i);
-			if (y < 0) {
-				continue;
-			}
 			int[] keys = service.dotDashKeyboard.getNearestKeys(x, y);
 			Keyboard.Key touchedKey = null;
 			for (int k : keys) {
@@ -238,6 +239,18 @@ public class DotDashKeyboardView extends KeyboardView {
 			
 			if (touchedKey != null) {
 				if (i == actionindex) {
+					
+					
+					// TODO: Let the standard keyboard handle touch events for
+					// the delete key, until I can get repeatable keys
+					// working on my own.
+					//
+					// Problem with this is that on a multi-touch, it tends
+					// to leave the del key looking pressed.
+					if (touchedKey.codes[0] == KeyEvent.KEYCODE_DEL) {
+						return super.onTouchEvent(me);
+					}
+					
 					switch (actionmasked) {
 						case MotionEvent.ACTION_DOWN:
 						case MotionEvent.ACTION_MOVE:
