@@ -343,7 +343,7 @@ public class DotDashIMEService extends InputMethodService implements
 
 	public void onPress(int primaryCode) {
 		int kbd = inputView.whichKeyboard();
-		if (kbd == DotDashKeyboardView.KBD_DOTDASH) {
+		if (kbd == DotDashKeyboardView.KBD_DOTDASH && primaryCode != KeyEvent.KEYCODE_DEL) {
 			onKeyMorse(primaryCode, new int [0]);
 		}
 	}

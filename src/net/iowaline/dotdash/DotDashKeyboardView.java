@@ -264,7 +264,9 @@ public class DotDashKeyboardView extends KeyboardView {
 				} else {
 					// Since this pointer isn't the one doing the "action"
 					// we can probably assume it's "down"
-					curPressedKeys.add(touchedKey);
+					if (touchedKey.codes[0] != KeyEvent.KEYCODE_DEL) {
+						curPressedKeys.add(touchedKey);
+					}
 				}
 			}
 		}
