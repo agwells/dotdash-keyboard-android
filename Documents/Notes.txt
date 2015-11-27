@@ -1,0 +1,20 @@
+Key graphics are drawn from the stock Android open-source keyboard.
+
+Unpressed key background: btn_keyboard_key_normal_holo_light
+Pressed key background:   btn_keyboard_key_pressed_klp_light
+Shift "off" indicator: btn_keyboard_key_normal_on_ics_dark
+Shift "off" indicator: btn_keyboard_key_pressed_off_klp_dark
+Whole keyboard background: keyboard_background_holo
+
+Many of these stock images are semi-transparent, and contain a translucent glow or shadow around the on/off indicator. To pull that translucent outline from the original image and copy it onta  enw one, I used the Gimp "set color to alpha" tool. The general technique is this:
+
+1. Open the original image with the shift indicator in Gimp.
+2. In a layer below it, create a layer filled with the color from keyboard_background_holo
+3. Merge the two layers together (so the combined image is no longer transparent)
+4. Select and cut out the central, opaque part of the indicator.
+5. Now, you'll have the key itself, which is mostly a solid background color, and a bit of it will have the translucent glow/shadow on it.
+6. Use the color picker to pick the color of the solid background of the key.
+7. Now use the Select By Color tool to delete all of the solid colored part of the key
+8. Now you have an image of just the background glow, and you have the key's solid color picked as your foreground color.
+9. Do "Colors -> Color to Alpha...". This will turn the opaque background glow into a transparency, essentially pulling out the tint that had been placed over the original background color of the key.
+10. Now you can paste this transparent glow onto a new background color and it will tint it correctly.
