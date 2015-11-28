@@ -167,9 +167,9 @@ public class DotDashKeyboardView extends KeyboardView {
 			return;
 		}
 
-		String newCode = "disabled";
+		String newCode = service.getText(R.string.newline_disabled).toString();
 		if (service.newlineGroups != null && service.newlineGroups.length > 0) {
-			newCode = service.newlineGroups[0].replaceAll("(.)", "$1 ").trim();
+			newCode = service.newlineGroups[0].replace(".", DotDashIMEService.UNICODE_DOT).replace("-",  DotDashIMEService.UNICODE_DASH);
 		}
 		((TextView) cheatsheet2.findViewById(R.id.newline_code))
 				.setText(newCode);

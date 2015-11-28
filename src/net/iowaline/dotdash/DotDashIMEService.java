@@ -40,21 +40,21 @@ public class DotDashIMEService extends InputMethodService implements
 	private static final int AUTO_CAP_SENTENCE_ENDED = 1;
 	private Integer autoCapState = AUTO_CAP_MIDSENTENCE;
 	
-	private static final String BULLET = "∙";
-	private static final String BULLET_OPERATOR="∙";
+//	private static final String BULLET = "∙";
+//	private static final String BULLET_OPERATOR="∙";
 //	private static final String BLACK_CIRCLE="●";
-	private static final String UNICODE_HYPHEN="‐";
-	private static final String NONBREAKING_HYPHEN="‑";
+	private static final String INTERPUNCT = "·";
+//	private static final String UNICODE_HYPHEN="‐";
+//	private static final String NONBREAKING_HYPHEN="‑";
 //	private static final String HYPHEN_BULLET="⁃"; // Weird; round
-	private static final String MINUS_SIGN="−";
-	private static final String HORIZ_LINE_EXT="⎯";
+//	private static final String MINUS_SIGN="−";
+//	private static final String HORIZ_LINE_EXT="⎯";
 //	private static final String HEAVY_MINUS="➖"; // Weird; looks gray
 	private static final String EN_DASH="–";
-	private static final String EM_DASH="—";
+//	private static final String EM_DASH="—";
 	
-//	private static final String SPACEBAR_DOT = BULLET_OPERATOR;
-	private static final String SPACEBAR_DOT = BULLET;
-	private static final String SPACEBAR_DASH = EM_DASH;
+	public static final String UNICODE_DOT = INTERPUNCT;
+	public static final String UNICODE_DASH = EN_DASH;
 	
 	// Keycodes used in the utility keyboard
 	public static final int KEYCODE_UP = -10;
@@ -450,8 +450,7 @@ public class DotDashIMEService extends InputMethodService implements
 		if (!spaceKey.label.toString().equals(newLabel)) {
 			// Log.d(TAG, "!spaceKey.label.equals(charInProgress)");
 			if (newLabel.length() > 0) {
-				newLabel = newLabel.replace(".", SPACEBAR_DOT + " ").replace("-", SPACEBAR_DASH + " ");
-				newLabel = newLabel.substring(0, newLabel.length()-1);
+				newLabel = newLabel.replace(".", UNICODE_DOT).replace("-", UNICODE_DASH);
 			}
 			spaceKey.label = newLabel;
 			if (refreshScreen) {

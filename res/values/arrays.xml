@@ -2,9 +2,9 @@
 <resources>
 
     <string-array name="newline_labels">
-        <item>.-.-</item>
-        <item>.-.-..</item>
-        <item>.-.- or .-.-..</item>
+        <item>·–·–</item>
+        <item>·–·–··</item>
+        <item>·–·– or ·–·–··</item>
         <item>No newline character</item>
     </string-array>
     <string-array name="newline_values">

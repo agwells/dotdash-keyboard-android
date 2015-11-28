@@ -16,6 +16,7 @@
 	<string name="enableutilkbd">Enable utility keyboard (experimental)</string>
 	<string name="enableutilkbd_summary">Enable the utility keyboard. Swipe left or right to access it. It may still be a little buggy.</string>
 	<string name="enter">Enter</string>
+    <string name="newline_disabled">disabled</string>
     
     <string name="android_keyboard_settings">Keyboard Settings</string>
     <string name="android_keybaord_debug_settings">Keyboard Debug Settings</string>

@@ -14,7 +14,7 @@
 
         <TextView
             style="@style/code"
-            android:text=". -"
+            android:text="·–"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -24,7 +24,7 @@
 
         <TextView
             style="@style/code"
-            android:text="- ."
+            android:text="–·"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -34,7 +34,7 @@
 
         <TextView
             style="@style/code_nopadding"
-            android:text=". - - - -"
+            android:text="·––––"
             tools:ignore="HardcodedText" />
     </TableRow>
 
@@ -47,7 +47,7 @@
 
         <TextView
             style="@style/code"
-            android:text="- . . ."
+            android:text="–···"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -57,7 +57,7 @@
 
         <TextView
             style="@style/code"
-            android:text="- - -"
+            android:text="–––"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -67,7 +67,7 @@
 
         <TextView
             style="@style/code_nopadding"
-            android:text=". . - - -"
+            android:text="··–––"
             tools:ignore="HardcodedText" />
     </TableRow>
 
@@ -80,7 +80,7 @@
 
         <TextView
             style="@style/code"
-            android:text="- . - ."
+            android:text="–·–·"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -90,7 +90,7 @@
 
         <TextView
             style="@style/code"
-            android:text=". - - ."
+            android:text="·––·"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -100,7 +100,7 @@
 
         <TextView
             style="@style/code_nopadding"
-            android:text=". . . - -"
+            android:text="···––"
             tools:ignore="HardcodedText" />
     </TableRow>
 
@@ -113,7 +113,7 @@
 
         <TextView
             style="@style/code"
-            android:text="- . ."
+            android:text="–··"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -123,7 +123,7 @@
 
         <TextView
             style="@style/code"
-            android:text="- - . -"
+            android:text="––·–"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -133,7 +133,7 @@
 
         <TextView
             style="@style/code_nopadding"
-            android:text=". . . . -"
+            android:text="····–"
             tools:ignore="HardcodedText" />
     </TableRow>
 
@@ -146,7 +146,7 @@
 
         <TextView
             style="@style/code"
-            android:text="."
+            android:text="·"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -156,7 +156,7 @@
 
         <TextView
             style="@style/code"
-            android:text=". - ."
+            android:text="·–·"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -166,7 +166,7 @@
 
         <TextView
             style="@style/code_nopadding"
-            android:text=". . . . ."
+            android:text="·····"
             tools:ignore="HardcodedText" />
     </TableRow>
 
@@ -179,7 +179,7 @@
 
         <TextView
             style="@style/code"
-            android:text=". . - ."
+            android:text="··–·"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -189,7 +189,7 @@
 
         <TextView
             style="@style/code"
-            android:text=". . ."
+            android:text="···"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -199,7 +199,7 @@
 
         <TextView
             style="@style/code_nopadding"
-            android:text="- . . . ."
+            android:text="–····"
             tools:ignore="HardcodedText" />
     </TableRow>
 
@@ -212,7 +212,7 @@
 
         <TextView
             style="@style/code"
-            android:text="- - ."
+            android:text="––·"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -222,7 +222,7 @@
 
         <TextView
             style="@style/code"
-            android:text="-"
+            android:text="–"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -232,7 +232,7 @@
 
         <TextView
             style="@style/code_nopadding"
-            android:text="- - . . ."
+            android:text="––···"
             tools:ignore="HardcodedText" />
     </TableRow>
 
@@ -245,7 +245,7 @@
 
         <TextView
             style="@style/code"
-            android:text=". . . ."
+            android:text="····"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -255,7 +255,7 @@
 
         <TextView
             style="@style/code"
-            android:text=". . -"
+            android:text="··–"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -265,7 +265,7 @@
 
         <TextView
             style="@style/code_nopadding"
-            android:text="- - - . ."
+            android:text="–––··"
             tools:ignore="HardcodedText" />
     </TableRow>
 
@@ -278,7 +278,7 @@
 
         <TextView
             style="@style/code"
-            android:text=". ."
+            android:text="··"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -288,7 +288,7 @@
 
         <TextView
             style="@style/code"
-            android:text=". . . -"
+            android:text="···–"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -298,7 +298,7 @@
 
         <TextView
             style="@style/code_nopadding"
-            android:text="- - - - ."
+            android:text="––––·"
             tools:ignore="HardcodedText" />
     </TableRow>
 
@@ -311,7 +311,7 @@
 
         <TextView
             style="@style/code"
-            android:text=". - - -"
+            android:text="·–––"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -321,7 +321,7 @@
 
         <TextView
             style="@style/code"
-            android:text=". - -"
+            android:text="·––"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -331,7 +331,7 @@
 
         <TextView
             style="@style/code_nopadding"
-            android:text="- - - - -"
+            android:text="–––––"
             tools:ignore="HardcodedText" />
     </TableRow>
 
@@ -344,7 +344,7 @@
 
         <TextView
             style="@style/code"
-            android:text="- . -"
+            android:text="–·–"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -354,7 +354,7 @@
 
         <TextView
             style="@style/code_nopadding"
-            android:text="- . . -"
+            android:text="–··–"
             tools:ignore="HardcodedText" />
     </TableRow>
 
@@ -367,7 +367,7 @@
 
         <TextView
             style="@style/code"
-            android:text=". - . ."
+            android:text="·–··"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -377,7 +377,7 @@
 
         <TextView
             style="@style/code_nopadding"
-            android:text="- . - -"
+            android:text="–·––"
             tools:ignore="HardcodedText" />
     </TableRow>
 
@@ -390,7 +390,7 @@
 
         <TextView
             style="@style/code"
-            android:text="- -"
+            android:text="––"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -400,7 +400,7 @@
 
         <TextView
             style="@style/code_nopadding"
-            android:text="- - . ."
+            android:text="––··"
             tools:ignore="HardcodedText" />
     </TableRow>
 
