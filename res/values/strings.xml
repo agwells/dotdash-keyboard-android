@@ -17,8 +17,6 @@
 	<string name="enableutilkbd_summary">Enable the utility keyboard. Swipe left or right to access it. It may still be a little buggy.</string>
 	<string name="enter">Enter</string>
     
-    <string name="keyboard_theme_material_light">material light</string>
-    <string name="keyboard_theme_material_dark">material dark</string>
-    <string name="keyboard_theme_holo_white">holo white</string>
-    <string name="keyboard_theme_holo_blue">holo blue</string>
+    <string name="android_keyboard_settings">Keyboard Settings</string>
+    <string name="android_keybaord_debug_settings">Keyboard Debug Settings</string>
 </resources>

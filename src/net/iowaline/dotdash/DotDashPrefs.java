@@ -1,9 +1,9 @@
 package net.iowaline.dotdash;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 
-public class DotDashPrefs extends PreferenceActivity {
+public class DotDashPrefs extends Activity {
 
 	public static final String AUTOCAP = "autocap";
 	public static final String NEWLINECODE = "newline";
@@ -18,6 +18,8 @@ public class DotDashPrefs extends PreferenceActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		addPreferencesFromResource(R.xml.prefs);
+		getFragmentManager().beginTransaction()
+			.replace(android.R.id.content, new DotDashSettingsFragment())
+			.commit();
 	}
 }

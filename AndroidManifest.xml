@@ -1,23 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     package="net.iowaline.dotdash"
     android:versionCode="20"
-    android:versionName="1.1.8dev" >
-    
-    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="23"/>
-    <application android:label="@string/app_name" android:icon="@drawable/ic_launcher" android:allowBackup="true">
+    android:versionName="1.1.8dev"
+>
+    <uses-sdk
+        android:minSdkVersion="4"
+        android:targetSdkVersion="23" />
+    <application
+        android:label="@string/app_name"
+        android:icon="@drawable/ic_launcher"
+        android:allowBackup="true"
+        android:installLocation="internalOnly"
+    >
         <service
             android:name=".DotDashIMEService"
-            android:permission="android.permission.BIND_INPUT_METHOD" >
+            android:permission="android.permission.BIND_INPUT_METHOD"
+        >
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
             </intent-filter>
-
             <meta-data
                 android:name="android.view.im"
                 android:resource="@xml/method" />
         </service>
-        <activity android:label="@string/settings_title" android:name=".DotDashPrefs"></activity>
-    </application>
-
+        <activity
+            android:label="@string/app_name"
+            android:name=".DotDashPrefs"
+            android:theme="@style/PrefsTheme"
+        >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        </application>
 </manifest>

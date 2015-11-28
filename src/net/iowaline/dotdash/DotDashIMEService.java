@@ -56,6 +56,7 @@ public class DotDashIMEService extends InputMethodService implements
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		PreferenceManager.setDefaultValues(this, R.xml.prefs, false);
 		this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		this.prefs.registerOnSharedPreferenceChangeListener(this);
 	}
