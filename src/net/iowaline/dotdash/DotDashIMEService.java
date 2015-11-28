@@ -414,10 +414,25 @@ public class DotDashIMEService extends InputMethodService implements
 		}
 	}
 
+	/**
+	 * Updates the spacebar to display the current character in progress
+	 * 
+	 * @param boolean refreshScreen Whether or not to refresh the screen afterwards.
+	 */
 	public void updateSpaceKey(boolean refreshScreen) {
-		if (!spaceKey.label.toString().equals(charInProgress.toString())) {
+		String newLabel = charInProgress.toString();
+		
+		// Workaround to maintain consistent styling. Android puts multi-character
+		// labels in bold, and single-characters in non-bold. To make the bold state
+		// consistent, we turn our single-character label into a three-character one
+		// by padding it with spaces.
+		if (newLabel.length() == 1) {
+			newLabel = " " + newLabel + " ";
+		}
+		
+		if (!spaceKey.label.toString().equals(newLabel)) {
 			// Log.d(TAG, "!spaceKey.label.equals(charInProgress)");
-			spaceKey.label = charInProgress.toString();
+			spaceKey.label = newLabel;
 			if (refreshScreen) {
 				// Wrapping this in a try/catch block to avoid crashes in
 				// Android 2.1 and earlier
