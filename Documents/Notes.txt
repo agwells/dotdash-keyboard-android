@@ -2,7 +2,7 @@ Key graphics are drawn from the stock Android open-source keyboard.
 
 Unpressed key background: btn_keyboard_key_normal_holo_light
 Pressed key background:   btn_keyboard_key_pressed_klp_light
-Shift "off" indicator: btn_keyboard_key_normal_on_ics_dark
+Shift "on" indicator: btn_keyboard_key_normal_on_ics_dark
 Shift "off" indicator: btn_keyboard_key_pressed_off_klp_dark
 Whole keyboard background: keyboard_background_holo
 
