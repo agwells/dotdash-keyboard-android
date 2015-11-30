@@ -65,16 +65,25 @@ public class DotDashIMEService extends InputMethodService implements
 	public static final int KEYCODE_END = -21;
 	public static final int KEYCODE_DEL = -30;
 
+	// Sync these with ditdahchars_values in arrays.xml
+	public static final int DITDAHCHARS_UNICODE = 1;
+	public static final int DITDAHCHARS_ASCII = 2;
+	
 	private SharedPreferences prefs;
 	public String[] newlineGroups;
+	public int ditdahcharsPref;
 	private int maxCodeLength;
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		PreferenceManager.setDefaultValues(this, R.xml.prefs, false);
+		
+		// TODO: Fetch prefs via a background thread, as described here:
+		// http://stackoverflow.com/questions/4371273/should-accessing-sharedpreferences-be-done-off-the-ui-thread
 		this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		this.prefs.registerOnSharedPreferenceChangeListener(this);
+		this.ditdahcharsPref = Integer.valueOf(this.prefs.getString(DotDashPrefs.DITDAHCHARS, Integer.toString(DITDAHCHARS_UNICODE)));
 	}
 
 	@Override
@@ -449,8 +458,8 @@ public class DotDashIMEService extends InputMethodService implements
 		
 		if (!spaceKey.label.toString().equals(newLabel)) {
 			// Log.d(TAG, "!spaceKey.label.equals(charInProgress)");
-			if (newLabel.length() > 0) {
-				newLabel = newLabel.replace(".", UNICODE_DOT).replace("-", UNICODE_DASH);
+			if (newLabel.length() > 0 && ditdahcharsPref == DITDAHCHARS_UNICODE) {
+				newLabel = convertDitDahUnicodeToAscii(newLabel, true);
 			}
 			spaceKey.label = newLabel;
 			if (refreshScreen) {
@@ -498,11 +507,17 @@ public class DotDashIMEService extends InputMethodService implements
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-		// Log.d(TAG, "prefchange: "+key);
 		if (key.contentEquals(DotDashPrefs.NEWLINECODE)) {
 			updateNewlinePref();
 		} else if (key.contentEquals(DotDashPrefs.ENABLEUTILKBD)) {
-			inputView.mEnableUtilityKeyboard = prefs.getBoolean(key, false);
+			if (this.inputView != null) {
+				inputView.mEnableUtilityKeyboard = prefs.getBoolean(key, false);
+			}
+		} else if (key.contentEquals(DotDashPrefs.DITDAHCHARS)) {
+			this.ditdahcharsPref = Integer.valueOf(this.prefs.getString(DotDashPrefs.DITDAHCHARS, Integer.toString(DITDAHCHARS_UNICODE)));
+			if (inputView != null) {
+				inputView.clearCheatSheet();
+			}
 		}
 	}
 
@@ -542,7 +557,7 @@ public class DotDashIMEService extends InputMethodService implements
 			inputView.updateNewlineCode();
 		}
 	}
-
+	
 	/**
 	 * The cursor position (selection position) has changed
 	 */
@@ -584,5 +599,31 @@ public class DotDashIMEService extends InputMethodService implements
 		if (capsLockState != origCapsLockState) {
 			updateCapsLockKey(true);
 		}
+	}
+
+	/**
+	 * Converts a string of ASCII ditdahs to Unicode
+	 * 
+	 * @param ascii
+	 * @return
+	 */
+	protected String convertDitDahAsciiToUnicode(String ascii) {
+		return ascii
+				.replace(".", DotDashIMEService.UNICODE_DOT)
+				.replace("-", DotDashIMEService.UNICODE_DASH);
+	}
+	
+	/**
+	 * Converts a string of Unicode ditdahs to ASCII
+	 * 
+	 * @param unicode The original string with unicode ditdahs
+	 * @param padding Whether to pad with spaces
+	 * @return
+	 */
+	protected String convertDitDahUnicodeToAscii(String unicode, boolean padding) {
+		return unicode
+				.replace(DotDashIMEService.UNICODE_DOT, (padding ? "." : ". "))
+				.replace(DotDashIMEService.UNICODE_DASH, (padding ? "-" : "- "))
+				.trim();
 	}
 }

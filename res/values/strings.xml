@@ -17,7 +17,11 @@
 	<string name="enableutilkbd_summary">Enable the utility keyboard. Swipe left or right to access it. It may still be a little buggy.</string>
 	<string name="enter">Enter</string>
     <string name="newline_disabled">disabled</string>
+    <string name="ditdahchars">Dot/Dash display characters</string>
+    <string name="ditdahchars_summary">DotDash uses Unicode characters to display the Morse code
+        dots and dashes on the space bar and in the cheat sheet. If these do not display properly
+        on your phone, you can switch to displaying ASCII characters instead.</string>
     
     <string name="android_keyboard_settings">Keyboard Settings</string>
-    <string name="android_keybaord_debug_settings">Keyboard Debug Settings</string>
+    <string name="android_keyboard_debug_settings">Keyboard Debug Settings</string>
 </resources>

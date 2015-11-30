@@ -10,14 +10,16 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 public class DotDashKeyboardView extends KeyboardView {
 
 	private DotDashIMEService service;
 	private Dialog cheatsheetDialog;
-	private View cheatsheet1;
-	private View cheatsheet2;
+	private TableLayout cheatsheet1;
+	private TableLayout cheatsheet2;
 	private int mSwipeThreshold;
 
 	public static final int KBD_NONE = 0;
@@ -108,13 +110,15 @@ public class DotDashKeyboardView extends KeyboardView {
 
 	public void createCheatSheet() {
 		if (this.cheatsheet1 == null) {
-			this.cheatsheet1 = this.service.getLayoutInflater().inflate(
+			this.cheatsheet1 = (TableLayout) this.service.getLayoutInflater().inflate(
 					R.layout.cheatsheet1, null);
+			this.prettifyCheatSheet(this.cheatsheet1);
 		}
 		if (this.cheatsheet2 == null) {
-			this.cheatsheet2 = this.service.getLayoutInflater().inflate(
+			this.cheatsheet2 = (TableLayout) this.service.getLayoutInflater().inflate(
 					R.layout.cheatsheet2, null);
 			updateNewlineCode();
+			this.prettifyCheatSheet(this.cheatsheet2);
 		}
 		if (this.cheatsheetDialog == null) {
 			this.cheatsheetDialog = new Dialog(this.service);
@@ -146,6 +150,24 @@ public class DotDashKeyboardView extends KeyboardView {
 			window.addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
 		}
 	}
+	
+	public void prettifyCheatSheet(TableLayout cheatsheet) {
+		// No action necessary.
+		if (service.ditdahcharsPref == DotDashIMEService.DITDAHCHARS_UNICODE) {
+			return;
+		}
+		
+		for (int i = 0; i < cheatsheet.getChildCount(); i++) {
+			TableRow row = (TableRow) cheatsheet.getChildAt(i);
+			
+			// On my cheat sheets, only the even-number columns
+			// contain code groups
+			for (int j = 1; j < cheatsheet.getChildCount(); j += 2) {
+				TextView cell = (TextView) row.getChildAt(j);
+				cell.setText(service.convertDitDahUnicodeToAscii(cell.getText().toString(), true));
+			}
+		}
+	}
 
 	public void showCheatSheet() {
 		createCheatSheet();
@@ -156,6 +178,12 @@ public class DotDashKeyboardView extends KeyboardView {
 		if (cheatsheetDialog != null) {
 			cheatsheetDialog.dismiss();
 		}
+	}
+	
+	public void clearCheatSheet() {
+		closeCheatSheet();
+		this.cheatsheet1 = null;
+		this.cheatsheet2 = null;
 	}
 
 	/**

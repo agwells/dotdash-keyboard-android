@@ -2,16 +2,25 @@
 <resources>
 
     <string-array name="newline_labels">
+        <item>·–·– or ·–·–··</item>
         <item>·–·–</item>
         <item>·–·–··</item>
-        <item>·–·– or ·–·–··</item>
         <item>No newline character</item>
     </string-array>
     <string-array name="newline_values">
+        <item>.-.-|.-.-..</item>
         <item>.-.-</item>
         <item>.-.-..</item>
-        <item>.-.-|.-.-..</item>
         <item>X</item>
     </string-array>
-
+    
+    <string-array name="ditdahchars_labels">
+        <item>···–––···</item>
+        <item>...---...</item>
+    </string-array>
+    <string-array name="ditdahchars_values">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    
 </resources>

@@ -2,26 +2,38 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <CheckBoxPreference
-        android:defaultValue="false"
         android:key="autocap"
-        android:persistent="true"
+        android:title="@string/autocap" 
         android:summary="@string/autocap_summary"
-        android:title="@string/autocap" />
+        android:defaultValue="false"
+        android:persistent="true"
+    />
 
     <org.pocketworkstation.pckeyboard.AutoSummaryListPreference
-        android:defaultValue=".-.-"
+        android:key="newline"
+        android:title="@string/newline" 
         android:entries="@array/newline_labels"
         android:entryValues="@array/newline_values"
-        android:key="newline"
+        android:defaultValue=".-.-"
         android:persistent="true"
-        android:title="@string/newline" />
+    />
+    
+    <ListPreference
+        android:key="ditdahchars"
+        android:title="@string/ditdahchars" 
+        android:summary="@string/ditdahchars_summary"
+        android:entries="@array/ditdahchars_labels"
+        android:entryValues="@array/ditdahchars_values"
+        android:defaultValue="1"
+        android:persistent="true"
+    />
     
     <CheckBoxPreference 
-        android:defaultValue="false"
         android:key="enableutilkbd"
-        android:persistent="true"
-        android:summary="@string/enableutilkbd_summary"
         android:title="@string/enableutilkbd"
-        />
+        android:summary="@string/enableutilkbd_summary"
+        android:defaultValue="false"
+        android:persistent="true"
+    />
 
 </PreferenceScreen>
