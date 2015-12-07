@@ -1,9 +1,11 @@
 package net.iowaline.dotdash;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.preference.PreferenceActivity;
 
-public class DotDashPrefs extends FragmentActivity {
+public class DotDashPrefs extends PreferenceActivity {
 
 	public static final String AUTOCAP = "autocap";
 	public static final String NEWLINECODE = "newline";
@@ -16,11 +18,17 @@ public class DotDashPrefs extends FragmentActivity {
 	 */
 	public static final String NEWLINECODE_NONE = "X";
 
+	@SuppressWarnings("deprecation")
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		getFragmentManager().beginTransaction()
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			getFragmentManager().beginTransaction()
 			.replace(android.R.id.content, new DotDashSettingsFragment())
 			.commit();
+		} else {
+			addPreferencesFromResource(R.xml.prefs);
+		}
 	}
 }

@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <string-array name="newline_labels">
-        <item>·–·– or ·–·–··</item>
-        <item>·–·–</item>
-        <item>·–·–··</item>
+        <!-- TODO: Update the Preferences so that this label changes
+        depending on your Unicode/ASCII display pref -->
+        <item>. - . - or . - . - . .</item>
+        <item>. - . -</item>
+        <item>. - . - . .</item>
         <item>No newline character</item>
     </string-array>
     <string-array name="newline_values">
@@ -15,8 +17,8 @@
     </string-array>
     
     <string-array name="ditdahchars_labels">
-        <item>···–––···</item>
-        <item>...---...</item>
+        <item>Unicode (···–––···)</item>
+        <item tools:ignore="TypographyEllipsis">ASCII (. . . - - - . . .)</item>
     </string-array>
     <string-array name="ditdahchars_values">
         <item>1</item>

@@ -459,7 +459,7 @@ public class DotDashIMEService extends InputMethodService implements
 		if (!spaceKey.label.toString().equals(newLabel)) {
 			// Log.d(TAG, "!spaceKey.label.equals(charInProgress)");
 			if (newLabel.length() > 0 && ditdahcharsPref == DITDAHCHARS_UNICODE) {
-				newLabel = convertDitDahUnicodeToAscii(newLabel, true);
+				newLabel = convertDitDahAsciiToUnicode(newLabel);
 			}
 			spaceKey.label = newLabel;
 			if (refreshScreen) {
@@ -622,8 +622,8 @@ public class DotDashIMEService extends InputMethodService implements
 	 */
 	protected String convertDitDahUnicodeToAscii(String unicode, boolean padding) {
 		return unicode
-				.replace(DotDashIMEService.UNICODE_DOT, (padding ? "." : ". "))
-				.replace(DotDashIMEService.UNICODE_DASH, (padding ? "-" : "- "))
+				.replace(DotDashIMEService.UNICODE_DOT, (padding ? ". " : "."))
+				.replace(DotDashIMEService.UNICODE_DASH, (padding ? "- " : "-"))
 				.trim();
 	}
 }

@@ -1,5 +1,6 @@
 package net.iowaline.dotdash;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.inputmethodservice.Keyboard;
@@ -14,6 +15,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+@SuppressLint("ClickableViewAccessibility")
 public class DotDashKeyboardView extends KeyboardView {
 
 	private DotDashIMEService service;
@@ -45,6 +47,7 @@ public class DotDashKeyboardView extends KeyboardView {
 	private void setEverythingUp() {
 		mSwipeThreshold = (int) (300 * getResources().getDisplayMetrics().density);
 		setPreviewEnabled(false);
+		@SuppressWarnings("deprecation")
 		final GestureDetector gestureDetector = new GestureDetector(
 				new GestureDetector.SimpleOnGestureListener() {
 
@@ -108,18 +111,9 @@ public class DotDashKeyboardView extends KeyboardView {
 		}
 	}
 
+	@SuppressLint("InflateParams")
 	public void createCheatSheet() {
-		if (this.cheatsheet1 == null) {
-			this.cheatsheet1 = (TableLayout) this.service.getLayoutInflater().inflate(
-					R.layout.cheatsheet1, null);
-			this.prettifyCheatSheet(this.cheatsheet1);
-		}
-		if (this.cheatsheet2 == null) {
-			this.cheatsheet2 = (TableLayout) this.service.getLayoutInflater().inflate(
-					R.layout.cheatsheet2, null);
-			updateNewlineCode();
-			this.prettifyCheatSheet(this.cheatsheet2);
-		}
+		boolean updateTouchListeners = false;
 		if (this.cheatsheetDialog == null) {
 			this.cheatsheetDialog = new Dialog(this.service);
 
@@ -127,6 +121,23 @@ public class DotDashKeyboardView extends KeyboardView {
 
 			cheatsheetDialog.setCancelable(true);
 			cheatsheetDialog.setCanceledOnTouchOutside(true);
+			updateTouchListeners = true;
+		}
+		if (this.cheatsheet1 == null) {
+			this.cheatsheet1 = (TableLayout) this.service.getLayoutInflater().inflate(
+					R.layout.cheatsheet1, null);
+			this.prettifyCheatSheet(this.cheatsheet1);
+			updateTouchListeners = true;
+		}
+		if (this.cheatsheet2 == null) {
+			this.cheatsheet2 = (TableLayout) this.service.getLayoutInflater().inflate(
+					R.layout.cheatsheet2, null);
+			updateNewlineCode();
+			this.prettifyCheatSheet(this.cheatsheet2);
+			updateTouchListeners = true;
+		}
+		
+		if (updateTouchListeners) {
 			cheatsheetDialog.setContentView(cheatsheet1);
 			cheatsheet1.setOnTouchListener(new OnTouchListener() {
 				@Override
@@ -151,6 +162,13 @@ public class DotDashKeyboardView extends KeyboardView {
 		}
 	}
 	
+	/**
+	 * Update the characters in the cheat sheet dialogue to match the user's preference
+	 * @TODO: Probably better performance if I replaced this with two hard-coded versions
+	 * of the sheet...
+	 * 
+	 * @param cheatsheet
+	 */
 	public void prettifyCheatSheet(TableLayout cheatsheet) {
 		// No action necessary.
 		if (service.ditdahcharsPref == DotDashIMEService.DITDAHCHARS_UNICODE) {
@@ -162,7 +180,7 @@ public class DotDashKeyboardView extends KeyboardView {
 			
 			// On my cheat sheets, only the even-number columns
 			// contain code groups
-			for (int j = 1; j < cheatsheet.getChildCount(); j += 2) {
+			for (int j = 1; j < row.getChildCount(); j += 2) {
 				TextView cell = (TextView) row.getChildAt(j);
 				cell.setText(service.convertDitDahUnicodeToAscii(cell.getText().toString(), true));
 			}

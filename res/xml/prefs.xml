@@ -18,10 +18,9 @@
         android:persistent="true"
     />
     
-    <ListPreference
+    <org.pocketworkstation.pckeyboard.AutoSummaryListPreference
         android:key="ditdahchars"
         android:title="@string/ditdahchars" 
-        android:summary="@string/ditdahchars_summary"
         android:entries="@array/ditdahchars_labels"
         android:entryValues="@array/ditdahchars_values"
         android:defaultValue="1"
