@@ -60,7 +60,7 @@ public class DotDashKeyboardView extends KeyboardView {
 					public boolean onFling(MotionEvent e1, MotionEvent e2,
 							float velocityX, float velocityY) {
 
-						// If they swip up off the keyboard, launch the cheat
+						// If they swipe up off the keyboard, launch the cheat
 						// sheet. This was originally a check for e2.getY() < 0,
 						// but that didn't work in ICS. Possibly ICS stops
 						// sending you events after you go past the edge of the
@@ -94,7 +94,17 @@ public class DotDashKeyboardView extends KeyboardView {
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				return gestureDetector.onTouchEvent(event);
+				if (gestureDetector.onTouchEvent(event)) {
+					// Tell the underlying keyboardview to cancel its
+					// touch event if we've initiated a gesture.
+					MotionEvent cancel = MotionEvent.obtain(event);
+					cancel.setAction(MotionEvent.ACTION_CANCEL);
+					DotDashKeyboardView.this.onTouchEvent(cancel);
+					cancel.recycle();
+					return true;
+				} else {
+					return false;
+				}
 			}
 		};
 		setOnTouchListener(gestureListener);
@@ -189,9 +199,9 @@ public class DotDashKeyboardView extends KeyboardView {
 
 	public void showCheatSheet() {
 		createCheatSheet();
-		this.cheatsheetDialog.show();
+		cheatsheetDialog.show();
 	}
-
+	
 	public void closeCheatSheet() {
 		if (cheatsheetDialog != null) {
 			cheatsheetDialog.dismiss();
