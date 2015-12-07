@@ -48,8 +48,16 @@ public class DotDashKeyboardView extends KeyboardView {
 
 					/**
 					 * This function mostly copied from LatinKeyboardBaseView in
-					 * the Hacker's Keyboard project
-					 * http://code.google.com/p/hackerskeyboard/
+					 * the Hacker's Keyboard project: http://code.google.com/p/hackerskeyboard/
+					 * 
+				 	 * Copyright (C) 2010, authors of the Hacker's Keyboard project: http://code.google.com/p/hackerskeyboard/ 
+				 	 * Copyright (c) 2011, Aaron Wells
+					 * 
+					 * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+					 * use this file except in compliance with the License. You may obtain a copy of
+					 * the License at
+					 *
+					 * http://www.apache.org/licenses/LICENSE-2.0
 					 */
 					@Override
 					public boolean onFling(MotionEvent e1, MotionEvent e2,
