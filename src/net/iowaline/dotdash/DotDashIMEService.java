@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
+import android.view.inputmethod.InputConnection;
 
 public class DotDashIMEService extends InputMethodService implements
 	KeyboardView.OnKeyboardActionListener, OnSharedPreferenceChangeListener {
@@ -38,7 +39,23 @@ public class DotDashIMEService extends InputMethodService implements
 	private static final int AUTO_CAP_MIDSENTENCE = 0;
 	private static final int AUTO_CAP_SENTENCE_ENDED = 1;
 	private Integer autoCapState = AUTO_CAP_MIDSENTENCE;
-
+	
+//	private static final String BULLET = "∙";
+//	private static final String BULLET_OPERATOR="∙";
+//	private static final String BLACK_CIRCLE="●";
+	private static final String INTERPUNCT = "·";
+//	private static final String UNICODE_HYPHEN="‐";
+//	private static final String NONBREAKING_HYPHEN="‑";
+//	private static final String HYPHEN_BULLET="⁃"; // Weird; round
+//	private static final String MINUS_SIGN="−";
+//	private static final String HORIZ_LINE_EXT="⎯";
+//	private static final String HEAVY_MINUS="➖"; // Weird; looks gray
+	private static final String EN_DASH="–";
+//	private static final String EM_DASH="—";
+	
+	public static final String UNICODE_DOT = INTERPUNCT;
+	public static final String UNICODE_DASH = EN_DASH;
+	
 	// Keycodes used in the utility keyboard
 	public static final int KEYCODE_UP = -10;
 	public static final int KEYCODE_LEFT = -11;
@@ -48,15 +65,25 @@ public class DotDashIMEService extends InputMethodService implements
 	public static final int KEYCODE_END = -21;
 	public static final int KEYCODE_DEL = -30;
 
+	// Sync these with ditdahchars_values in arrays.xml
+	public static final int DITDAHCHARS_UNICODE = 1;
+	public static final int DITDAHCHARS_ASCII = 2;
+	
 	private SharedPreferences prefs;
 	public String[] newlineGroups;
+	public int ditdahcharsPref;
 	private int maxCodeLength;
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		PreferenceManager.setDefaultValues(this, R.xml.prefs, false);
+		
+		// TODO: Fetch prefs via a background thread, as described here:
+		// http://stackoverflow.com/questions/4371273/should-accessing-sharedpreferences-be-done-off-the-ui-thread
 		this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		this.prefs.registerOnSharedPreferenceChangeListener(this);
+		this.ditdahcharsPref = Integer.valueOf(this.prefs.getString(DotDashPrefs.DITDAHCHARS, Integer.toString(DITDAHCHARS_UNICODE)));
 	}
 
 	@Override
@@ -288,8 +315,11 @@ public class DotDashIMEService extends InputMethodService implements
 						}
 
 						// Log.d(TAG, "Char identified as " + curCharMatch);
-						getCurrentInputConnection().commitText(curCharMatch,
-								curCharMatch.length());
+						InputConnection ic = getCurrentInputConnection();
+						if (ic != null) {
+							ic.commitText(curCharMatch, curCharMatch.length());
+						}
+								
 					}
 				}
 			}
@@ -410,10 +440,28 @@ public class DotDashIMEService extends InputMethodService implements
 		}
 	}
 
+	/**
+	 * Updates the spacebar to display the current character in progress
+	 * 
+	 * @param boolean refreshScreen Whether or not to refresh the screen afterwards.
+	 */
 	public void updateSpaceKey(boolean refreshScreen) {
-		if (!spaceKey.label.toString().equals(charInProgress.toString())) {
+		String newLabel = charInProgress.toString();
+		
+		// Workaround to maintain consistent styling. Android puts multi-character
+		// labels in bold, and single-characters in non-bold. To make the bold state
+		// consistent, we turn our single-character label into a three-character one
+		// by padding it with spaces.
+		if (newLabel.length() == 1) {
+			newLabel = " " + newLabel + " ";
+		}
+		
+		if (!spaceKey.label.toString().equals(newLabel)) {
 			// Log.d(TAG, "!spaceKey.label.equals(charInProgress)");
-			spaceKey.label = charInProgress.toString();
+			if (newLabel.length() > 0 && ditdahcharsPref == DITDAHCHARS_UNICODE) {
+				newLabel = convertDitDahAsciiToUnicode(newLabel);
+			}
+			spaceKey.label = newLabel;
 			if (refreshScreen) {
 				// Wrapping this in a try/catch block to avoid crashes in
 				// Android 2.1 and earlier
@@ -459,11 +507,17 @@ public class DotDashIMEService extends InputMethodService implements
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-		// Log.d(TAG, "prefchange: "+key);
 		if (key.contentEquals(DotDashPrefs.NEWLINECODE)) {
 			updateNewlinePref();
 		} else if (key.contentEquals(DotDashPrefs.ENABLEUTILKBD)) {
-			inputView.mEnableUtilityKeyboard = prefs.getBoolean(key, false);
+			if (this.inputView != null) {
+				inputView.mEnableUtilityKeyboard = prefs.getBoolean(key, false);
+			}
+		} else if (key.contentEquals(DotDashPrefs.DITDAHCHARS)) {
+			this.ditdahcharsPref = Integer.valueOf(this.prefs.getString(DotDashPrefs.DITDAHCHARS, Integer.toString(DITDAHCHARS_UNICODE)));
+			if (inputView != null) {
+				inputView.clearCheatSheet();
+			}
 		}
 	}
 
@@ -503,7 +557,7 @@ public class DotDashIMEService extends InputMethodService implements
 			inputView.updateNewlineCode();
 		}
 	}
-
+	
 	/**
 	 * The cursor position (selection position) has changed
 	 */
@@ -545,5 +599,31 @@ public class DotDashIMEService extends InputMethodService implements
 		if (capsLockState != origCapsLockState) {
 			updateCapsLockKey(true);
 		}
+	}
+
+	/**
+	 * Converts a string of ASCII ditdahs to Unicode
+	 * 
+	 * @param ascii
+	 * @return
+	 */
+	protected String convertDitDahAsciiToUnicode(String ascii) {
+		return ascii
+				.replace(".", DotDashIMEService.UNICODE_DOT)
+				.replace("-", DotDashIMEService.UNICODE_DASH);
+	}
+	
+	/**
+	 * Converts a string of Unicode ditdahs to ASCII
+	 * 
+	 * @param unicode The original string with unicode ditdahs
+	 * @param padding Whether to pad with spaces
+	 * @return
+	 */
+	protected String convertDitDahUnicodeToAscii(String unicode, boolean padding) {
+		return unicode
+				.replace(DotDashIMEService.UNICODE_DOT, (padding ? ". " : "."))
+				.replace(DotDashIMEService.UNICODE_DASH, (padding ? "- " : "-"))
+				.trim();
 	}
 }

@@ -1,7 +1,12 @@
 <net.iowaline.dotdash.DotDashKeyboardView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/keyboard"
-        android:layout_alignParentBottom="true"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        />
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/keyboard"
+    android:layout_alignParentBottom="true"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/keyboard_background_holo"
+    android:keyBackground="@drawable/dotdash_key"
+    android:keyTextColor="@color/key_text_color_holo"
+    android:keyTextSize="22sp"
+    android:labelTextSize="22sp"
+/>

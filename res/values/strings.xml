@@ -2,9 +2,9 @@
 <resources>
 
     <string name="app_name">DotDash Keyboard</string>
-    <string name="caps_lock_off">abc</string>
-    <string name="caps_lock_next">Abc</string>
-    <string name="caps_lock_all">ABC</string>
+    <string name="caps_lock_off">caps</string>
+    <string name="caps_lock_next">Caps</string>
+    <string name="caps_lock_all">CAPS</string>
     <string name="tapforpunctuation">Tap for punctuation</string>
     <string name="tapforlettersandnumbers">Tap for letters and numbers</string>
     <string name="settings_title">Settings for DotDash Keyboard</string>
@@ -16,4 +16,9 @@
 	<string name="enableutilkbd">Enable utility keyboard (experimental)</string>
 	<string name="enableutilkbd_summary">Enable the utility keyboard. Swipe left or right to access it. It may still be a little buggy.</string>
 	<string name="enter">Enter</string>
+    <string name="newline_disabled">disabled</string>
+    <string name="ditdahchars">Unicode or ASCII display</string>
+    
+    <string name="android_keyboard_settings">Keyboard Settings</string>
+    <string name="android_keyboard_debug_settings">Keyboard Debug Settings</string>
 </resources>

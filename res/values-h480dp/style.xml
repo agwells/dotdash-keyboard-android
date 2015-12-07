@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <style name="symbol" parent="@android:style/TextAppearance.Medium">
+    	<item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginRight">7dp</item>
+        <item name="android:gravity">left</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="tapinstructions" parent="@style/symbol">
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:layout_marginTop">10dp</item>
+    </style>
+    <style name="code_nopadding" parent="@android:style/TextAppearance.Medium">
+    	<item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">left</item>
+    </style>
+    <style name="code" parent="@style/code_nopadding">
+        <item name="android:layout_marginRight">20dp</item>
+    </style>
+	<style name="cheatsheettable">
+	    <item name="android:layout_margin">20dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+  	</style>
+    <style name="cheatsheetrow">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:layout_marginRight">20dp</item>
+    </style>
+    <style name="cheatsheettoprow" parent="@style/cheatsheetrow">
+        <item name="android:layout_marginTop">20dp</item>
+    </style>
+    <style name="cheatsheetbottomrow" parent="@style/cheatsheetrow">
+        <item name="android:layout_marginBottom">20dp</item>
+    </style>
+</resources>
