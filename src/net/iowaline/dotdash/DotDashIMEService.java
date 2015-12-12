@@ -86,11 +86,31 @@ public class DotDashIMEService extends InputMethodService implements
 		this.ditdahcharsPref = Integer.valueOf(this.prefs.getString(DotDashPrefs.DITDAHCHARS, Integer.toString(DITDAHCHARS_UNICODE)));
 	}
 
+	/**
+	 * Create (or nullify) the utility keyboard, depending on user's preferences.
+	 * 
+	 * @return True if the keyboard changed.
+	 */
+	private boolean setupUtilityKeyboard() {
+		boolean nullBefore = (utilityKeyboard == null);
+		if (this.prefs.getBoolean(DotDashPrefs.DASHKEYONLEFT, false)) {
+			utilityKeyboard = new Keyboard(this, R.xml.utilitykeyboard); 
+		} else {
+			utilityKeyboard = null;
+		}
+		
+		if (nullBefore && (utilityKeyboard == null)) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
 	@Override
 	public void onInitializeInterface() {
 		// TODO Auto-generated method stub
 		super.onInitializeInterface();
-		utilityKeyboard = new Keyboard(this, R.xml.utilitykeyboard);
+		this.setupUtilityKeyboard();
 		dotDashKeyboard = new DotDashKeyboard(this, R.xml.dotdash);
 		dotDashKeyboard.setupDotDashKeys(this.prefs.getBoolean(DotDashPrefs.DASHKEYONLEFT, false));
 		
@@ -512,8 +532,12 @@ public class DotDashIMEService extends InputMethodService implements
 		if (key.contentEquals(DotDashPrefs.NEWLINECODE)) {
 			updateNewlinePref();
 		} else if (key.contentEquals(DotDashPrefs.ENABLEUTILKBD)) {
+			this.setupUtilityKeyboard();
 			if (this.inputView != null) {
 				inputView.mEnableUtilityKeyboard = prefs.getBoolean(key, false);
+				if (!prefs.getBoolean(key, false)) {
+					inputView.setKeyboard(dotDashKeyboard);
+				}
 			}
 		} else if (key.contentEquals(DotDashPrefs.DITDAHCHARS)) {
 			this.ditdahcharsPref = Integer.valueOf(this.prefs.getString(DotDashPrefs.DITDAHCHARS, Integer.toString(DITDAHCHARS_UNICODE)));
