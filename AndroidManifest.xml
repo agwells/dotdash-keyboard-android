@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="net.iowaline.dotdash"
     android:versionCode="17"
-    android:versionName="1.2.1dev"
+    android:versionName="1.2.1"
 >
     <uses-sdk
         android:minSdkVersion="4"
