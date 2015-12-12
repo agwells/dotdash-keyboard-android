@@ -18,6 +18,8 @@
 	<string name="enter">Enter</string>
     <string name="newline_disabled">disabled</string>
     <string name="ditdahchars">Unicode or ASCII display</string>
+    <string name="dashkeyonleft">Dash key on the left</string>
+    <string name="dashkeyonleft_summary">By default the Dot key is on the left and the Dash key is on the right. Enable this if you\'d rather have the Dash key on the left and the Dot key on the right.</string>
     
     <string name="android_keyboard_settings">Keyboard Settings</string>
     <string name="android_keyboard_debug_settings">Keyboard Debug Settings</string>

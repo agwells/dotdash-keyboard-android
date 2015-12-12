@@ -92,8 +92,10 @@ public class DotDashIMEService extends InputMethodService implements
 		super.onInitializeInterface();
 		utilityKeyboard = new Keyboard(this, R.xml.utilitykeyboard);
 		dotDashKeyboard = new DotDashKeyboard(this, R.xml.dotdash);
-		spaceKey = dotDashKeyboard.getSpaceKey();
-		capsLockKey = dotDashKeyboard.getCapsLockKey();
+		dotDashKeyboard.setupDotDashKeys(this.prefs.getBoolean(DotDashPrefs.DASHKEYONLEFT, false));
+		
+		spaceKey = dotDashKeyboard.spaceKey;
+		capsLockKey = dotDashKeyboard.capsLockKey;
 		List<Keyboard.Key> keys = dotDashKeyboard.getKeys();
 		spaceKeyIndex = keys.indexOf(spaceKey);
 		capsLockKeyIndex = keys.indexOf(capsLockKey);
@@ -268,11 +270,11 @@ public class DotDashIMEService extends InputMethodService implements
 		// TODO The documentation for Keyboard.Key says I should be
 		// able to give a key a string as a keycode, but it
 		// errors out every time I try it.
-		case 0:
-		case 1:
+		case DotDashKeyboard.KEYCODE_DOT:
+		case DotDashKeyboard.KEYCODE_DASH:
 
 			if (charInProgress.length() < maxCodeLength) {
-				charInProgress.append(primaryCode == 1 ? "-" : ".");
+				charInProgress.append(primaryCode == DotDashKeyboard.KEYCODE_DASH ? "-" : ".");
 			}
 			// Log.d(TAG, "charInProgress: " + charInProgress);
 			break;
@@ -517,6 +519,11 @@ public class DotDashIMEService extends InputMethodService implements
 			this.ditdahcharsPref = Integer.valueOf(this.prefs.getString(DotDashPrefs.DITDAHCHARS, Integer.toString(DITDAHCHARS_UNICODE)));
 			if (inputView != null) {
 				inputView.clearCheatSheet();
+			}
+		} else if (key.contentEquals(DotDashPrefs.DASHKEYONLEFT)) {
+			boolean changed = this.dotDashKeyboard.setupDotDashKeys(this.prefs.getBoolean(key, false));
+			if (changed && this.inputView != null) {
+				this.inputView.invalidateAllKeys();
 			}
 		}
 	}

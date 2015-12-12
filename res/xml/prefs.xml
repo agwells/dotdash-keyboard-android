@@ -9,21 +9,29 @@
         android:persistent="true"
     />
 
-    <org.pocketworkstation.pckeyboard.AutoSummaryListPreference
-        android:key="newline"
-        android:title="@string/newline" 
-        android:entries="@array/newline_labels"
-        android:entryValues="@array/newline_values"
-        android:defaultValue=".-.-"
+    <CheckBoxPreference
+        android:key="dashkeyonleft"
+        android:title="@string/dashkeyonleft"
+        android:summary="@string/dashkeyonleft_summary"
+        android:defaultValue="false"
         android:persistent="true"
     />
-    
+        
     <org.pocketworkstation.pckeyboard.AutoSummaryListPreference
         android:key="ditdahchars"
         android:title="@string/ditdahchars" 
         android:entries="@array/ditdahchars_labels"
         android:entryValues="@array/ditdahchars_values"
         android:defaultValue="1"
+        android:persistent="true"
+    />
+    
+    <org.pocketworkstation.pckeyboard.AutoSummaryListPreference
+        android:key="newline"
+        android:title="@string/newline" 
+        android:entries="@array/newline_labels"
+        android:entryValues="@array/newline_values"
+        android:defaultValue=".-.-"
         android:persistent="true"
     />
     
@@ -34,5 +42,5 @@
         android:defaultValue="false"
         android:persistent="true"
     />
-
+    
 </PreferenceScreen>
