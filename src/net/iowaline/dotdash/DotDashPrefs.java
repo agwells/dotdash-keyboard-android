@@ -23,12 +23,12 @@ public class DotDashPrefs extends PreferenceActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			getFragmentManager().beginTransaction()
-			.replace(android.R.id.content, new DotDashSettingsFragment())
-			.commit();
-		} else {
+//		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+//			getFragmentManager().beginTransaction()
+//			.replace(android.R.id.content, new DotDashSettingsFragment())
+//			.commit();
+//		} else {
 			addPreferencesFromResource(R.xml.prefs);
-		}
+//		}
 	}
 }
