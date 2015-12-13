@@ -213,7 +213,12 @@ public class DotDashIMEService extends InputMethodService implements
 		List<Keyboard.Key> keys = dotDashKeyboard.getKeys();
 		spaceKeyIndex = keys.indexOf(spaceKey);
 		capsLockKeyIndex = keys.indexOf(capsLockKey);
-		
+		if (prefs.getBoolean("audio", false)) {
+			loadSoundPool();
+		}
+	}
+
+	private void loadSoundPool() {
 		soundpool = new SoundPool(1, AudioManager.STREAM_SYSTEM, 0);
 		soundpool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
 			
@@ -226,7 +231,7 @@ public class DotDashIMEService extends InputMethodService implements
 		dotSound = soundpool.load(fd.getFileDescriptor(), fd.getStartOffset(), (long)(fd.getLength() * 0.1), 1);
 		dashSound = soundpool.load(fd.getFileDescriptor(), fd.getStartOffset(), (long)(fd.getLength() * 0.3), 1);
 	}
-
+	
 	@SuppressLint("InflateParams")
 	@Override
 	public View onCreateInputView() {
@@ -320,12 +325,14 @@ public class DotDashIMEService extends InputMethodService implements
 			} else {
 				soundid = dashSound;
 			}
-			if (loaded) {
+			if (loaded && prefs.getBoolean("audio", false)) {
 				AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-				float actualVolume = (float) audioManager.getStreamVolume(AudioManager.STREAM_SYSTEM);
-				float maxVolume = (float) audioManager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM);
-				float volume = actualVolume / maxVolume;
-				soundpool.play(soundid, volume, volume, 1, 0, 1f);
+				if (!prefs.getBoolean("audioonlyonheadphones", true) || audioManager.isWiredHeadsetOn()) {
+					float actualVolume = (float) audioManager.getStreamVolume(AudioManager.STREAM_SYSTEM);
+					float maxVolume = (float) audioManager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM);
+					float volume = actualVolume / maxVolume;
+					soundpool.play(soundid, volume, volume, 1, 0, 1f);
+				}
 			}
 
 			if (charInProgress.length() < maxCodeLength) {
@@ -583,6 +590,17 @@ public class DotDashIMEService extends InputMethodService implements
 			boolean changed = this.dotDashKeyboard.setupDotDashKeys(this.prefs.getBoolean(key, false));
 			if (changed && this.inputView != null) {
 				this.inputView.invalidateAllKeys();
+			}
+		} else if (key.contentEquals("audio")) {
+			if (prefs.getBoolean(key, false)) {
+				loaded = false;
+				loadSoundPool();
+			} else {
+				if (soundpool != null) {
+					soundpool.release();
+					soundpool = null;
+					loaded = false;
+				}
 			}
 		}
 	}

@@ -42,5 +42,20 @@
         android:defaultValue="false"
         android:persistent="true"
     />
+
+    <CheckBoxPreference 
+        android:key="audio"
+        android:title="Enable audio"
+        android:defaultValue="false"
+        android:persistent="true"
+    />
+    
+    <CheckBoxPreference
+        android:key="audioonlyonheadphones"
+        android:title="Only on headphones"
+        android:defaultValue="true"
+        android:persistent="true"
+        android:dependency="audio" 
+    />
     
 </PreferenceScreen>
