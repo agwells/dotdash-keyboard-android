@@ -5,8 +5,10 @@
     android:versionCode="17"
     android:versionName="1.2.1"
 >
+    <!-- Raising minsdk to 8 in order to be able to call 
+    SoundPool.setOnLoadCompleteListener() -->
     <uses-sdk
-        android:minSdkVersion="4"
+        android:minSdkVersion="8"
         android:targetSdkVersion="23" />
     <application
         android:label="@string/app_name"

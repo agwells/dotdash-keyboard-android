@@ -1,5 +1,6 @@
 package net.iowaline.dotdash;
 
+import java.io.FileDescriptor;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
@@ -7,9 +8,12 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.res.AssetFileDescriptor;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.View;
@@ -74,6 +78,11 @@ public class DotDashIMEService extends InputMethodService implements
 	public int ditdahcharsPref;
 	private int maxCodeLength;
 
+	private SoundPool soundpool;
+	boolean loaded = false;
+	private int dotSound;
+	private int dashSound;
+	
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -204,6 +213,18 @@ public class DotDashIMEService extends InputMethodService implements
 		List<Keyboard.Key> keys = dotDashKeyboard.getKeys();
 		spaceKeyIndex = keys.indexOf(spaceKey);
 		capsLockKeyIndex = keys.indexOf(capsLockKey);
+		
+		soundpool = new SoundPool(1, AudioManager.STREAM_SYSTEM, 0);
+		soundpool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+			
+			@Override
+			public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+				loaded = true;
+			}
+		});
+		AssetFileDescriptor fd = getResources().openRawResourceFd(R.raw.tone800hz);
+		dotSound = soundpool.load(fd.getFileDescriptor(), fd.getStartOffset(), (long)(fd.getLength() * 0.1), 1);
+		dashSound = soundpool.load(fd.getFileDescriptor(), fd.getStartOffset(), (long)(fd.getLength() * 0.3), 1);
 	}
 
 	@SuppressLint("InflateParams")
@@ -292,6 +313,20 @@ public class DotDashIMEService extends InputMethodService implements
 		// errors out every time I try it.
 		case DotDashKeyboard.KEYCODE_DOT:
 		case DotDashKeyboard.KEYCODE_DASH:
+
+			int soundid;
+			if (primaryCode == DotDashKeyboard.KEYCODE_DOT) {
+				soundid = dotSound;
+			} else {
+				soundid = dashSound;
+			}
+			if (loaded) {
+				AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+				float actualVolume = (float) audioManager.getStreamVolume(AudioManager.STREAM_SYSTEM);
+				float maxVolume = (float) audioManager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM);
+				float volume = actualVolume / maxVolume;
+				soundpool.play(soundid, volume, volume, 1, 0, 1f);
+			}
 
 			if (charInProgress.length() < maxCodeLength) {
 				charInProgress.append(primaryCode == DotDashKeyboard.KEYCODE_DASH ? "-" : ".");
