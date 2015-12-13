@@ -84,41 +84,6 @@ public class DotDashIMEService extends InputMethodService implements
 		this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		this.prefs.registerOnSharedPreferenceChangeListener(this);
 		this.ditdahcharsPref = Integer.valueOf(this.prefs.getString(DotDashPrefs.DITDAHCHARS, Integer.toString(DITDAHCHARS_UNICODE)));
-	}
-
-	/**
-	 * Create (or nullify) the utility keyboard, depending on user's preferences.
-	 * 
-	 * @return True if the keyboard changed.
-	 */
-	private boolean setupUtilityKeyboard() {
-		boolean nullBefore = (utilityKeyboard == null);
-		if (this.prefs.getBoolean(DotDashPrefs.DASHKEYONLEFT, false)) {
-			utilityKeyboard = new Keyboard(this, R.xml.utilitykeyboard); 
-		} else {
-			utilityKeyboard = null;
-		}
-		
-		if (nullBefore && (utilityKeyboard == null)) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-	
-	@Override
-	public void onInitializeInterface() {
-		// TODO Auto-generated method stub
-		super.onInitializeInterface();
-		this.setupUtilityKeyboard();
-		dotDashKeyboard = new DotDashKeyboard(this, R.xml.dotdash);
-		dotDashKeyboard.setupDotDashKeys(this.prefs.getBoolean(DotDashPrefs.DASHKEYONLEFT, false));
-		
-		spaceKey = dotDashKeyboard.spaceKey;
-		capsLockKey = dotDashKeyboard.capsLockKey;
-		List<Keyboard.Key> keys = dotDashKeyboard.getKeys();
-		spaceKeyIndex = keys.indexOf(spaceKey);
-		capsLockKeyIndex = keys.indexOf(capsLockKey);
 
 		// TODO Replace this with an XML file
 		morseMap = new Hashtable<String, String>();
@@ -204,6 +169,41 @@ public class DotDashIMEService extends InputMethodService implements
 			}
 		}
 		charInProgress = new StringBuilder(maxCodeLength);
+	}
+
+	/**
+	 * Create (or nullify) the utility keyboard, depending on user's preferences.
+	 * 
+	 * @return True if the keyboard changed.
+	 */
+	private boolean setupUtilityKeyboard() {
+		boolean nullBefore = (utilityKeyboard == null);
+		if (this.prefs.getBoolean(DotDashPrefs.DASHKEYONLEFT, false)) {
+			utilityKeyboard = new Keyboard(this, R.xml.utilitykeyboard); 
+		} else {
+			utilityKeyboard = null;
+		}
+		
+		if (nullBefore && (utilityKeyboard == null)) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	@Override
+	public void onInitializeInterface() {
+		// TODO Auto-generated method stub
+		super.onInitializeInterface();
+		this.setupUtilityKeyboard();
+		dotDashKeyboard = new DotDashKeyboard(this, R.xml.dotdash);
+		dotDashKeyboard.setupDotDashKeys(this.prefs.getBoolean(DotDashPrefs.DASHKEYONLEFT, false));
+		
+		spaceKey = dotDashKeyboard.spaceKey;
+		capsLockKey = dotDashKeyboard.capsLockKey;
+		List<Keyboard.Key> keys = dotDashKeyboard.getKeys();
+		spaceKeyIndex = keys.indexOf(spaceKey);
+		capsLockKeyIndex = keys.indexOf(capsLockKey);
 	}
 
 	@SuppressLint("InflateParams")
