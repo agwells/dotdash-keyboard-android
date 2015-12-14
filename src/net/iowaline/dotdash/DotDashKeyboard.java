@@ -71,4 +71,10 @@ public class DotDashKeyboard extends Keyboard {
 		
 		return false;
 	}
+	
+	@Override
+	public boolean setShifted(boolean shiftState) {
+		// TODO Auto-generated method stub
+		return super.setShifted(shiftState);
+	}
 }

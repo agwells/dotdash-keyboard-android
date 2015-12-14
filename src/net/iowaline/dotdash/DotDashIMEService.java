@@ -38,11 +38,11 @@ public class DotDashIMEService extends InputMethodService implements
 	private static final int CAPS_LOCK_OFF = 0;
 	private static final int CAPS_LOCK_NEXT = 1;
 	private static final int CAPS_LOCK_ALL = 2;
-	private Integer capsLockState = CAPS_LOCK_OFF;
+	private int capsLockState = CAPS_LOCK_OFF;
 
 	private static final int AUTO_CAP_MIDSENTENCE = 0;
 	private static final int AUTO_CAP_SENTENCE_ENDED = 1;
-	private Integer autoCapState = AUTO_CAP_MIDSENTENCE;
+	private int autoCapState = AUTO_CAP_MIDSENTENCE;
 	
 //	private static final String BULLET = "∙";
 //	private static final String BULLET_OPERATOR="∙";
@@ -411,14 +411,14 @@ public class DotDashIMEService extends InputMethodService implements
 
 		case KeyEvent.KEYCODE_SHIFT_LEFT:
 			switch (capsLockState) {
-			case CAPS_LOCK_OFF:
-				capsLockState = CAPS_LOCK_NEXT;
-				break;
-			case CAPS_LOCK_NEXT:
-				capsLockState = CAPS_LOCK_ALL;
-				break;
-			default:
-				capsLockState = CAPS_LOCK_OFF;
+				case CAPS_LOCK_OFF:
+					capsLockState = CAPS_LOCK_NEXT;
+					break;
+				case CAPS_LOCK_NEXT:
+					capsLockState = CAPS_LOCK_ALL;
+					break;
+				default:
+					capsLockState = CAPS_LOCK_OFF;
 			}
 			updateCapsLockKey(true);
 			break;
@@ -477,20 +477,20 @@ public class DotDashIMEService extends InputMethodService implements
 
 		Context context = this.getApplicationContext();
 		switch (capsLockState) {
-		case CAPS_LOCK_OFF:
-			capsLockKey.on = false;
-			capsLockKey.label = context.getText(R.string.caps_lock_off);
-			break;
-		case CAPS_LOCK_NEXT:
-			capsLockKey.on = false;
-			capsLockKey.label = context.getText(R.string.caps_lock_next);
-			break;
-		case CAPS_LOCK_ALL:
-			capsLockKey.on = true;
-			capsLockKey.label = context.getText(R.string.caps_lock_all);
-			break;
+			case CAPS_LOCK_OFF:
+				capsLockKey.on = false;
+				capsLockKey.label = context.getText(R.string.caps_lock_off);
+				break;
+			case CAPS_LOCK_NEXT:
+				capsLockKey.on = false;
+				capsLockKey.label = context.getText(R.string.caps_lock_next);
+				break;
+			case CAPS_LOCK_ALL:
+				capsLockKey.on = true;
+				capsLockKey.label = context.getText(R.string.caps_lock_all);
+				break;
 		}
-
+		
 		if (refreshScreen) {
 
 			// Wrapping this in a try/catch block to avoid crashes in Android
@@ -549,13 +549,13 @@ public class DotDashIMEService extends InputMethodService implements
 		// Log.d(TAG, "onStartInputView");
 		super.onStartInputView(info, restarting);
 
-		// Wrapping this in a try/catch block to avoid crashes in Android 2.1
-		// and earlier
-		try {
-			inputView.invalidateKey(spaceKeyIndex);
-		} catch (IllegalArgumentException iae) {
-			// It doesn't matter if the operation failed, so just ignore this
-		}
+//		// Wrapping this in a try/catch block to avoid crashes in Android 2.1
+//		// and earlier
+//		try {
+//			inputView.invalidateKey(spaceKeyIndex);
+//		} catch (IllegalArgumentException iae) {
+//			// It doesn't matter if the operation failed, so just ignore this
+//		}
 		updateAutoCap();
 		updateCapsLockKey(true);
 	};
