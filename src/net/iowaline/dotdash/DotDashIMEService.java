@@ -308,123 +308,124 @@ public class DotDashIMEService extends InputMethodService implements
 	 */
 	public void onKeyMorse(int primaryCode, int[] keyCodes) {
 		// Log.d(TAG, "primaryCode: " + Integer.toString(primaryCode));
-		String curCharMatch = morseMap.get(charInProgress.toString());
+		//String curCharMatch = morseMap.get(charInProgress.toString());
 
 		switch (primaryCode) {
 
-		// 0 represents a dot, 1 represents a dash
-		// TODO The documentation for Keyboard.Key says I should be
-		// able to give a key a string as a keycode, but it
-		// errors out every time I try it.
-		case DotDashKeyboard.KEYCODE_DOT:
-		case DotDashKeyboard.KEYCODE_DASH:
-
-			int soundid;
-			if (primaryCode == DotDashKeyboard.KEYCODE_DOT) {
-				soundid = dotSound;
-			} else {
-				soundid = dashSound;
-			}
-			if (loaded && prefs.getBoolean("audio", false)) {
-				AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-				if (!prefs.getBoolean("audioonlyonheadphones", true) || audioManager.isWiredHeadsetOn()) {
-					float actualVolume = (float) audioManager.getStreamVolume(AudioManager.STREAM_SYSTEM);
-					float maxVolume = (float) audioManager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM);
-					float volume = actualVolume / maxVolume;
-					soundpool.play(soundid, volume, volume, 1, 0, 1f);
-				}
-			}
-
-			if (charInProgress.length() < maxCodeLength) {
-				charInProgress.append(primaryCode == DotDashKeyboard.KEYCODE_DASH ? "-" : ".");
-			}
-			// Log.d(TAG, "charInProgress: " + charInProgress);
-			break;
-
-		// Space button ends the current dotdash sequence
-		// Space twice in a row sends through a standard space character
-		case KeyEvent.KEYCODE_SPACE:
-			if (charInProgress.length() == 0) {
-				getCurrentInputConnection().commitText(" ", 1);
-
-				if (autoCapState == AUTO_CAP_SENTENCE_ENDED
-						&& prefs.getBoolean(DotDashPrefs.AUTOCAP, false)) {
-					capsLockState = CAPS_LOCK_NEXT;
-					updateCapsLockKey(true);
-				}
-			} else {
-				// Log.d(TAG, "Pressed space, look for " +
-				// charInProgress.toString());
-
-				if (curCharMatch != null) {
-
-					if (curCharMatch.contentEquals("\n")) {
-						sendDownUpKeyEvents(KeyEvent.KEYCODE_ENTER);
-					} else if (curCharMatch.contentEquals("END")) {
-						requestHideSelf(0);
-						inputView.closing();
+			// 0 represents a dot, 1 represents a dash
+			// TODO The documentation for Keyboard.Key says I should be
+			// able to give a key a string as a keycode, but it
+			// errors out every time I try it.
+			case DotDashKeyboard.KEYCODE_DOT:
+			case DotDashKeyboard.KEYCODE_DASH:
+	
+				if (loaded && prefs.getBoolean("audio", false)) {
+					int soundid;
+					if (primaryCode == DotDashKeyboard.KEYCODE_DOT) {
+						soundid = dotSound;
 					} else {
+						soundid = dashSound;
+					}
 
-						boolean uppercase = false;
-						if (capsLockState == CAPS_LOCK_NEXT) {
-							uppercase = true;
-							capsLockState = CAPS_LOCK_OFF;
-							updateCapsLockKey(true);
-						} else if (capsLockState == CAPS_LOCK_ALL) {
-							uppercase = true;
-						}
-						if (uppercase) {
-							// Since we only support the Latin alphabet, I may as well use Locale.US
-							curCharMatch = curCharMatch.toUpperCase(Locale.US);
-						}
-
-						// Log.d(TAG, "Char identified as " + curCharMatch);
-						InputConnection ic = getCurrentInputConnection();
-						if (ic != null) {
-							ic.commitText(curCharMatch, curCharMatch.length());
-						}
-								
+					AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+					if (!prefs.getBoolean("audioonlyonheadphones", true) || audioManager.isWiredHeadsetOn()) {
+						float actualVolume = (float) audioManager.getStreamVolume(AudioManager.STREAM_SYSTEM);
+						float maxVolume = (float) audioManager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM);
+						float volume = actualVolume / maxVolume;
+						soundpool.play(soundid, volume, volume, 1, 0, 1f);
 					}
 				}
-			}
-			clearCharInProgress();
-			break;
-
-		// If there's a character in progress, clear it
-		// otherwise, send through a backspace keypress
-		case KeyEvent.KEYCODE_DEL:
-			if (charInProgress.length() > 0) {
-				clearCharInProgress();
-			} else {
-				sendDownUpKeyEvents(primaryCode);
-				clearCharInProgress();
-				updateSpaceKey(true);
-
-				if (capsLockState == CAPS_LOCK_NEXT) {
-					// If you've hit delete and you were in caps_next state,
-					// then caps_off
-					capsLockState = CAPS_LOCK_OFF;
-					updateCapsLockKey(true);
+	
+				if (charInProgress.length() < maxCodeLength) {
+					charInProgress.append(primaryCode == DotDashKeyboard.KEYCODE_DASH ? "-" : ".");
+					updateSpaceKey(true);
 				}
-			}
-			break;
-
-		case KeyEvent.KEYCODE_SHIFT_LEFT:
-			switch (capsLockState) {
-				case CAPS_LOCK_OFF:
-					capsLockState = CAPS_LOCK_NEXT;
-					break;
-				case CAPS_LOCK_NEXT:
-					capsLockState = CAPS_LOCK_ALL;
-					break;
-				default:
-					capsLockState = CAPS_LOCK_OFF;
-			}
-			updateCapsLockKey(true);
-			break;
+				// Log.d(TAG, "charInProgress: " + charInProgress);
+				break;
+	
+			// Space button ends the current dotdash sequence
+			// Space twice in a row sends through a standard space character
+			case KeyEvent.KEYCODE_SPACE:
+				if (charInProgress.length() == 0) {
+					getCurrentInputConnection().commitText(" ", 1);
+	
+					if (autoCapState == AUTO_CAP_SENTENCE_ENDED
+							&& prefs.getBoolean(DotDashPrefs.AUTOCAP, false)) {
+						capsLockState = CAPS_LOCK_NEXT;
+						updateCapsLockKey(true);
+					}
+				} else {
+					// Log.d(TAG, "Pressed space, look for " +
+					// charInProgress.toString());
+	
+					String curCharMatch  = morseMap.get(charInProgress.toString());
+					if (curCharMatch != null) {
+						
+						if (curCharMatch.contentEquals("\n")) {
+							sendDownUpKeyEvents(KeyEvent.KEYCODE_ENTER);
+						} else if (curCharMatch.contentEquals("END")) {
+							requestHideSelf(0);
+							inputView.closing();
+						} else {
+	
+							boolean uppercase = false;
+							if (capsLockState == CAPS_LOCK_NEXT) {
+								uppercase = true;
+								capsLockState = CAPS_LOCK_OFF;
+								updateCapsLockKey(true);
+							} else if (capsLockState == CAPS_LOCK_ALL) {
+								uppercase = true;
+							}
+							if (uppercase) {
+								// Since we only support the Latin alphabet, I may as well use Locale.US
+								curCharMatch = curCharMatch.toUpperCase(Locale.US);
+							}
+	
+							// Log.d(TAG, "Char identified as " + curCharMatch);
+							InputConnection ic = getCurrentInputConnection();
+							if (ic != null) {
+								ic.commitText(curCharMatch, curCharMatch.length());
+							}
+									
+						}
+					}
+					clearCharInProgress();
+					updateSpaceKey(false);
+				}
+				break;
+	
+			// If there's a character in progress, clear it
+			// otherwise, send through a backspace keypress
+			case KeyEvent.KEYCODE_DEL:
+				if (charInProgress.length() > 0) {
+					clearCharInProgress();
+					updateSpaceKey(true);
+				} else {
+					sendDownUpKeyEvents(primaryCode);
+	
+					if (capsLockState == CAPS_LOCK_NEXT) {
+						// If you've hit delete and you were in caps_next state,
+						// then caps_off
+						capsLockState = CAPS_LOCK_OFF;
+						updateCapsLockKey(true);
+					}
+				}
+				break;
+	
+			case KeyEvent.KEYCODE_SHIFT_LEFT:
+				switch (capsLockState) {
+					case CAPS_LOCK_OFF:
+						capsLockState = CAPS_LOCK_NEXT;
+						break;
+					case CAPS_LOCK_NEXT:
+						capsLockState = CAPS_LOCK_ALL;
+						break;
+					default:
+						capsLockState = CAPS_LOCK_OFF;
+				}
+				updateCapsLockKey(false);
+				break;
 		}
-
-		updateSpaceKey(true);
 	}
 
 	private void clearCharInProgress() {

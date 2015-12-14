@@ -376,7 +376,7 @@ public class DotDashKeyboardView extends KeyboardView {
 						REPEAT_START_DELAY
 				);
 			}
-//			invalidateKey(service.dotDashKeyboard.getKeys().indexOf(k));
+			invalidateKey(service.dotDashKeyboard.getKeys().indexOf(k));
 		}
 		
 		// Keys that are in pressedKeys but not curPressedKeys
