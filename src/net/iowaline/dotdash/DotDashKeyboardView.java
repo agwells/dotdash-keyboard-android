@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.BounceInterpolator;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -407,17 +406,5 @@ public class DotDashKeyboardView extends KeyboardView {
 //		}
 
 		return true;
-	}
-	
-	@Override
-	public void invalidateKey(int keyIndex) {
-		// TODO Auto-generated method stub
-		super.invalidateKey(keyIndex);
-	}
-	
-	@Override
-	public void invalidateAllKeys() {
-		// TODO Auto-generated method stub
-		super.invalidateAllKeys();
 	}
 }

@@ -552,13 +552,9 @@ public class DotDashIMEService extends InputMethodService implements
 
 //		// Wrapping this in a try/catch block to avoid crashes in Android 2.1
 //		// and earlier
-//		try {
-//			inputView.invalidateKey(spaceKeyIndex);
-//		} catch (IllegalArgumentException iae) {
-//			// It doesn't matter if the operation failed, so just ignore this
-//		}
 		updateAutoCap();
 		updateCapsLockKey(true);
+		updateSpaceKey(true);
 	};
 
 	@Override
