@@ -1,6 +1,8 @@
 package net.iowaline.dotdash;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import android.annotation.SuppressLint;
@@ -10,6 +12,7 @@ import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -45,9 +48,10 @@ public class DotDashKeyboardView extends KeyboardView {
     private static final int REPEAT_START_DELAY = 400;
     private static final int LONGPRESS_TIMEOUT = ViewConfiguration.getLongPressTimeout();
     private static final int DEBOUNCE_TIMEOUT = 50; //70;
+    // TODO: Make this into a SparseArray somehow?
+    public Map<Keyboard.Key, Long> bouncewaits = new HashMap<Keyboard.Key, Long>();
     
     private static final int MSG_KEY_REPEAT = 1;
-    private static final int MSG_KEY_BOUNCE = 2;
     
     Handler handler = new Handler(
 		new Handler.Callback() {
@@ -63,10 +67,6 @@ public class DotDashKeyboardView extends KeyboardView {
 						
 						getOnKeyboardActionListener().onKey(k.codes[0], k.codes);
 						handler.sendMessageDelayed(handler.obtainMessage(MSG_KEY_REPEAT, k), REPEAT_INTERVAL);
-						break;
-					case MSG_KEY_BOUNCE:
-						// Do nothing! This message was just there to prevent people from accidentally
-						// touching the same key twice in quick succession.
 						break;
 				}
 
@@ -361,7 +361,11 @@ public class DotDashKeyboardView extends KeyboardView {
 		Set<Keyboard.Key> newlyPressed = new HashSet<Keyboard.Key>(curPressedKeys);
 		newlyPressed.removeAll(pressedKeys);
 		for (Keyboard.Key k : newlyPressed) {
-			if (handler.hasMessages(MSG_KEY_BOUNCE, k) || k.pressed) {
+			if (k.pressed) {
+				continue;
+			}
+			Long bouncewait = this.bouncewaits.get(k);
+			if (bouncewait != null && bouncewait > SystemClock.elapsedRealtime()) {
 				continue;
 			}
 
@@ -392,10 +396,7 @@ public class DotDashKeyboardView extends KeyboardView {
 			if (k.repeatable) {
 				handler.removeMessages(MSG_KEY_REPEAT, k);
 			}
-			handler.sendMessageDelayed(
-					handler.obtainMessage(DotDashKeyboardView.MSG_KEY_BOUNCE, k), 
-					DotDashKeyboardView.DEBOUNCE_TIMEOUT
-			); 
+			this.bouncewaits.put(k, SystemClock.elapsedRealtime() + DotDashKeyboardView.DEBOUNCE_TIMEOUT);
 			invalidateKey(service.dotDashKeyboard.getKeys().indexOf(k));
 		}
 		
