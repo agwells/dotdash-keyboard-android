@@ -82,8 +82,8 @@ public class DotDashIMEService extends InputMethodService implements
 	boolean loaded = false;
 	private int dotSound;
 	private int dashSound;
-	public boolean iambic;
-	public boolean iambicmodeb;
+	public boolean iambic = false;
+	public boolean iambicmodeb = false;
 	
 	@Override
 	public void onCreate() {

@@ -104,10 +104,10 @@ public class DotDashKeyboardView extends KeyboardView {
 							iambic_both_pressed = false;
 						} else if (service.iambicmodeb && iambic_both_pressed) {
 							// Mode b. Send one more signal, with the opposite of the last key
-							if (leftkeypressed) {
-								nextkeytosend = service.dotDashKeyboard.leftDotdashKey;
-							} else {
+							if (lastkeysent == service.dotDashKeyboard.leftDotdashKey) {
 								nextkeytosend = service.dotDashKeyboard.rightDotdashKey;
+							} else {
+								nextkeytosend = service.dotDashKeyboard.leftDotdashKey;
 							}
 							iambic_both_pressed = false;
 						}
@@ -392,13 +392,22 @@ public class DotDashKeyboardView extends KeyboardView {
 					switch (actionmasked) {
 						case MotionEvent.ACTION_DOWN:
 						case MotionEvent.ACTION_MOVE:
+						case MotionEvent.ACTION_POINTER_DOWN:
 							curPressedKeys.add(touchedKey);
 							break;
 						case MotionEvent.ACTION_UP:
+						case MotionEvent.ACTION_POINTER_UP:
+						case MotionEvent.ACTION_OUTSIDE:
+						// TODO: The docs say about ACTION_CANCEL: "You should treat this as an
+						// up event, but not perform any action that you normally would".
+						// So to really do that I'll need to put some further logic into this.
+						// (How do you cancel a keypress?)
 						case MotionEvent.ACTION_CANCEL:
 							curPressedKeys.remove(touchedKey);
 							break;
 					}
+				} else {
+					curPressedKeys.add(touchedKey);
 				}
 			}
 		}
@@ -435,7 +444,7 @@ public class DotDashKeyboardView extends KeyboardView {
 					getOnKeyboardActionListener().onKey(k.codes[0], k.codes);
 					
 					handler.sendMessageDelayed(
-							handler.obtainMessage(MSG_IAMBIC_PLAYING, k.codes[0], 0),
+							handler.obtainMessage(MSG_IAMBIC_PLAYING, k),
 							DotDashKeyboardView.get_iambic_delay(k)
 					);
 				}
