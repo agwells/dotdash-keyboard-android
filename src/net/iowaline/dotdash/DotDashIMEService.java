@@ -84,6 +84,7 @@ public class DotDashIMEService extends InputMethodService implements
 	private int dashSound;
 	public boolean iambic = false;
 	public boolean iambicmodeb = false;
+	public boolean autocommit = false;
 	
 	@Override
 	public void onCreate() {
@@ -97,6 +98,7 @@ public class DotDashIMEService extends InputMethodService implements
 		this.ditdahcharsPref = Integer.valueOf(this.prefs.getString(DotDashPrefs.DITDAHCHARS, Integer.toString(DITDAHCHARS_UNICODE)));
 		this.iambic = this.prefs.getBoolean("iambic", false);
 		this.iambicmodeb = this.prefs.getBoolean("iambicmodeb", false);
+		this.autocommit = this.prefs.getBoolean("autocommit", false);
 
 		// TODO Replace this with an XML file
 		morseMap = new Hashtable<String, String>();
@@ -217,7 +219,7 @@ public class DotDashIMEService extends InputMethodService implements
 		List<Keyboard.Key> keys = dotDashKeyboard.getKeys();
 		spaceKeyIndex = keys.indexOf(spaceKey);
 		capsLockKeyIndex = keys.indexOf(capsLockKey);
-		if (prefs.getBoolean("audio", false)) {
+		if (isAudio()) {
 			loadSoundPool();
 		}
 	}
@@ -323,7 +325,12 @@ public class DotDashIMEService extends InputMethodService implements
 			case DotDashKeyboard.KEYCODE_DOT:
 			case DotDashKeyboard.KEYCODE_DASH:
 	
-				if (loaded && prefs.getBoolean("audio", false)) {
+				if (charInProgress.length() < maxCodeLength) {
+					charInProgress.append(primaryCode == DotDashKeyboard.KEYCODE_DASH ? "-" : ".");
+					updateSpaceKey(true);
+				}
+				
+				if (loaded && isAudio()) {
 					int soundid;
 					if (primaryCode == DotDashKeyboard.KEYCODE_DOT) {
 						soundid = dotSound;
@@ -339,17 +346,14 @@ public class DotDashIMEService extends InputMethodService implements
 						soundpool.play(soundid, volume, volume, 1, 0, 1f);
 					}
 				}
-	
-				if (charInProgress.length() < maxCodeLength) {
-					charInProgress.append(primaryCode == DotDashKeyboard.KEYCODE_DASH ? "-" : ".");
-					updateSpaceKey(true);
-				}
+
 				// Log.d(TAG, "charInProgress: " + charInProgress);
 				break;
 	
 			// Space button ends the current dotdash sequence
 			// Space twice in a row sends through a standard space character
 			case KeyEvent.KEYCODE_SPACE:
+				inputView.handler.removeMessages(DotDashKeyboardView.MSG_AUTOCOMMIT);
 				if (charInProgress.length() == 0) {
 					getCurrentInputConnection().commitText(" ", 1);
 	
@@ -359,48 +363,14 @@ public class DotDashIMEService extends InputMethodService implements
 						updateCapsLockKey(true);
 					}
 				} else {
-					// Log.d(TAG, "Pressed space, look for " +
-					// charInProgress.toString());
-	
-					String curCharMatch  = morseMap.get(charInProgress.toString());
-					if (curCharMatch != null) {
-						
-						if (curCharMatch.contentEquals("\n")) {
-							sendDownUpKeyEvents(KeyEvent.KEYCODE_ENTER);
-						} else if (curCharMatch.contentEquals("END")) {
-							requestHideSelf(0);
-							inputView.closing();
-						} else {
-	
-							boolean uppercase = false;
-							if (capsLockState == CAPS_LOCK_NEXT) {
-								uppercase = true;
-								capsLockState = CAPS_LOCK_OFF;
-								updateCapsLockKey(true);
-							} else if (capsLockState == CAPS_LOCK_ALL) {
-								uppercase = true;
-							}
-							if (uppercase) {
-								// Since we only support the Latin alphabet, I may as well use Locale.US
-								curCharMatch = curCharMatch.toUpperCase(Locale.US);
-							}
-	
-							// Log.d(TAG, "Char identified as " + curCharMatch);
-							InputConnection ic = getCurrentInputConnection();
-							if (ic != null) {
-								ic.commitText(curCharMatch, curCharMatch.length());
-							}
-									
-						}
-					}
-					clearCharInProgress();
-					updateSpaceKey(false);
+					commitCodeGroup(false);
 				}
 				break;
 	
 			// If there's a character in progress, clear it
 			// otherwise, send through a backspace keypress
 			case KeyEvent.KEYCODE_DEL:
+				inputView.handler.removeMessages(DotDashKeyboardView.MSG_AUTOCOMMIT);
 				if (charInProgress.length() > 0) {
 					clearCharInProgress();
 					updateSpaceKey(true);
@@ -430,6 +400,52 @@ public class DotDashIMEService extends InputMethodService implements
 				updateCapsLockKey(false);
 				break;
 		}
+	}
+
+	public boolean isAudio() {
+		return prefs.getBoolean("audio", false);
+	}
+
+	public void commitCodeGroup(boolean refreshScreen) {
+		if (charInProgress.length() == 0) {
+			return;
+		}
+
+		String curCharMatch  = morseMap.get(charInProgress.toString());
+		if (curCharMatch == null) {
+			return;
+		}
+			
+		if (curCharMatch.contentEquals("\n")) {
+			sendDownUpKeyEvents(KeyEvent.KEYCODE_ENTER);
+		} else if (curCharMatch.contentEquals("END")) {
+			requestHideSelf(0);
+			inputView.closing();
+		} else {
+
+			boolean uppercase = false;
+			if (capsLockState == CAPS_LOCK_NEXT) {
+				uppercase = true;
+				capsLockState = CAPS_LOCK_OFF;
+				updateCapsLockKey(true);
+			} else if (capsLockState == CAPS_LOCK_ALL) {
+				uppercase = true;
+			}
+			if (uppercase) {
+				// Since we only support the Latin alphabet, I may as well use Locale.US
+				curCharMatch = curCharMatch.toUpperCase(Locale.US);
+			}
+
+			// Log.d(TAG, "Char identified as " + curCharMatch);
+			InputConnection ic = getCurrentInputConnection();
+			if (ic != null) {
+				ic.commitText(curCharMatch, curCharMatch.length());
+			}
+					
+		}
+
+		clearCharInProgress();
+		updateSpaceKey(refreshScreen);
 	}
 
 	private void clearCharInProgress() {
@@ -607,6 +623,8 @@ public class DotDashIMEService extends InputMethodService implements
 			this.iambic = prefs.getBoolean(key, false);
 		} else if (key.contentEquals("iambicmodeb")) {
 			this.iambicmodeb = prefs.getBoolean(key, false);
+		} else if (key.contentEquals("autocommit")) {
+			this.autocommit = prefs.getBoolean(key, false);
 		}
 	}
 

@@ -73,4 +73,11 @@
         android:dependency="iambic"
     />
     
+    <CheckBoxPreference
+        android:key="autocommit"
+        android:title="Autocommit code groups"
+        android:defaultValue="false"
+        android:persistent="true"
+    />
+    
 </PreferenceScreen>

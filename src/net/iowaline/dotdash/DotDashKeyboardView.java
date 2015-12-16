@@ -49,11 +49,13 @@ public class DotDashKeyboardView extends KeyboardView {
     private static final int LONGPRESS_TIMEOUT = ViewConfiguration.getLongPressTimeout();
     private static final int DEBOUNCE_TIMEOUT = 50; //70;
     private static final int IAMBIC_DOTLENGTH = 100;
+	public static final long AUTOCOMMIT_DELAY = IAMBIC_DOTLENGTH * 4;
     // TODO: Make this into a SparseArray somehow?
     public Map<Keyboard.Key, Long> bouncewaits = new HashMap<Keyboard.Key, Long>();
     
     private static final int MSG_KEY_REPEAT = 1;
     private static final int MSG_IAMBIC_PLAYING = 2;
+	public static final int MSG_AUTOCOMMIT = 3;
     // TODO: according to this documentation: http://www.morsecode.nl/iambic.PDF
     // ... it appears that the logic is supposed to be that it "locks" if the
     // opposite key is still held down at the halfway point of the preceeding
@@ -116,7 +118,25 @@ public class DotDashKeyboardView extends KeyboardView {
 							getOnKeyboardActionListener().onKey(nextkeytosend.codes[0], nextkeytosend.codes);
 							handler.sendMessageDelayed(handler.obtainMessage(MSG_IAMBIC_PLAYING, nextkeytosend),
 									DotDashKeyboardView.get_iambic_delay(nextkeytosend));
+						} else {
+							// Iambic is done, so start the autocommit timer.
+							if (service.autocommit) {
+								long delay = DotDashKeyboardView.AUTOCOMMIT_DELAY;
+								// If audio is playing, we want to wait until the end of the tone before
+								// we start counting down for autocommit.
+								if (service.isAudio()) {
+									delay += DotDashKeyboardView.get_iambic_delay(lastkeysent);
+								}
+								handler.removeMessages(DotDashKeyboardView.MSG_AUTOCOMMIT);
+								handler.sendMessageDelayed(
+										handler.obtainMessage(DotDashKeyboardView.MSG_AUTOCOMMIT),
+										delay
+								);
+							}
 						}
+						break;
+					case MSG_AUTOCOMMIT:
+						service.commitCodeGroup(true);
 						break;
 				}
 
@@ -484,6 +504,28 @@ public class DotDashKeyboardView extends KeyboardView {
 			}
 			this.bouncewaits.put(k, SystemClock.elapsedRealtime() + DotDashKeyboardView.DEBOUNCE_TIMEOUT);
 			invalidateKey(service.dotDashKeyboard.getKeys().indexOf(k));
+			
+			// If we're not in iambic mode, then the release of a key is probably a decent time to start
+			// the autocommit timer.
+			if (
+					!service.iambic 
+					&& service.isAudio()
+					&& (k == service.dotDashKeyboard.leftDotdashKey || k == service.dotDashKeyboard.rightDotdashKey)
+					&& service.dotDashKeyboard.leftDotdashKey.pressed == false
+					&& service.dotDashKeyboard.rightDotdashKey.pressed == false
+			) {
+				long delay = DotDashKeyboardView.AUTOCOMMIT_DELAY;
+				// If audio is playing, we want to wait until the end of the tone before
+				// we start counting down for autocommit.
+				if (service.isAudio()) {
+					delay += DotDashKeyboardView.get_iambic_delay(k);
+				}
+				handler.removeMessages(DotDashKeyboardView.MSG_AUTOCOMMIT);
+				handler.sendMessageDelayed(
+						handler.obtainMessage(DotDashKeyboardView.MSG_AUTOCOMMIT),
+						delay
+				);
+			}
 		}
 		
 		pressedKeys = curPressedKeys;

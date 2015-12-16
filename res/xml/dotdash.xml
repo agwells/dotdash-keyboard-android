@@ -56,7 +56,7 @@
 			android:keyLabel=" "
 			android:codes="62"
 			android:keyWidth="50%"
-            android:isRepeatable="true"
+            android:isRepeatable="false"
 			/>
 		<Key
 			android:keyIcon="@drawable/sym_keyboard_delete"
