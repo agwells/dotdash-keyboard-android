@@ -354,6 +354,9 @@ public class DotDashIMEService extends InputMethodService implements
 			// Space twice in a row sends through a standard space character
 			case KeyEvent.KEYCODE_SPACE:
 				inputView.handler.removeMessages(DotDashKeyboardView.MSG_AUTOCOMMIT);
+				inputView.handler.removeMessages(DotDashKeyboardView.MSG_IAMBIC_PLAYING);
+				inputView.iambic_both_pressed = false;
+				
 				if (charInProgress.length() == 0) {
 					getCurrentInputConnection().commitText(" ", 1);
 	
@@ -371,6 +374,9 @@ public class DotDashIMEService extends InputMethodService implements
 			// otherwise, send through a backspace keypress
 			case KeyEvent.KEYCODE_DEL:
 				inputView.handler.removeMessages(DotDashKeyboardView.MSG_AUTOCOMMIT);
+				inputView.handler.removeMessages(DotDashKeyboardView.MSG_IAMBIC_PLAYING);
+				inputView.iambic_both_pressed = false;
+
 				if (charInProgress.length() > 0) {
 					clearCharInProgress();
 					updateSpaceKey(true);

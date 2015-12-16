@@ -54,14 +54,14 @@ public class DotDashKeyboardView extends KeyboardView {
     public Map<Keyboard.Key, Long> bouncewaits = new HashMap<Keyboard.Key, Long>();
     
     private static final int MSG_KEY_REPEAT = 1;
-    private static final int MSG_IAMBIC_PLAYING = 2;
+    public static final int MSG_IAMBIC_PLAYING = 2;
 	public static final int MSG_AUTOCOMMIT = 3;
     // TODO: according to this documentation: http://www.morsecode.nl/iambic.PDF
     // ... it appears that the logic is supposed to be that it "locks" if the
     // opposite key is still held down at the halfway point of the preceeding
     // signal. So I will need to add some more logic there to get the timing
     // just right.
-    private boolean iambic_both_pressed = false;
+    boolean iambic_both_pressed = false;
     
     Handler handler = new Handler(
 		new Handler.Callback() {
