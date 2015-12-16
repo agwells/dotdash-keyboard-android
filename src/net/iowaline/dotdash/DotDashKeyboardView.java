@@ -48,10 +48,18 @@ public class DotDashKeyboardView extends KeyboardView {
     private static final int REPEAT_START_DELAY = 400;
     private static final int LONGPRESS_TIMEOUT = ViewConfiguration.getLongPressTimeout();
     private static final int DEBOUNCE_TIMEOUT = 50; //70;
+    private static final int IAMBIC_DOTLENGTH = 100;
     // TODO: Make this into a SparseArray somehow?
     public Map<Keyboard.Key, Long> bouncewaits = new HashMap<Keyboard.Key, Long>();
     
     private static final int MSG_KEY_REPEAT = 1;
+    private static final int MSG_IAMBIC_PLAYING = 2;
+    // TODO: according to this documentation: http://www.morsecode.nl/iambic.PDF
+    // ... it appears that the logic is supposed to be that it "locks" if the
+    // opposite key is still held down at the halfway point of the preceeding
+    // signal. So I will need to add some more logic there to get the timing
+    // just right.
+    private boolean iambic_both_pressed = false;
     
     Handler handler = new Handler(
 		new Handler.Callback() {
@@ -60,13 +68,55 @@ public class DotDashKeyboardView extends KeyboardView {
 			public boolean handleMessage(Message msg) {
 				switch (msg.what) {
 					case MSG_KEY_REPEAT:
-						Keyboard.Key k = (Keyboard.Key) msg.obj;
-						if (!k.pressed) {
+						Keyboard.Key repeatkey = (Keyboard.Key) msg.obj;
+						if (!repeatkey.pressed) {
 							return true;
 						}
 						
-						getOnKeyboardActionListener().onKey(k.codes[0], k.codes);
-						handler.sendMessageDelayed(handler.obtainMessage(MSG_KEY_REPEAT, k), REPEAT_INTERVAL);
+						if (repeatkey == service.dotDashKeyboard.leftDotdashKey || repeatkey == service.dotDashKeyboard.rightDotdashKey) {
+							
+						} else {
+							getOnKeyboardActionListener().onKey(repeatkey.codes[0], repeatkey.codes);
+							handler.sendMessageDelayed(handler.obtainMessage(MSG_KEY_REPEAT, repeatkey), REPEAT_INTERVAL);
+						}
+						break;
+					case MSG_IAMBIC_PLAYING:
+						Keyboard.Key lastkeysent = (Keyboard.Key) msg.obj;
+						Keyboard.Key nextkeytosend = null;
+						boolean leftkeypressed = service.dotDashKeyboard.leftDotdashKey.pressed;
+						boolean rightkeypressed = service.dotDashKeyboard.rightDotdashKey.pressed;
+						
+						// Iambic signal has just ended. Check to see if dot and/or dash are still held down
+						if (leftkeypressed && rightkeypressed) {
+							// Both are pressed, so send the opposite signal from what we just sent
+							if (lastkeysent == service.dotDashKeyboard.leftDotdashKey) {
+								nextkeytosend = service.dotDashKeyboard.rightDotdashKey;
+							} else {
+								nextkeytosend = service.dotDashKeyboard.leftDotdashKey;
+							}
+						} else if (leftkeypressed || rightkeypressed) {
+							// Only one is pressed. Send its signal.
+							if (leftkeypressed) {
+								nextkeytosend = service.dotDashKeyboard.leftDotdashKey;
+							} else {
+								nextkeytosend = service.dotDashKeyboard.rightDotdashKey;
+							}
+							iambic_both_pressed = false;
+						} else if (service.iambicmodeb && iambic_both_pressed) {
+							// Mode b. Send one more signal, with the opposite of the last key
+							if (leftkeypressed) {
+								nextkeytosend = service.dotDashKeyboard.leftDotdashKey;
+							} else {
+								nextkeytosend = service.dotDashKeyboard.rightDotdashKey;
+							}
+							iambic_both_pressed = false;
+						}
+						
+						if (nextkeytosend != null) {
+							getOnKeyboardActionListener().onKey(nextkeytosend.codes[0], nextkeytosend.codes);
+							handler.sendMessageDelayed(handler.obtainMessage(MSG_IAMBIC_PLAYING, nextkeytosend),
+									DotDashKeyboardView.get_iambic_delay(nextkeytosend));
+						}
 						break;
 				}
 
@@ -371,14 +421,41 @@ public class DotDashKeyboardView extends KeyboardView {
 
 //			k.onPressed();
 			k.pressed = true;
+
 			getOnKeyboardActionListener().onPress(k.codes[0]);
-			getOnKeyboardActionListener().onKey(k.codes[0], k.codes);
-			if (k.repeatable && !handler.hasMessages(MSG_KEY_REPEAT, k)) {
-				handler.sendMessageDelayed(
-						handler.obtainMessage(MSG_KEY_REPEAT, k),
-						REPEAT_START_DELAY
-				);
+
+			if (service.iambic && (k == service.dotDashKeyboard.leftDotdashKey || k == service.dotDashKeyboard.rightDotdashKey)) {
+				// In iambic mode, we only process the key if there's not already a signal going
+				// What matters is in the message handler, where we check the state of the keys
+				// when the current message ends.
+				//
+				// TODO: Actually... it might make more sense if the iambic timing was
+				// over in DotDashIMEService, using the onPress() method to trigger it.
+				if (!handler.hasMessages(MSG_IAMBIC_PLAYING)) {
+					getOnKeyboardActionListener().onKey(k.codes[0], k.codes);
+					
+					handler.sendMessageDelayed(
+							handler.obtainMessage(MSG_IAMBIC_PLAYING, k.codes[0], 0),
+							DotDashKeyboardView.get_iambic_delay(k)
+					);
+				}
+				
+				// Iambic mode B needs to know if both keys got pressed simultaneously while an Iambic message
+				// was in progress.
+				if (service.iambicmodeb && service.dotDashKeyboard.leftDotdashKey.pressed && service.dotDashKeyboard.rightDotdashKey.pressed) {
+					this.iambic_both_pressed = true;
+				}
+			} else {
+				getOnKeyboardActionListener().onKey(k.codes[0], k.codes);
+				
+				if (k.repeatable && !handler.hasMessages(MSG_KEY_REPEAT, k)) {
+					handler.sendMessageDelayed(
+							handler.obtainMessage(MSG_KEY_REPEAT, k),
+							REPEAT_START_DELAY
+					);
+				}
 			}
+			
 			invalidateKey(service.dotDashKeyboard.getKeys().indexOf(k));
 		}
 		
@@ -402,10 +479,20 @@ public class DotDashKeyboardView extends KeyboardView {
 		
 		pressedKeys = curPressedKeys;
 
-//		for (Keyboard.Key k : service.dotDashKeyboard.getKeys()) {
-//			Log.d(TAG, "Key " + String.valueOf(k.codes[0]) + " " + (k.pressed ? "down" : "up"));
-//		}
+		for (Keyboard.Key k : service.dotDashKeyboard.getKeys()) {
+			Log.d(TAG, "Key " + String.valueOf(k.codes[0]) + " " + (k.pressed ? "down" : "up"));
+		}
 
 		return true;
+	}
+	
+	public static long get_iambic_delay(Keyboard.Key k) {
+		if (k.codes[0] == DotDashKeyboard.KEYCODE_DOT) {
+			// a dot and the space after it
+			return IAMBIC_DOTLENGTH * 2;
+		} else {
+			// a dash (three dot lengths) and the space after it
+			return IAMBIC_DOTLENGTH * 4;
+		}
 	}
 }

@@ -82,6 +82,8 @@ public class DotDashIMEService extends InputMethodService implements
 	boolean loaded = false;
 	private int dotSound;
 	private int dashSound;
+	public boolean iambic;
+	public boolean iambicmodeb;
 	
 	@Override
 	public void onCreate() {
@@ -93,6 +95,8 @@ public class DotDashIMEService extends InputMethodService implements
 		this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		this.prefs.registerOnSharedPreferenceChangeListener(this);
 		this.ditdahcharsPref = Integer.valueOf(this.prefs.getString(DotDashPrefs.DITDAHCHARS, Integer.toString(DITDAHCHARS_UNICODE)));
+		this.iambic = this.prefs.getBoolean("iambic", false);
+		this.iambicmodeb = this.prefs.getBoolean("iambicmodeb", false);
 
 		// TODO Replace this with an XML file
 		morseMap = new Hashtable<String, String>();
@@ -599,6 +603,10 @@ public class DotDashIMEService extends InputMethodService implements
 					loaded = false;
 				}
 			}
+		} else if (key.contentEquals("iambic")) {
+			this.iambic = prefs.getBoolean(key, false);
+		} else if (key.contentEquals("iambicmodeb")) {
+			this.iambicmodeb = prefs.getBoolean(key, false);
 		}
 	}
 

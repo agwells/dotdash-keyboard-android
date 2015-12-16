@@ -57,5 +57,20 @@
         android:persistent="true"
         android:dependency="audio" 
     />
+
+    <CheckBoxPreference
+        android:key="iambic"
+        android:title="Iambic"
+        android:defaultValue="false"
+        android:persistent="true"
+    />
+    
+    <CheckBoxPreference
+        android:key="iambicmodeb"
+        android:title="Iambic Mode B"
+        android:defaultValue="false"
+        android:persistent="true"
+        android:dependency="iambic"
+    />
     
 </PreferenceScreen>
