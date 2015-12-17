@@ -19,6 +19,12 @@ DotDash features an extended version of Morse code which replicates all of the c
 QWERTY keyboard. For more information see the DotDash Keyboard wiki: 
 - https://github.com/agwells/dotdash-keyboard-android/wiki
 
+Nightly builds
+--------------
+If you'd like to try the nightly build of DotDash Keyboard via the Google Play store, use this link to opt-in to the alpha version: https://play.google.com/apps/testing/net.iowaline.dotdash
+
+Note, this version is likely to be unstable!
+
 Copyright notice
 ----------------
 
