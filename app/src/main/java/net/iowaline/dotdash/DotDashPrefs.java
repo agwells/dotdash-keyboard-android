@@ -8,16 +8,16 @@ import android.preference.PreferenceActivity;
 public class DotDashPrefs extends PreferenceActivity {
 
 	public static final String AUTOCAP = "autocap";
-	public static final String NEWLINECODE = "newline";
-	public static final String ENABLEUTILKBD = "enableutilkbd";
-	public static final String DITDAHCHARS = "ditdahchars";
-	public static final String DASHKEYONLEFT = "dashkeyonleft"; 
+	public static final String NEWLINE_CODE = "newline";
+	public static final String ENABLE_UTIL_KBD = "enableutilkbd";
+	public static final String DIT_DAH_CHARS = "ditdahchars";
+	public static final String DASH_KEY_ON_LEFT = "dashkeyonleft";
 
 	/**
 	 * Put this string in the settings array to represent a setting where no
 	 * code group for newline is supported
 	 */
-	public static final String NEWLINECODE_NONE = "X";
+	public static final String NEWLINE_CODE_NONE = "X";
 
 	@SuppressWarnings("deprecation")
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)

@@ -6,7 +6,7 @@ Shift "on" indicator: btn_keyboard_key_normal_on_ics_dark
 Shift "off" indicator: btn_keyboard_key_pressed_off_klp_dark
 Whole keyboard background: keyboard_background_holo
 
-Many of these stock images are semi-transparent, and contain a translucent glow or shadow around the on/off indicator. To pull that translucent outline from the original image and copy it onta  enw one, I used the Gimp "set color to alpha" tool. The general technique is this:
+Many of these stock images are semi-transparent, and contain a translucent glow or shadow around the on/off indicator. To pull that translucent outline from the original image and copy it onto  enw one, I used the Gimp "set color to alpha" tool. The general technique is this:
 
 1. Open the original image with the shift indicator in Gimp.
 2. In a layer below it, create a layer filled with the color from keyboard_background_holo

@@ -13,7 +13,7 @@ Do you know or are you willing to learn Morse code? If you answered "yes" to bot
 then this may be the keyboard for you!
 
 DotDash Keyboard is a drop-in replacement for Android's on-screen keyboard. It allows you to enter text
-via untimed Morse code, using three main buttons: Dot, Dash, and Space (as well as Shift and Delete).
+via un-timed Morse code, using three main buttons: Dot, Dash, and Space (as well as Shift and Delete).
 
 DotDash features an extended version of Morse code which replicates all of the characters on a standard
 QWERTY keyboard. For more information see the DotDash Keyboard wiki: 

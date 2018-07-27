@@ -7,35 +7,35 @@
         <item name="android:gravity">left</item>
         <item name="android:textStyle">bold</item>
     </style>
-    <style name="tapinstructions" parent="@style/symbol">
+    <style name="tap_instructions" parent="@style/symbol">
         <item name="android:gravity">center_horizontal</item>
         <item name="android:layout_marginTop">10dp</item>
     </style>
-    <style name="code_nopadding" parent="@android:style/TextAppearance.Medium">
+    <style name="code_no_padding" parent="@android:style/TextAppearance.Medium">
     	<item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">left</item>
     </style>
-    <style name="code" parent="@style/code_nopadding">
+    <style name="code" parent="@style/code_no_padding">
         <item name="android:layout_marginRight">20dp</item>
     </style>
-	<style name="cheatsheettable">
+	<style name="cheat_sheet_table">
 	    <item name="android:layout_margin">20dp</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center</item>
   	</style>
-    <style name="cheatsheetrow">
+    <style name="cheat_sheet_row">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:layout_marginLeft">20dp</item>
         <item name="android:layout_marginRight">20dp</item>
     </style>
-    <style name="cheatsheettoprow" parent="@style/cheatsheetrow">
+    <style name="cheat_sheet_top_row" parent="@style/cheat_sheet_row">
         <item name="android:layout_marginTop">20dp</item>
     </style>
-    <style name="cheatsheetbottomrow" parent="@style/cheatsheetrow">
+    <style name="cheat_sheet_bottom_row" parent="@style/cheat_sheet_row">
         <item name="android:layout_marginBottom">20dp</item>
     </style>
 </resources>

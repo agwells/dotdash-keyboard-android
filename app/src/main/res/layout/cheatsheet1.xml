@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/cheatsheettable" >
+    style="@style/cheat_sheet_table" >
 
-    <TableRow
-        android:id="@+id/tableRow1"
-        style="@style/cheatsheettoprow" >
+    <TableRow style="@style/cheat_sheet_top_row" >
 
         <TextView
             style="@style/symbol"
@@ -33,12 +31,12 @@
             tools:ignore="HardcodedText" />
 
         <TextView
-            style="@style/code_nopadding"
+            style="@style/code_no_padding"
             android:text="·––––"
             tools:ignore="HardcodedText" />
     </TableRow>
 
-    <TableRow style="@style/cheatsheetrow" >
+    <TableRow style="@style/cheat_sheet_row" >
 
         <TextView
             style="@style/symbol"
@@ -66,12 +64,12 @@
             tools:ignore="HardcodedText" />
 
         <TextView
-            style="@style/code_nopadding"
+            style="@style/code_no_padding"
             android:text="··–––"
             tools:ignore="HardcodedText" />
     </TableRow>
 
-    <TableRow style="@style/cheatsheetrow" >
+    <TableRow style="@style/cheat_sheet_row" >
 
         <TextView
             style="@style/symbol"
@@ -99,12 +97,12 @@
             tools:ignore="HardcodedText" />
 
         <TextView
-            style="@style/code_nopadding"
+            style="@style/code_no_padding"
             android:text="···––"
             tools:ignore="HardcodedText" />
     </TableRow>
 
-    <TableRow style="@style/cheatsheetrow" >
+    <TableRow style="@style/cheat_sheet_row" >
 
         <TextView
             style="@style/symbol"
@@ -132,12 +130,12 @@
             tools:ignore="HardcodedText" />
 
         <TextView
-            style="@style/code_nopadding"
+            style="@style/code_no_padding"
             android:text="····–"
             tools:ignore="HardcodedText" />
     </TableRow>
 
-    <TableRow style="@style/cheatsheetrow" >
+    <TableRow style="@style/cheat_sheet_row" >
 
         <TextView
             style="@style/symbol"
@@ -165,12 +163,12 @@
             tools:ignore="HardcodedText" />
 
         <TextView
-            style="@style/code_nopadding"
+            style="@style/code_no_padding"
             android:text="·····"
             tools:ignore="HardcodedText" />
     </TableRow>
 
-    <TableRow style="@style/cheatsheetrow" >
+    <TableRow style="@style/cheat_sheet_row" >
 
         <TextView
             style="@style/symbol"
@@ -198,12 +196,12 @@
             tools:ignore="HardcodedText" />
 
         <TextView
-            style="@style/code_nopadding"
+            style="@style/code_no_padding"
             android:text="–····"
             tools:ignore="HardcodedText" />
     </TableRow>
 
-    <TableRow style="@style/cheatsheetrow" >
+    <TableRow style="@style/cheat_sheet_row" >
 
         <TextView
             style="@style/symbol"
@@ -231,12 +229,12 @@
             tools:ignore="HardcodedText" />
 
         <TextView
-            style="@style/code_nopadding"
+            style="@style/code_no_padding"
             android:text="––···"
             tools:ignore="HardcodedText" />
     </TableRow>
 
-    <TableRow style="@style/cheatsheetrow" >
+    <TableRow style="@style/cheat_sheet_row" >
 
         <TextView
             style="@style/symbol"
@@ -264,12 +262,12 @@
             tools:ignore="HardcodedText" />
 
         <TextView
-            style="@style/code_nopadding"
+            style="@style/code_no_padding"
             android:text="–––··"
             tools:ignore="HardcodedText" />
     </TableRow>
 
-    <TableRow style="@style/cheatsheetrow" >
+    <TableRow style="@style/cheat_sheet_row" >
 
         <TextView
             style="@style/symbol"
@@ -297,12 +295,12 @@
             tools:ignore="HardcodedText" />
 
         <TextView
-            style="@style/code_nopadding"
+            style="@style/code_no_padding"
             android:text="––––·"
             tools:ignore="HardcodedText" />
     </TableRow>
 
-    <TableRow style="@style/cheatsheetrow" >
+    <TableRow style="@style/cheat_sheet_row" >
 
         <TextView
             style="@style/symbol"
@@ -330,12 +328,12 @@
             tools:ignore="HardcodedText" />
 
         <TextView
-            style="@style/code_nopadding"
+            style="@style/code_no_padding"
             android:text="–––––"
             tools:ignore="HardcodedText" />
     </TableRow>
 
-    <TableRow style="@style/cheatsheetrow" >
+    <TableRow style="@style/cheat_sheet_row" >
 
         <TextView
             style="@style/symbol"
@@ -353,12 +351,12 @@
             tools:ignore="HardcodedText" />
 
         <TextView
-            style="@style/code_nopadding"
+            style="@style/code_no_padding"
             android:text="–··–"
             tools:ignore="HardcodedText" />
     </TableRow>
 
-    <TableRow style="@style/cheatsheetrow" >
+    <TableRow style="@style/cheat_sheet_row" >
 
         <TextView
             style="@style/symbol"
@@ -376,12 +374,12 @@
             tools:ignore="HardcodedText" />
 
         <TextView
-            style="@style/code_nopadding"
+            style="@style/code_no_padding"
             android:text="–·––"
             tools:ignore="HardcodedText" />
     </TableRow>
 
-    <TableRow style="@style/cheatsheetrow" >
+    <TableRow style="@style/cheat_sheet_row" >
 
         <TextView
             style="@style/symbol"
@@ -399,17 +397,17 @@
             tools:ignore="HardcodedText" />
 
         <TextView
-            style="@style/code_nopadding"
+            style="@style/code_no_padding"
             android:text="––··"
             tools:ignore="HardcodedText" />
     </TableRow>
 
-    <TableRow style="@style/cheatsheetbottomrow" >
+    <TableRow style="@style/cheat_sheet_bottom_row" >
 
         <TextView
-            style="@style/tapinstructions"
+            style="@style/tap_instructions"
             android:layout_span="6"
-            android:text="@string/tapforpunctuation" />
+            android:text="@string/tap_for_punctuation" />
     </TableRow>
 
 </TableLayout>

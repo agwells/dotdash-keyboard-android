@@ -21,6 +21,7 @@ import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 
+@SuppressWarnings("JavaDoc")
 public class DotDashIMEService extends InputMethodService implements
 	KeyboardView.OnKeyboardActionListener, OnSharedPreferenceChangeListener {
 //	private String TAG = "DotDashIMEService";
@@ -28,9 +29,9 @@ public class DotDashIMEService extends InputMethodService implements
 	public DotDashKeyboard dotDashKeyboard;
 	public Keyboard utilityKeyboard;
 	private Keyboard.Key spaceKey;
-	int spaceKeyIndex;
+	private int spaceKeyIndex;
 	private Keyboard.Key capsLockKey;
-	int capsLockKeyIndex;
+	private int capsLockKeyIndex;
 	private Hashtable<String, String> morseMap;
 	private StringBuilder charInProgress;
 
@@ -39,10 +40,6 @@ public class DotDashIMEService extends InputMethodService implements
 	private static final int CAPS_LOCK_ALL = 2;
 	private int capsLockState = CAPS_LOCK_OFF;
 
-	private static final int AUTO_CAP_MIDSENTENCE = 0;
-	private static final int AUTO_CAP_SENTENCE_ENDED = 1;
-	private int autoCapState = AUTO_CAP_MIDSENTENCE;
-	
 //	private static final String BULLET = "∙";
 //	private static final String BULLET_OPERATOR="∙";
 //	private static final String BLACK_CIRCLE="●";
@@ -60,29 +57,30 @@ public class DotDashIMEService extends InputMethodService implements
 	public static final String UNICODE_DASH = EN_DASH;
 	
 	// Keycodes used in the utility keyboard
-	public static final int KEYCODE_UP = -10;
-	public static final int KEYCODE_LEFT = -11;
-	public static final int KEYCODE_RIGHT = -12;
-	public static final int KEYCODE_DOWN = -13;
-	public static final int KEYCODE_HOME = -20;
-	public static final int KEYCODE_END = -21;
-	public static final int KEYCODE_DEL = -30;
+	private static final int KEYCODE_UP = -10;
+	private static final int KEYCODE_LEFT = -11;
+	private static final int KEYCODE_RIGHT = -12;
+	private static final int KEYCODE_DOWN = -13;
+	private static final int KEYCODE_HOME = -20;
+	private static final int KEYCODE_END = -21;
+	private static final int KEYCODE_DEL = -30;
 
-	// Sync these with ditdahchars_values in arrays.xml
-	public static final int DITDAHCHARS_UNICODE = 1;
-	public static final int DITDAHCHARS_ASCII = 2;
-	
+	// Sync these with dit_dah_chars_values in arrays.xml
+	public static final int DIT_DAH_CHARS_UNICODE = 1;
+	@SuppressWarnings("unused")
+    public static final int DIT_DAH_CHARS_ASCII = 2;
+
 	private SharedPreferences prefs;
 	public String[] newlineGroups;
-	public int ditdahcharsPref;
+	public int ditDahCharsPref;
 	private int maxCodeLength;
 
 	private SoundPool soundpool;
-	boolean loaded = false;
+	private boolean loaded = false;
 	private int dotSound;
 	private int dashSound;
 	public boolean iambic = false;
-	public boolean iambicmodeb = false;
+	public boolean iambicModeB = false;
 	public boolean autocommit = false;
 	
 	@Override
@@ -94,13 +92,13 @@ public class DotDashIMEService extends InputMethodService implements
 		// http://stackoverflow.com/questions/4371273/should-accessing-sharedpreferences-be-done-off-the-ui-thread
 		this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		this.prefs.registerOnSharedPreferenceChangeListener(this);
-		this.ditdahcharsPref = Integer.valueOf(this.prefs.getString(DotDashPrefs.DITDAHCHARS, Integer.toString(DITDAHCHARS_UNICODE)));
+		this.ditDahCharsPref = Integer.valueOf(this.prefs.getString(DotDashPrefs.DIT_DAH_CHARS, Integer.toString(DIT_DAH_CHARS_UNICODE)));
 		this.iambic = this.prefs.getBoolean("iambic", false);
-		this.iambicmodeb = this.prefs.getBoolean("iambicmodeb", false);
+		this.iambicModeB = this.prefs.getBoolean("iambicModeB", false);
 		this.autocommit = this.prefs.getBoolean("autocommit", false);
 
 		// TODO Replace this with an XML file
-		morseMap = new Hashtable<String, String>();
+		morseMap = new Hashtable<>();
 		morseMap.put(".-", "a");
 		morseMap.put("-...", "b");
 		morseMap.put("-.-.", "c");
@@ -177,9 +175,9 @@ public class DotDashIMEService extends InputMethodService implements
 		// dots and dashes we need to keep track of (no need recording
 		// more than the total number that make up a valid code group)
 		maxCodeLength = 0;
-		for (String codegroup : morseMap.keySet()) {
-			if (codegroup.length() > maxCodeLength) {
-				maxCodeLength = codegroup.length();
+		for (String codeGroup : morseMap.keySet()) {
+			if (codeGroup.length() > maxCodeLength) {
+				maxCodeLength = codeGroup.length();
 			}
 		}
 		charInProgress = new StringBuilder(maxCodeLength);
@@ -187,23 +185,15 @@ public class DotDashIMEService extends InputMethodService implements
 
 	/**
 	 * Create (or nullify) the utility keyboard, depending on user's preferences.
-	 * 
-	 * @return True if the keyboard changed.
 	 */
-	private boolean setupUtilityKeyboard() {
-		boolean nullBefore = (utilityKeyboard == null);
-		if (this.prefs.getBoolean(DotDashPrefs.DASHKEYONLEFT, false)) {
+	private void setupUtilityKeyboard() {
+		if (this.prefs.getBoolean(DotDashPrefs.DASH_KEY_ON_LEFT, false)) {
 			utilityKeyboard = new Keyboard(this, R.xml.utilitykeyboard); 
 		} else {
 			utilityKeyboard = null;
 		}
-		
-		if (nullBefore && (utilityKeyboard == null)) {
-			return false;
-		} else {
-			return true;
-		}
-	}
+
+    }
 	
 	@Override
 	public void onInitializeInterface() {
@@ -211,7 +201,7 @@ public class DotDashIMEService extends InputMethodService implements
 		super.onInitializeInterface();
 		this.setupUtilityKeyboard();
 		dotDashKeyboard = new DotDashKeyboard(this, R.xml.dotdash);
-		dotDashKeyboard.setupDotDashKeys(this.prefs.getBoolean(DotDashPrefs.DASHKEYONLEFT, false));
+		dotDashKeyboard.setupDotDashKeys(this.prefs.getBoolean(DotDashPrefs.DASH_KEY_ON_LEFT, false));
 		
 		spaceKey = dotDashKeyboard.spaceKey;
 		capsLockKey = dotDashKeyboard.capsLockKey;
@@ -246,16 +236,16 @@ public class DotDashIMEService extends InputMethodService implements
 		inputView.setKeyboard(dotDashKeyboard);
 		inputView.setService(this);
 		inputView.mEnableUtilityKeyboard = prefs.getBoolean(
-				DotDashPrefs.ENABLEUTILKBD, false);
+				DotDashPrefs.ENABLE_UTIL_KBD, false);
 		return inputView;
 	}
 
 	public void onKey(int primaryCode, int[] keyCodes) {
 		int kbd = inputView.whichKeyboard();
 		if (kbd == DotDashKeyboardView.KBD_DOTDASH) {
-			onKeyMorse(primaryCode, keyCodes);
+			onKeyMorse(primaryCode);
 		} else if (kbd == DotDashKeyboardView.KBD_UTILITY) {
-			onKeyUtility(primaryCode, keyCodes);
+			onKeyUtility(primaryCode);
 		}
 	}
 
@@ -263,11 +253,10 @@ public class DotDashIMEService extends InputMethodService implements
 	 * Handle key input on the utility keyboard. Keys with a positive keycode
 	 * are meant to be passed through String.valueOf(), while keys with negative
 	 * keycodes must be specially processed
-	 * 
-	 * @param primaryCode
-	 * @param keyCodes
-	 */
-	public void onKeyUtility(int primaryCode, int[] keyCodes) {
+	 *  @param primaryCode
+	 *
+     */
+    private void onKeyUtility(int primaryCode) {
 		if (primaryCode > 0) {
 			getCurrentInputConnection().commitText(
 					String.valueOf((char) primaryCode), 1);
@@ -307,11 +296,10 @@ public class DotDashIMEService extends InputMethodService implements
 	/**
 	 * Handle key input on the Morse Code keyboard. It has 5 keys and each of
 	 * them does something different.
-	 * 
-	 * @param primaryCode
-	 * @param keyCodes
-	 */
-	public void onKeyMorse(int primaryCode, int[] keyCodes) {
+	 *  @param primaryCode
+	 *
+     */
+    private void onKeyMorse(int primaryCode) {
 		// Log.d(TAG, "primaryCode: " + Integer.toString(primaryCode));
 		//String curCharMatch = morseMap.get(charInProgress.toString());
 
@@ -330,19 +318,19 @@ public class DotDashIMEService extends InputMethodService implements
 				}
 				
 				if (loaded && isAudio()) {
-					int soundid;
+					int soundId;
 					if (primaryCode == DotDashKeyboard.KEYCODE_DOT) {
-						soundid = dotSound;
+						soundId = dotSound;
 					} else {
-						soundid = dashSound;
+						soundId = dashSound;
 					}
 
 					AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-					if (!prefs.getBoolean("audioonlyonheadphones", true) || audioManager.isWiredHeadsetOn()) {
+					if (audioManager != null && (!prefs.getBoolean("audio_only_on_headphones", true) || audioManager.isWiredHeadsetOn())) {
 						float actualVolume = (float) audioManager.getStreamVolume(AudioManager.STREAM_SYSTEM);
 						float maxVolume = (float) audioManager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM);
 						float volume = actualVolume / maxVolume;
-						soundpool.play(soundid, volume, volume, 1, 0, 1f);
+						soundpool.play(soundId, volume, volume, 1, 0, 1f);
 					}
 				}
 
@@ -358,12 +346,6 @@ public class DotDashIMEService extends InputMethodService implements
 				
 				if (charInProgress.length() == 0) {
 					getCurrentInputConnection().commitText(" ", 1);
-	
-					if (autoCapState == AUTO_CAP_SENTENCE_ENDED
-							&& prefs.getBoolean(DotDashPrefs.AUTOCAP, false)) {
-						capsLockState = CAPS_LOCK_NEXT;
-						updateCapsLockKey(true);
-					}
 				} else {
 					commitCodeGroup(false);
 				}
@@ -492,14 +474,14 @@ public class DotDashIMEService extends InputMethodService implements
 
 	}
 
-	public void clearEverything() {
+	private void clearEverything() {
 		clearCharInProgress();
 		capsLockState = CAPS_LOCK_OFF;
 		updateCapsLockKey(false);
 		updateSpaceKey(false);
 	}
 
-	public void updateCapsLockKey(boolean refreshScreen) {
+	private void updateCapsLockKey(boolean refreshScreen) {
 
 		Context context = this.getApplicationContext();
 		switch (capsLockState) {
@@ -531,11 +513,11 @@ public class DotDashIMEService extends InputMethodService implements
 	}
 
 	/**
-	 * Updates the spacebar to display the current character in progress
+	 * Updates the space bar to display the current character in progress
 	 * 
 	 * @param refreshScreen
 	 */
-	public void updateSpaceKey(boolean refreshScreen) {
+    private void updateSpaceKey(boolean refreshScreen) {
 		String newLabel = charInProgress.toString();
 		
 		// Workaround to maintain consistent styling. Android puts multi-character
@@ -548,7 +530,7 @@ public class DotDashIMEService extends InputMethodService implements
 		
 		if (!spaceKey.label.toString().equals(newLabel)) {
 			// Log.d(TAG, "!spaceKey.label.equals(charInProgress)");
-			if (newLabel.length() > 0 && ditdahcharsPref == DITDAHCHARS_UNICODE) {
+			if (newLabel.length() > 0 && ditDahCharsPref == DIT_DAH_CHARS_UNICODE) {
 				newLabel = convertDitDahAsciiToUnicode(newLabel);
 			}
 			spaceKey.label = newLabel;
@@ -565,12 +547,7 @@ public class DotDashIMEService extends InputMethodService implements
 		}
 	}
 
-	@Override
-	public void onStartInput(EditorInfo attribute, boolean restarting) {
-		super.onStartInput(attribute, restarting);
-	}
-
-	public void onStartInputView(android.view.inputmethod.EditorInfo info,
+    public void onStartInputView(android.view.inputmethod.EditorInfo info,
 			boolean restarting) {
 		// Log.d(TAG, "onStartInputView");
 		super.onStartInputView(info, restarting);
@@ -593,9 +570,9 @@ public class DotDashIMEService extends InputMethodService implements
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-		if (key.contentEquals(DotDashPrefs.NEWLINECODE)) {
+		if (key.contentEquals(DotDashPrefs.NEWLINE_CODE)) {
 			updateNewlinePref();
-		} else if (key.contentEquals(DotDashPrefs.ENABLEUTILKBD)) {
+		} else if (key.contentEquals(DotDashPrefs.ENABLE_UTIL_KBD)) {
 			this.setupUtilityKeyboard();
 			if (this.inputView != null) {
 				inputView.mEnableUtilityKeyboard = prefs.getBoolean(key, false);
@@ -603,12 +580,12 @@ public class DotDashIMEService extends InputMethodService implements
 					inputView.setKeyboard(dotDashKeyboard);
 				}
 			}
-		} else if (key.contentEquals(DotDashPrefs.DITDAHCHARS)) {
-			this.ditdahcharsPref = Integer.valueOf(this.prefs.getString(DotDashPrefs.DITDAHCHARS, Integer.toString(DITDAHCHARS_UNICODE)));
+		} else if (key.contentEquals(DotDashPrefs.DIT_DAH_CHARS)) {
+			this.ditDahCharsPref = Integer.valueOf(this.prefs.getString(DotDashPrefs.DIT_DAH_CHARS, Integer.toString(DIT_DAH_CHARS_UNICODE)));
 			if (inputView != null) {
 				inputView.clearCheatSheet();
 			}
-		} else if (key.contentEquals(DotDashPrefs.DASHKEYONLEFT)) {
+		} else if (key.contentEquals(DotDashPrefs.DASH_KEY_ON_LEFT)) {
 			boolean changed = this.dotDashKeyboard.setupDotDashKeys(this.prefs.getBoolean(key, false));
 			if (changed && this.inputView != null) {
 				this.inputView.invalidateAllKeys();
@@ -626,8 +603,8 @@ public class DotDashIMEService extends InputMethodService implements
 			}
 		} else if (key.contentEquals("iambic")) {
 			this.iambic = prefs.getBoolean(key, false);
-		} else if (key.contentEquals("iambicmodeb")) {
-			this.iambicmodeb = prefs.getBoolean(key, false);
+		} else if (key.contentEquals("iambicModeB")) {
+			this.iambicModeB = prefs.getBoolean(key, false);
 		} else if (key.contentEquals("autocommit")) {
 			this.autocommit = prefs.getBoolean(key, false);
 		}
@@ -651,12 +628,12 @@ public class DotDashIMEService extends InputMethodService implements
 		// Add the new ones
 		// TODO: When we make the morse codes into XML, this'll have to be
 		// updated
-		String rawpref = this.prefs.getString(DotDashPrefs.NEWLINECODE, ".-.-");
-		// Log.d(TAG, "rawpref: "+rawpref);
-		if (rawpref.contentEquals(DotDashPrefs.NEWLINECODE_NONE)) {
+		String rawPref = this.prefs.getString(DotDashPrefs.NEWLINE_CODE, ".-.-");
+		// Log.d(TAG, "rawPref: "+rawPref);
+		if (rawPref.contentEquals(DotDashPrefs.NEWLINE_CODE_NONE)) {
 			newlineGroups = null;
 		} else {
-			newlineGroups = rawpref.split("\\|");
+			newlineGroups = rawPref.split("\\|");
 			// Log.d(TAG, "nl: " + newlineGroups[0]);
 		}
 
@@ -686,7 +663,7 @@ public class DotDashIMEService extends InputMethodService implements
 	 * Update the shift state if autocap is turned on, based on current cursor
 	 * position (using InputConnection.getCursorCapsMode())
 	 */
-	public void updateAutoCap() {
+    private void updateAutoCap() {
 
 		// Autocap has no effect if Caps Lock is on
 		if (capsLockState == CAPS_LOCK_ALL) {
@@ -719,7 +696,7 @@ public class DotDashIMEService extends InputMethodService implements
 	 * @param ascii
 	 * @return
 	 */
-	protected String convertDitDahAsciiToUnicode(String ascii) {
+    private String convertDitDahAsciiToUnicode(String ascii) {
 		return ascii
 				.replace(".", DotDashIMEService.UNICODE_DOT)
 				.replace("-", DotDashIMEService.UNICODE_DASH);
@@ -729,13 +706,12 @@ public class DotDashIMEService extends InputMethodService implements
 	 * Converts a string of Unicode ditdahs to ASCII
 	 * 
 	 * @param unicode The original string with unicode ditdahs
-	 * @param padding Whether to pad with spaces
 	 * @return
 	 */
-	protected String convertDitDahUnicodeToAscii(String unicode, boolean padding) {
+    String convertDitDahUnicodeToAscii(String unicode) {
 		return unicode
-				.replace(DotDashIMEService.UNICODE_DOT, (padding ? ". " : "."))
-				.replace(DotDashIMEService.UNICODE_DASH, (padding ? "- " : "-"))
+				.replace(DotDashIMEService.UNICODE_DOT, (". "))
+				.replace(DotDashIMEService.UNICODE_DASH, ("- "))
 				.trim();
 	}
 }

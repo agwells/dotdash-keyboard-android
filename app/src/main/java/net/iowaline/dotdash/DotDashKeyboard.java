@@ -15,12 +15,6 @@ public class DotDashKeyboard extends Keyboard {
 		super(context, xmlLayoutResId);
 	}
 
-	public DotDashKeyboard(Context context, int layoutTemplateResId,
-			CharSequence characters, int columns, int horizontalPadding) {
-		super(context, layoutTemplateResId, characters, columns,
-				horizontalPadding);
-	}
-
 	public Keyboard.Key spaceKey;
 	public Keyboard.Key capsLockKey;
 	public Keyboard.Key leftDotdashKey;
@@ -53,11 +47,11 @@ public class DotDashKeyboard extends Keyboard {
 	 * By default, the dot key is on the left and the dash key is
 	 * on the right.
 	 * 
-	 * @param dashkeyonleft True if the dash key should be on the left
+	 * @param dashKeyOnLeft True if the dash key should be on the left
 	 * @return boolean True if the keys changed position
 	 */
-	public boolean setupDotDashKeys(boolean dashkeyonleft) {
-		if (dashkeyonleft != (leftDotdashKey.codes[0] == DotDashKeyboard.KEYCODE_DASH)) {
+	public boolean setupDotDashKeys(boolean dashKeyOnLeft) {
+		if (dashKeyOnLeft != (leftDotdashKey.codes[0] == DotDashKeyboard.KEYCODE_DASH)) {
 			// Swap 'em!
 			int[] code_tmp = leftDotdashKey.codes;
 			leftDotdashKey.codes = rightDotdashKey.codes;

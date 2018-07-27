@@ -25,20 +25,21 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+@SuppressWarnings("JavaDoc")
 @SuppressLint("ClickableViewAccessibility")
 public class DotDashKeyboardView extends KeyboardView {
 
-	private String TAG = this.getClass().getSimpleName();
+	private final String TAG = this.getClass().getSimpleName();
 	private DotDashIMEService service;
-	private Dialog cheatsheetDialog;
-	private TableLayout cheatsheet1;
-	private TableLayout cheatsheet2;
+	private Dialog cheatSheetDialog;
+	private TableLayout cheatSheet1;
+	private TableLayout cheatSheet2;
 	private int mSwipeThreshold;
 	private GestureDetector gestureDetector;
 	
-	private Set<Keyboard.Key> pressedKeys = new HashSet<Keyboard.Key>();
+	private Set<Keyboard.Key> pressedKeys = new HashSet<>();
 
-	public static final int KBD_NONE = 0;
+	private static final int KBD_NONE = 0;
 	public static final int KBD_DOTDASH = 1;
 	public static final int KBD_UTILITY = 2;
 
@@ -46,78 +47,77 @@ public class DotDashKeyboardView extends KeyboardView {
 	
     private static final int REPEAT_INTERVAL = 50; // ~20 keys per second
     private static final int REPEAT_START_DELAY = 400;
-    private static final int LONGPRESS_TIMEOUT = ViewConfiguration.getLongPressTimeout();
+    @SuppressWarnings("unused")
+	private static final int LONG_PRESS_TIMEOUT = ViewConfiguration.getLongPressTimeout();
     private static final int DEBOUNCE_TIMEOUT = 50; //70;
-    private static final int IAMBIC_DOTLENGTH = 100;
-	public static final long AUTOCOMMIT_DELAY = IAMBIC_DOTLENGTH * 4;
+    private static final int IAMBIC_DOT_LENGTH = 100;
+	private static final long AUTOCOMMIT_DELAY = IAMBIC_DOT_LENGTH * 4;
     // TODO: Make this into a SparseArray somehow?
-    public Map<Keyboard.Key, Long> bouncewaits = new HashMap<Keyboard.Key, Long>();
+    private final Map<Keyboard.Key, Long> bounceWaits = new HashMap<>();
     
     private static final int MSG_KEY_REPEAT = 1;
     public static final int MSG_IAMBIC_PLAYING = 2;
 	public static final int MSG_AUTOCOMMIT = 3;
     // TODO: according to this documentation: http://www.morsecode.nl/iambic.PDF
     // ... it appears that the logic is supposed to be that it "locks" if the
-    // opposite key is still held down at the halfway point of the preceeding
+    // opposite key is still held down at the halfway point of the preceding
     // signal. So I will need to add some more logic there to get the timing
     // just right.
     boolean iambic_both_pressed = false;
     
-    Handler handler = new Handler(
+    final Handler handler = new Handler(
 		new Handler.Callback() {
 			
 			@Override
 			public boolean handleMessage(Message msg) {
 				switch (msg.what) {
 					case MSG_KEY_REPEAT:
-						Keyboard.Key repeatkey = (Keyboard.Key) msg.obj;
-						if (!repeatkey.pressed) {
+						Keyboard.Key repeatKey = (Keyboard.Key) msg.obj;
+						if (!repeatKey.pressed) {
 							return true;
 						}
 						
-						if (repeatkey == service.dotDashKeyboard.leftDotdashKey || repeatkey == service.dotDashKeyboard.rightDotdashKey) {
-							
-						} else {
-							getOnKeyboardActionListener().onKey(repeatkey.codes[0], repeatkey.codes);
-							handler.sendMessageDelayed(handler.obtainMessage(MSG_KEY_REPEAT, repeatkey), REPEAT_INTERVAL);
+						if (!(repeatKey == service.dotDashKeyboard.leftDotdashKey || repeatKey == service.dotDashKeyboard.rightDotdashKey)) {
+							getOnKeyboardActionListener().onKey(repeatKey.codes[0], repeatKey.codes);
+							handler.sendMessageDelayed(handler.obtainMessage(MSG_KEY_REPEAT, repeatKey), REPEAT_INTERVAL);
 						}
 						break;
 					case MSG_IAMBIC_PLAYING:
-						Keyboard.Key lastkeysent = (Keyboard.Key) msg.obj;
-						Keyboard.Key nextkeytosend = null;
-						boolean leftkeypressed = service.dotDashKeyboard.leftDotdashKey.pressed;
-						boolean rightkeypressed = service.dotDashKeyboard.rightDotdashKey.pressed;
+						Keyboard.Key lastKeySent = (Keyboard.Key) msg.obj;
+						Keyboard.Key nextKeyToSend = null;
+						boolean leftKeyPressed = service.dotDashKeyboard.leftDotdashKey.pressed;
+						boolean rightKeyPressed = service.dotDashKeyboard.rightDotdashKey.pressed;
 						
 						// Iambic signal has just ended. Check to see if dot and/or dash are still held down
-						if (leftkeypressed && rightkeypressed) {
+						if (leftKeyPressed && rightKeyPressed) {
 							// Both are pressed, so send the opposite signal from what we just sent
-							if (lastkeysent == service.dotDashKeyboard.leftDotdashKey) {
-								nextkeytosend = service.dotDashKeyboard.rightDotdashKey;
+							if (lastKeySent == service.dotDashKeyboard.leftDotdashKey) {
+								nextKeyToSend = service.dotDashKeyboard.rightDotdashKey;
 							} else {
-								nextkeytosend = service.dotDashKeyboard.leftDotdashKey;
+								nextKeyToSend = service.dotDashKeyboard.leftDotdashKey;
 							}
-						} else if (leftkeypressed || rightkeypressed) {
+						} else if (leftKeyPressed || rightKeyPressed) {
 							// Only one is pressed. Send its signal.
-							if (leftkeypressed) {
-								nextkeytosend = service.dotDashKeyboard.leftDotdashKey;
+							if (leftKeyPressed) {
+								nextKeyToSend = service.dotDashKeyboard.leftDotdashKey;
 							} else {
-								nextkeytosend = service.dotDashKeyboard.rightDotdashKey;
+								nextKeyToSend = service.dotDashKeyboard.rightDotdashKey;
 							}
 							iambic_both_pressed = false;
-						} else if (service.iambicmodeb && iambic_both_pressed) {
+						} else if (service.iambicModeB && iambic_both_pressed) {
 							// Mode b. Send one more signal, with the opposite of the last key
-							if (lastkeysent == service.dotDashKeyboard.leftDotdashKey) {
-								nextkeytosend = service.dotDashKeyboard.rightDotdashKey;
+							if (lastKeySent == service.dotDashKeyboard.leftDotdashKey) {
+								nextKeyToSend = service.dotDashKeyboard.rightDotdashKey;
 							} else {
-								nextkeytosend = service.dotDashKeyboard.leftDotdashKey;
+								nextKeyToSend = service.dotDashKeyboard.leftDotdashKey;
 							}
 							iambic_both_pressed = false;
 						}
 						
-						if (nextkeytosend != null) {
-							getOnKeyboardActionListener().onKey(nextkeytosend.codes[0], nextkeytosend.codes);
-							handler.sendMessageDelayed(handler.obtainMessage(MSG_IAMBIC_PLAYING, nextkeytosend),
-									DotDashKeyboardView.get_iambic_delay(nextkeytosend));
+						if (nextKeyToSend != null) {
+							getOnKeyboardActionListener().onKey(nextKeyToSend.codes[0], nextKeyToSend.codes);
+							handler.sendMessageDelayed(handler.obtainMessage(MSG_IAMBIC_PLAYING, nextKeyToSend),
+									DotDashKeyboardView.get_iambic_delay(nextKeyToSend));
 						} else {
 							// Iambic is done, so start the autocommit timer.
 							if (service.autocommit) {
@@ -125,7 +125,7 @@ public class DotDashKeyboardView extends KeyboardView {
 								// If audio is playing, we want to wait until the end of the tone before
 								// we start counting down for autocommit.
 								if (service.isAudio()) {
-									delay += DotDashKeyboardView.get_iambic_delay(lastkeysent);
+									delay += DotDashKeyboardView.get_iambic_delay(lastKeySent);
 								}
 								handler.removeMessages(DotDashKeyboardView.MSG_AUTOCOMMIT);
 								handler.sendMessageDelayed(
@@ -218,7 +218,7 @@ public class DotDashKeyboardView extends KeyboardView {
 //			@Override
 //			public boolean onTouch(View v, MotionEvent event) {
 //				if (gestureDetector.onTouchEvent(event)) {
-//					// Tell the underlying keyboardview to cancel its
+//					// Tell the underlying KeyboardView to cancel its
 //					// touch event if we've initiated a gesture.
 //					MotionEvent cancel = MotionEvent.obtain(event);
 //					cancel.setAction(MotionEvent.ACTION_CANCEL);
@@ -245,96 +245,98 @@ public class DotDashKeyboardView extends KeyboardView {
 	}
 
 	@SuppressLint("InflateParams")
-	public void createCheatSheet() {
+	private void createCheatSheet() {
 		boolean updateTouchListeners = false;
-		if (this.cheatsheetDialog == null) {
-			this.cheatsheetDialog = new Dialog(this.service);
+		if (this.cheatSheetDialog == null) {
+			this.cheatSheetDialog = new Dialog(this.service);
 
-			cheatsheetDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+			cheatSheetDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-			cheatsheetDialog.setCancelable(true);
-			cheatsheetDialog.setCanceledOnTouchOutside(true);
+			cheatSheetDialog.setCancelable(true);
+			cheatSheetDialog.setCanceledOnTouchOutside(true);
 			updateTouchListeners = true;
 		}
-		if (this.cheatsheet1 == null) {
-			this.cheatsheet1 = (TableLayout) this.service.getLayoutInflater().inflate(
+		if (this.cheatSheet1 == null) {
+			this.cheatSheet1 = (TableLayout) this.service.getLayoutInflater().inflate(
 					R.layout.cheatsheet1, null);
-			this.prettifyCheatSheet(this.cheatsheet1);
+			this.prettifyCheatSheet(this.cheatSheet1);
 			updateTouchListeners = true;
 		}
-		if (this.cheatsheet2 == null) {
-			this.cheatsheet2 = (TableLayout) this.service.getLayoutInflater().inflate(
+		if (this.cheatSheet2 == null) {
+			this.cheatSheet2 = (TableLayout) this.service.getLayoutInflater().inflate(
 					R.layout.cheatsheet2, null);
 			updateNewlineCode();
-			this.prettifyCheatSheet(this.cheatsheet2);
+			this.prettifyCheatSheet(this.cheatSheet2);
 			updateTouchListeners = true;
 		}
 		
 		if (updateTouchListeners) {
-			cheatsheetDialog.setContentView(cheatsheet1);
-			cheatsheet1.setOnTouchListener(new OnTouchListener() {
+			cheatSheetDialog.setContentView(cheatSheet1);
+			cheatSheet1.setOnTouchListener(new OnTouchListener() {
 				@Override
 				public boolean onTouch(View v, MotionEvent event) {
-					cheatsheetDialog.setContentView(cheatsheet2);
+					cheatSheetDialog.setContentView(cheatSheet2);
 					return true;
 				}
 			});
-			cheatsheet2.setOnTouchListener(new OnTouchListener() {
+			cheatSheet2.setOnTouchListener(new OnTouchListener() {
 				@Override
 				public boolean onTouch(View v, MotionEvent event) {
-					cheatsheetDialog.setContentView(cheatsheet1);
+					cheatSheetDialog.setContentView(cheatSheet1);
 					return true;
 				}
 			});
-			Window window = this.cheatsheetDialog.getWindow();
-			WindowManager.LayoutParams lp = window.getAttributes();
-			lp.token = this.getWindowToken();
-			lp.type = WindowManager.LayoutParams.TYPE_APPLICATION_ATTACHED_DIALOG;
-			window.setAttributes(lp);
-			window.addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+			Window window = this.cheatSheetDialog.getWindow();
+			if (window != null) {
+				WindowManager.LayoutParams lp = window.getAttributes();
+				lp.token = this.getWindowToken();
+				lp.type = WindowManager.LayoutParams.TYPE_APPLICATION_ATTACHED_DIALOG;
+				window.setAttributes(lp);
+				window.addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+			}
 		}
 	}
 	
 	/**
 	 * Update the characters in the cheat sheet dialogue to match the user's preference
-	 * @TODO: Probably better performance if I replaced this with two hard-coded versions
+	 * @todo Probably better performance if I replaced this with two hard-coded versions
 	 * of the sheet...
 	 * 
-	 * @param cheatsheet
+	 * @param cheatSheet
 	 */
-	public void prettifyCheatSheet(TableLayout cheatsheet) {
+	private void prettifyCheatSheet(TableLayout cheatSheet) {
 		// No action necessary.
-		if (service.ditdahcharsPref == DotDashIMEService.DITDAHCHARS_UNICODE) {
+		if (service.ditDahCharsPref == DotDashIMEService.DIT_DAH_CHARS_UNICODE) {
 			return;
 		}
 		
-		for (int i = 0; i < cheatsheet.getChildCount(); i++) {
-			TableRow row = (TableRow) cheatsheet.getChildAt(i);
+		for (int i = 0; i < cheatSheet.getChildCount(); i++) {
+			TableRow row = (TableRow) cheatSheet.getChildAt(i);
 			
 			// On my cheat sheets, only the even-number columns
 			// contain code groups
 			for (int j = 1; j < row.getChildCount(); j += 2) {
 				TextView cell = (TextView) row.getChildAt(j);
-				cell.setText(service.convertDitDahUnicodeToAscii(cell.getText().toString(), true));
+				cell.setText(service.convertDitDahUnicodeToAscii(cell.getText().toString()));
 			}
 		}
 	}
 
-	public void showCheatSheet() {
+	private void showCheatSheet() {
 		createCheatSheet();
-		cheatsheetDialog.show();
+		cheatSheetDialog.show();
 	}
 	
 	public void closeCheatSheet() {
-		if (cheatsheetDialog != null) {
-			cheatsheetDialog.dismiss();
+		if (cheatSheetDialog != null) {
+			cheatSheetDialog.dismiss();
 		}
 	}
 	
 	public void clearCheatSheet() {
 		closeCheatSheet();
-		this.cheatsheet1 = null;
-		this.cheatsheet2 = null;
+		this.cheatSheet1 = null;
+		this.cheatSheet2 = null;
 	}
 
 	/**
@@ -342,7 +344,7 @@ public class DotDashKeyboardView extends KeyboardView {
 	 * current preference.
 	 */
 	public void updateNewlineCode() {
-		if (cheatsheet2 == null) {
+		if (cheatSheet2 == null) {
 			return;
 		}
 
@@ -350,7 +352,7 @@ public class DotDashKeyboardView extends KeyboardView {
 		if (service.newlineGroups != null && service.newlineGroups.length > 0) {
 			newCode = service.newlineGroups[0].replace(".", DotDashIMEService.UNICODE_DOT).replace("-",  DotDashIMEService.UNICODE_DASH);
 		}
-		((TextView) cheatsheet2.findViewById(R.id.newline_code))
+		((TextView) cheatSheet2.findViewById(R.id.newline_code))
 				.setText(newCode);
 	}
 
@@ -388,9 +390,9 @@ public class DotDashKeyboardView extends KeyboardView {
 			return super.onTouchEvent(me);
 		}
 
-		int actionmasked = me.getActionMasked();
-		int actionindex = me.getActionIndex();
-		Set<Keyboard.Key> curPressedKeys = new HashSet<Keyboard.Key>();
+		int actionMasked = me.getActionMasked();
+		int actionIndex = me.getActionIndex();
+		Set<Keyboard.Key> curPressedKeys = new HashSet<>();
 		
 		for (int i=0; i < me.getPointerCount(); i++) {
 			
@@ -408,8 +410,8 @@ public class DotDashKeyboardView extends KeyboardView {
 			}
 			
 			if (touchedKey != null) {
-				if (i == actionindex) {
-					switch (actionmasked) {
+				if (i == actionIndex) {
+					switch (actionMasked) {
 						case MotionEvent.ACTION_DOWN:
 						case MotionEvent.ACTION_MOVE:
 						case MotionEvent.ACTION_POINTER_DOWN:
@@ -437,14 +439,14 @@ public class DotDashKeyboardView extends KeyboardView {
 		
 		// Keys that are in curPressedKeys but not in pressedKeys
 		// are newly pressed.
-		Set<Keyboard.Key> newlyPressed = new HashSet<Keyboard.Key>(curPressedKeys);
+		Set<Keyboard.Key> newlyPressed = new HashSet<>(curPressedKeys);
 		newlyPressed.removeAll(pressedKeys);
 		for (Keyboard.Key k : newlyPressed) {
 			if (k.pressed) {
 				continue;
 			}
-			Long bouncewait = this.bouncewaits.get(k);
-			if (bouncewait != null && bouncewait > SystemClock.elapsedRealtime()) {
+			Long bounceWait = this.bounceWaits.get(k);
+			if (bounceWait != null && bounceWait > SystemClock.elapsedRealtime()) {
 				continue;
 			}
 
@@ -471,7 +473,7 @@ public class DotDashKeyboardView extends KeyboardView {
 				
 				// Iambic mode B needs to know if both keys got pressed simultaneously while an Iambic message
 				// was in progress.
-				if (service.iambicmodeb && service.dotDashKeyboard.leftDotdashKey.pressed && service.dotDashKeyboard.rightDotdashKey.pressed) {
+				if (service.iambicModeB && service.dotDashKeyboard.leftDotdashKey.pressed && service.dotDashKeyboard.rightDotdashKey.pressed) {
 					this.iambic_both_pressed = true;
 				}
 			} else {
@@ -490,7 +492,7 @@ public class DotDashKeyboardView extends KeyboardView {
 		
 		// Keys that are in pressedKeys but not curPressedKeys
 		// are newly released.
-		Set<Keyboard.Key> newlyReleased = new HashSet<Keyboard.Key>(pressedKeys);
+		Set<Keyboard.Key> newlyReleased = new HashSet<>(pressedKeys);
 		newlyReleased.removeAll(curPressedKeys);
 		for (Keyboard.Key k : newlyReleased) {
 			if (!k.pressed) {
@@ -502,7 +504,7 @@ public class DotDashKeyboardView extends KeyboardView {
 			if (k.repeatable) {
 				handler.removeMessages(MSG_KEY_REPEAT, k);
 			}
-			this.bouncewaits.put(k, SystemClock.elapsedRealtime() + DotDashKeyboardView.DEBOUNCE_TIMEOUT);
+			this.bounceWaits.put(k, SystemClock.elapsedRealtime() + DotDashKeyboardView.DEBOUNCE_TIMEOUT);
 			invalidateKey(service.dotDashKeyboard.getKeys().indexOf(k));
 			
 			// If we're not in iambic mode, then the release of a key is probably a decent time to start
@@ -511,8 +513,8 @@ public class DotDashKeyboardView extends KeyboardView {
 					!service.iambic 
 					&& service.isAudio()
 					&& (k == service.dotDashKeyboard.leftDotdashKey || k == service.dotDashKeyboard.rightDotdashKey)
-					&& service.dotDashKeyboard.leftDotdashKey.pressed == false
-					&& service.dotDashKeyboard.rightDotdashKey.pressed == false
+					&& !service.dotDashKeyboard.leftDotdashKey.pressed
+					&& !service.dotDashKeyboard.rightDotdashKey.pressed
 			) {
 				long delay = DotDashKeyboardView.AUTOCOMMIT_DELAY;
 				// If audio is playing, we want to wait until the end of the tone before
@@ -537,13 +539,13 @@ public class DotDashKeyboardView extends KeyboardView {
 		return true;
 	}
 	
-	public static long get_iambic_delay(Keyboard.Key k) {
+	private static long get_iambic_delay(Keyboard.Key k) {
 		if (k.codes[0] == DotDashKeyboard.KEYCODE_DOT) {
 			// a dot and the space after it
-			return IAMBIC_DOTLENGTH * 2;
+			return IAMBIC_DOT_LENGTH * 2;
 		} else {
 			// a dash (three dot lengths) and the space after it
-			return IAMBIC_DOTLENGTH * 4;
+			return IAMBIC_DOT_LENGTH * 4;
 		}
 	}
 }

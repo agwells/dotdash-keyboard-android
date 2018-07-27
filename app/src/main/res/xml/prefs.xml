@@ -3,7 +3,7 @@
 
     <CheckBoxPreference
         android:key="autocap"
-        android:title="@string/autocap" 
+        android:title="@string/autocap"
         android:summary="@string/autocap_summary"
         android:defaultValue="false"
         android:persistent="true"
@@ -11,17 +11,17 @@
 
     <CheckBoxPreference
         android:key="dashkeyonleft"
-        android:title="@string/dashkeyonleft"
-        android:summary="@string/dashkeyonleft_summary"
+        android:title="@string/dash_key_on_left"
+        android:summary="@string/dash_key_on_left_summary"
         android:defaultValue="false"
         android:persistent="true"
     />
         
     <org.pocketworkstation.pckeyboard.AutoSummaryListPreference
         android:key="ditdahchars"
-        android:title="@string/ditdahchars" 
-        android:entries="@array/ditdahchars_labels"
-        android:entryValues="@array/ditdahchars_values"
+        android:title="@string/dit_dah_chars"
+        android:entries="@array/dit_dah_chars_labels"
+        android:entryValues="@array/dit_dah_chars_values"
         android:defaultValue="1"
         android:persistent="true"
     />
@@ -37,8 +37,8 @@
     
     <CheckBoxPreference 
         android:key="enableutilkbd"
-        android:title="@string/enableutilkbd"
-        android:summary="@string/enableutilkbd_summary"
+        android:title="@string/enable_util_kbd"
+        android:summary="@string/enable_util_kbd_summary"
         android:defaultValue="false"
         android:persistent="true"
     />
