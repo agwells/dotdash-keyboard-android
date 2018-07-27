@@ -1,6 +1,5 @@
 package net.iowaline.dotdash;
 
-import java.io.FileDescriptor;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
@@ -534,7 +533,7 @@ public class DotDashIMEService extends InputMethodService implements
 	/**
 	 * Updates the spacebar to display the current character in progress
 	 * 
-	 * @param boolean refreshScreen Whether or not to refresh the screen afterwards.
+	 * @param refreshScreen
 	 */
 	public void updateSpaceKey(boolean refreshScreen) {
 		String newLabel = charInProgress.toString();
@@ -581,7 +580,7 @@ public class DotDashIMEService extends InputMethodService implements
 		updateAutoCap();
 		updateCapsLockKey(true);
 		updateSpaceKey(true);
-	};
+	}
 
 	@Override
 	public void onFinishInputView(boolean finishingInput) {
